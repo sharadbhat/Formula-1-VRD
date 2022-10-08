@@ -1,6 +1,15 @@
 # Formula 1 VRD [Visualized Race Data]
 
-## Team Member
+## Getting Started
+1. Install Node LTS (https://nodejs.org/en/download/)
+2. Make sure `npm` is installed on your system
+3. Clone this repository
+4. Run `cd Formula-1-VRD`
+5. Run `npm i`
+6. Run `npm run dev`
+7. Head to http://localhost:5173
+
+## Team Members
 |Name|UID|Email|
 |-|-|-|
 |Alex Liebig|U1072962|u1072962@utah.edu|
