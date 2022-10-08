@@ -1,6 +1,6 @@
 # Formula 1 VRD [Visualized Race Data]
 
-Head over to https://sharadbhat.github.io/Formula-1-VRD/ to check it out!
+Head over to https://sharadbhat.github.io/Formula-1-VRD/ to check it out.
 
 ## Getting Started
 1. Install Node LTS (https://nodejs.org/en/download/)
