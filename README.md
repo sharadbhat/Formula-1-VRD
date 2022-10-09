@@ -3,7 +3,7 @@
 Head over to https://sharadbhat.github.io/Formula-1-VRD/ to check it out.
 
 ## Getting Started
-1. Install Node LTS (https://nodejs.org/en/download/)
+1. Install Node (v16.x) LTS (https://nodejs.org/en/download/)
 2. Make sure `npm` is installed on your system
 3. Clone this repository
 4. Run `cd Formula-1-VRD`
