@@ -1,6 +1,6 @@
 import { forwardRef, useContext } from 'react'
 import { Select, Text } from '@mantine/core'
-import GlobalContext from '../../utils/globalContext';
+import GlobalContext from '../../utils/globalContext'
 
 const SelectItem = forwardRef(
     ({ label, ...others }, ref) => (
@@ -10,10 +10,10 @@ const SelectItem = forwardRef(
         </div>
       </div>
     )
-  );
+  )
 
 const SeasonSelector = () => {
-    let context = useContext(GlobalContext);
+    let context = useContext(GlobalContext)
     let data = []
     for (let i = 1950; i <= 2022; i++) {
         data.push({

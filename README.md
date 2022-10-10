@@ -1,5 +1,7 @@
 # Formula 1 VRD [Visualized Race Data]
 
+[![Deployment](https://github.com/sharadbhat/Formula-1-VRD/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/sharadbhat/Formula-1-VRD/actions/workflows/deploy.yml)
+
 Head over to https://sharadbhat.github.io/Formula-1-VRD/ to check it out.
 
 ## Getting Started

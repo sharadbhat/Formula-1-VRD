@@ -1,0 +1,15 @@
+.linksContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+}
+
+.item {
+    margin-left: 10px;
+}
+
+.githubButton {
+    width: 40px;
+    height: 36px;
+}
