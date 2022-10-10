@@ -1,0 +1,17 @@
+.warning-modal-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.warning-modal-header-item {
+    margin-right: 10px;
+}
+
+.warning-modal-content {
+    margin-bottom: 20px;
+}
+
+.warning-modal-button {
+    float: right;
+}

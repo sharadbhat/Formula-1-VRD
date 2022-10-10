@@ -44,7 +44,7 @@ const HeaderLinks = () => {
                     compact
                     className='githubButton item'
                     onClick={toggle}
-                    >
+                >
                     <FontAwesomeIcon color='white' icon={fullscreen ? faDownLeftAndUpRightToCenter : faUpRightAndDownLeftFromCenter} size='lg' />
                 </Button>
             </Tooltip>
