@@ -3,7 +3,7 @@ import { MantineProvider, AppShell } from '@mantine/core'
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
+  Route
 } from 'react-router-dom'
 
 // Pages
