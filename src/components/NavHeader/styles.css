@@ -5,6 +5,16 @@
     justify-content: space-between
 }
 
-.nav-width-250 {
-    width: 250px;
+.nav-width-300 {
+    width: 300px;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.logo {
+    margin-right: 10px;
 }

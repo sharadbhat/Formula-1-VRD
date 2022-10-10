@@ -18,3 +18,8 @@ Head over to https://sharadbhat.github.io/Formula-1-VRD/ to check it out.
 |-|-|-|
 |Alex Liebig|U1072962|u1072962@utah.edu|
 |Sharad Bhat|U1418984|u1418984@utah.edu|
+
+#### Attributions
+<a href="https://www.flaticon.com/free-icons/flag" title="flag icons">Flag icons created by Freepik - Flaticon</a>
+
+<a href="https://www.flaticon.com/free-icons/formula-1" title="formula 1 icons">Formula 1 icons created by Pixel Buddha - Flaticon</a>
