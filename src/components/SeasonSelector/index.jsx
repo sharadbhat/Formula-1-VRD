@@ -1,11 +1,16 @@
 import { forwardRef, useContext } from 'react'
 import { Select, Text } from '@mantine/core'
+
+// Utils
 import GlobalContext from '../../utils/globalContext'
+
+// CSS
+import './styles.css'
 
 const SelectItem = forwardRef(
     ({ label, ...others }, ref) => (
       <div ref={ref} {...others}>
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div className='text-container'>
             <Text weight={700}>{others.value}</Text><Text>&nbsp;Formula 1 Season</Text>
         </div>
       </div>

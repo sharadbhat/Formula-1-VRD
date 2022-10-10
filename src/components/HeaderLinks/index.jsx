@@ -29,7 +29,6 @@ const HeaderLinks = () => {
         >
             <FontAwesomeIcon color='white' icon={faGithub} size="xl" />
         </Button>
-
     </div>
   )
 }
