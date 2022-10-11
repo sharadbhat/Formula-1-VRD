@@ -18,3 +18,8 @@
 .logo {
     margin-right: 10px;
 }
+
+.logo-link {
+    color: inherit;
+    text-decoration: inherit;
+}

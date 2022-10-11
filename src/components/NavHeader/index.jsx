@@ -16,16 +16,18 @@ const NavHeader = () => {
   return (
     <Header height={70} p='md'>
         <div className='nav-container'>
-            <div className='nav-width-300 logo-container'>
-              <img src={Logo} height={35} className='logo' />
-              <Title
-                component={Link}
-                to='/'
-                order={2}
-                title='Formula 1 Visualized Race Data'
-              >
-                Formula 1 VRD
-              </Title>
+            <div className='nav-width-300'>
+              <Link to={'/'} className='logo-link'>
+                <div className='logo-container'>
+                  <img src={Logo} height={35} className='logo' />
+                  <Title
+                    order={2}
+                    title='Formula 1 Visualized Race Data'
+                  >
+                    Formula 1 VRD
+                  </Title>
+                </div>
+              </Link>
             </div>
             {renderDropdown()}
             <div className='nav-width-300'>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Icons
-import { faUpRightAndDownLeftFromCenter, faDownLeftAndUpRightToCenter } from '@fortawesome/free-solid-svg-icons'
+import { faExpand, faDownLeftAndUpRightToCenter } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 // CSS
@@ -28,7 +28,7 @@ const HeaderLinks = () => {
                     variant='outline'
                     color='gray'
                     compact
-                    className='githubButton item'
+                    className='actionButton item'
                     component='a'
                     target='_blank'
                     rel='noopener noreferrer'
@@ -37,15 +37,15 @@ const HeaderLinks = () => {
                     <FontAwesomeIcon color='white' icon={faGithub} size='xl' />
                 </Button>
             </Tooltip>
-            <Tooltip label={fullscreen ? 'Minimize' : 'Maximize'}>
+            <Tooltip label={fullscreen ? 'Minimize' : 'Fullscreen'}>
                 <Button
                     variant='outline'
                     color='gray'
                     compact
-                    className='githubButton item'
+                    className='actionButton item'
                     onClick={toggle}
                 >
-                    <FontAwesomeIcon color='white' icon={fullscreen ? faDownLeftAndUpRightToCenter : faUpRightAndDownLeftFromCenter} size='lg' />
+                    <FontAwesomeIcon color='white' icon={fullscreen ? faDownLeftAndUpRightToCenter : faExpand} size='lg' />
                 </Button>
             </Tooltip>
         </div>
