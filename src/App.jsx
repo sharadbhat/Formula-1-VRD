@@ -14,14 +14,21 @@ import Error from './pages/Error'
 import NavHeader from './components/NavHeader'
 import MobileWarning from './components/MobileWarning'
 
+// Utils
+import useGlobalStore from './utils/store'
+
 export default function App() {
+  const env = useGlobalStore(state => state.env)
   return (
     <MantineProvider
       withGlobalStyles
       withNormalizeCSS
       theme={{ colorScheme: 'dark' }}
     >
-      <MobileWarning />
+      {env === 'prod'
+        ? <MobileWarning />
+        : null
+      }
       <Router basename='/Formula-1-VRD/'>
         <AppShell header={<NavHeader />}>
           <Routes>
