@@ -1,4 +1,3 @@
-import React from 'react'
 import { Title, Header } from '@mantine/core'
 import { Link, useLocation } from 'react-router-dom'
 

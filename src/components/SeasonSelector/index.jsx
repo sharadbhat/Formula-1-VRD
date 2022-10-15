@@ -1,8 +1,8 @@
-import { forwardRef, useContext } from 'react'
+import { forwardRef } from 'react'
 import { Select, Text } from '@mantine/core'
 
 // Utils
-import GlobalContext from '../../utils/globalContext'
+import useGlobalStore from '../../utils/store'
 
 // CSS
 import './styles.css'
@@ -18,7 +18,7 @@ const SelectItem = forwardRef(
   )
 
 const SeasonSelector = () => {
-    let context = useContext(GlobalContext)
+    let setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
     let data = []
     for (let i = 1950; i <= 2022; i++) {
         data.push({
@@ -34,7 +34,7 @@ const SeasonSelector = () => {
             transition='pop-top-left'
             transitionDuration={80}
             transitionTimingFunction='ease'
-            onChange={context.setSelectedYear}
+            onChange={setSelectedYear}
         />
     )
 }
