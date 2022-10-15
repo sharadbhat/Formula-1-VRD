@@ -13,7 +13,7 @@ const Home = () => {
 
   useEffect(() => {
     function fetchData() {
-      d3.csv('../../data/lap_times.csv').then(d => {
+      d3.csv('data/lap_times.csv').then(d => {
         setData(d.filter(row => row.raceId === raceId).map(row => ({ driverId: +row.driverId, lap: +row.lap, position: +row.position })))
         setLoading(false)
       })
