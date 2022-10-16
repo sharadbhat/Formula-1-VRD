@@ -4,6 +4,7 @@ import * as d3 from 'd3'
 import { useD3 } from '../../utils/useD3'
 
 const RacePositionViz = ({ data }) => {
+    const selectedPaths = new Set()
     const svgWidth = 1000
     const svgHeight = 500
 
@@ -41,14 +42,50 @@ const RacePositionViz = ({ data }) => {
             .data(groupedData)
             .enter()
             .append('path')
+            .attr('id', d => `racePositionVizDriverId-${d[0]}`)
             .attr('fill', 'none')
             .attr('stroke', d => colorScale(+d[0]))
-            .attr('stroke-width', 1.5)
+            .attr('stroke-width', 5)
             .attr('d', d => {
                 return d3.line()
                     .x(d => margin + xScale(+d.lap))
                     .y(d => yScale(+d.position))
                 (d[1])
+            })
+            .on('mouseover', d => {
+                svg.select(`#${d.target.id}`)
+                    .transition()
+                    .duration(500)
+                    .attr('stroke-width', 10)
+            })
+            .on('mouseout', d => {
+                svg.select(`#${d.target.id}`)
+                    .transition()
+                    .duration(500)
+                    .attr('stroke-width', 5)
+            })
+            .on('click', d => {
+                if (selectedPaths.has(d.target.id)) {
+                    selectedPaths.delete(d.target.id)
+                    svg.select(`#${d.target.id}`)
+                        .attr('stroke', 'grey')
+                    
+                    if (selectedPaths.size === 0) {
+                        svg.select('#content')
+                            .selectAll('path')
+                            .attr('stroke', d => colorScale(+d[0]))
+                    }
+                } else {
+                    selectedPaths.add(d.target.id)
+                    if (selectedPaths.size === 1) {
+                        svg.select('#content')
+                            .selectAll('path')
+                            .attr('stroke', 'grey')
+                    }
+                    svg.select(`#${d.target.id}`)
+                        .attr('stroke', d => colorScale(+d[0]))
+                }
+                
             })
     }, [data.length])
 
