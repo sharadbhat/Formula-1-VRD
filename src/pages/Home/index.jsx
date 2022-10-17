@@ -6,23 +6,21 @@ import * as d3 from 'd3'
 import RacePositionViz from '../../components/RacePositionViz'
 
 //Utils
-import getDataFilePath from '../../utils/getDataFilePath'
+import lapTimes from '../../utils/lapTimesReader'
 
 const Home = () => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
 
-  let raceId = '1073'
+  let raceId = 1073
 
   useEffect(() => {
-    function fetchData() {
-      d3.csv(getDataFilePath('lap_times.csv')).then(d => {
-        setData(d.filter(row => row.raceId === raceId).map(row => ({ driverId: +row.driverId, lap: +row.lap, position: +row.position })))
-        setLoading(false)
-      })
+    async function fetchData() {
+      setData(await lapTimes(raceId))
+      setLoading(false)
     }
     fetchData();
-  },[raceId])
+  }, [raceId])
 
   return (
     <>
