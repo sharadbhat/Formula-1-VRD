@@ -30,7 +30,7 @@ const RacePositionViz = ({ data }) => {
             .transition()
             .duration(500)
             .call(d3.axisLeft(yScale))
-        
+
         const groupedData = d3.group(data, d => +d.driverId)
 
         let colorScale = d3.scaleOrdinal()
@@ -50,7 +50,7 @@ const RacePositionViz = ({ data }) => {
                 return d3.line()
                     .x(d => margin + xScale(+d.lap))
                     .y(d => yScale(+d.position))
-                (d[1])
+                    (d[1])
             })
             .on('mouseover', d => {
                 svg.select(`#${d.target.id}`)
@@ -68,24 +68,23 @@ const RacePositionViz = ({ data }) => {
                 if (selectedPaths.has(d.target.id)) {
                     selectedPaths.delete(d.target.id)
                     svg.select(`#${d.target.id}`)
-                        .attr('stroke', 'grey')
-                    
+                        .attr('opacity', 0.2)
+
                     if (selectedPaths.size === 0) {
                         svg.select('#content')
                             .selectAll('path')
-                            .attr('stroke', d => colorScale(+d[0]))
+                            .attr('opacity', 1)
                     }
                 } else {
                     selectedPaths.add(d.target.id)
                     if (selectedPaths.size === 1) {
                         svg.select('#content')
                             .selectAll('path')
-                            .attr('stroke', 'grey')
+                            .attr('opacity', 0.2)
                     }
                     svg.select(`#${d.target.id}`)
-                        .attr('stroke', d => colorScale(+d[0]))
+                        .attr('opacity', 1)
                 }
-                
             })
     }, [data.length])
 
