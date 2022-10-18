@@ -2,11 +2,17 @@ import * as d3 from 'd3'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
+import driverIdMapper from '../../utils/driverIdMapper'
 
 const RacePositionViz = ({ data }) => {
     const selectedPaths = new Set()
     const svgWidth = 1000
     const svgHeight = 500
+
+    const cardHeight = 200
+    const cardWidth = 150
+    const cardCornerRadius = 10
+    const cardColor = '#25262b'
 
     const margin = 30
 
@@ -43,6 +49,7 @@ const RacePositionViz = ({ data }) => {
             .enter()
             .append('path')
             .attr('id', d => `racePositionVizDriverId-${d[0]}`)
+            .attr('driverId', d => +d[0])
             .attr('fill', 'none')
             .attr('stroke', d => colorScale(+d[0]))
             .attr('stroke-width', 5)
@@ -53,16 +60,47 @@ const RacePositionViz = ({ data }) => {
                     (d[1])
             })
             .on('mouseover', d => {
+                // Thicker line
                 svg.select(`#${d.target.id}`)
                     .transition()
                     .duration(500)
                     .attr('stroke-width', 10)
+                
+                // Show card
+                svg.select('#hover-card-group')
+                    .attr('visibility', 'visible')
+                
+                svg.select('#hover-card-content')
+                    .style('fill', 'white')
+                    .attr('x', 15)
+                    .attr('y', 25)
+                    .text(driverIdMapper[d.target.getAttribute('driverId')].name)
+            })
+            .on('mousemove', d => {
+                let [xPosition, yPosition] = d3.pointer(d)
+                if (xPosition > svgWidth / 2) {
+                    xPosition -= (cardWidth + 10)
+                } else {
+                    xPosition += 10
+                }
+                if (yPosition > svgHeight / 2) {
+                    yPosition -= (cardHeight + 10)
+                } else {
+                    yPosition += 10
+                }
+                svg.select('#hover-card-group')
+                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
             .on('mouseout', d => {
+                // Reset line thickness
                 svg.select(`#${d.target.id}`)
                     .transition()
                     .duration(500)
                     .attr('stroke-width', 5)
+                
+                // Hide card group
+                svg.select('#hover-card-group')
+                    .attr('visibility', 'hidden')
             })
             .on('click', d => {
                 if (selectedPaths.has(d.target.id)) {
@@ -70,6 +108,7 @@ const RacePositionViz = ({ data }) => {
                     svg.select(`#${d.target.id}`)
                         .attr('opacity', 0.2)
 
+                    // If no line selected, reset opacity of all lines
                     if (selectedPaths.size === 0) {
                         svg.select('#content')
                             .selectAll('path')
@@ -78,10 +117,13 @@ const RacePositionViz = ({ data }) => {
                 } else {
                     selectedPaths.add(d.target.id)
                     if (selectedPaths.size === 1) {
+                        // Reduce opacity of all lines
                         svg.select('#content')
                             .selectAll('path')
                             .attr('opacity', 0.2)
                     }
+
+                    // Reset opacity of selected line
                     svg.select(`#${d.target.id}`)
                         .attr('opacity', 1)
                 }
@@ -93,6 +135,17 @@ const RacePositionViz = ({ data }) => {
             <g id='xAxis' />
             <g id='yAxis' />
             <g id='content' />
+            <g id='hover-card-group' visibility={'hidden'}>
+                <rect
+                    id='hover-card'
+                    fill={cardColor}
+                    height={cardHeight}
+                    width={cardWidth}
+                    rx={cardCornerRadius}
+                    ry={cardCornerRadius}
+                />
+                <text id='hover-card-content' color='#ffffff' />
+            </g>
         </svg>
     )
 }
