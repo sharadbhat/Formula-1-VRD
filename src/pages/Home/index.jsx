@@ -5,7 +5,7 @@ import { LoadingOverlay } from '@mantine/core'
 import RacePositionViz from '../../components/RacePositionViz'
 
 //Utils
-import lapTimes from '../../utils/lapTimesReader'
+import { getRacePositions } from '../../utils/lapTimesFileReader'
 
 const Home = () => {
   const [loading, setLoading] = useState(true)
@@ -15,7 +15,7 @@ const Home = () => {
 
   useEffect(() => {
     async function fetchData() {
-      setData(await lapTimes(raceId))
+      setData(await getRacePositions(raceId))
       setLoading(false)
     }
     fetchData();
