@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
-import * as d3 from 'd3'
 
 // Components
 import RacePositionViz from '../../components/RacePositionViz'
@@ -24,8 +23,10 @@ const Home = () => {
 
   return (
     <>
-      <LoadingOverlay visible={loading} overlayBlur={2} />
-      <RacePositionViz data={data} />
+      {loading
+      ? <LoadingOverlay visible overlayBlur={2} />
+      : <RacePositionViz data={data} />
+      }
     </>
   )
 }

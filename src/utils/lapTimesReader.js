@@ -8,7 +8,6 @@ export default async (raceId) => {
   return data.filter(row => (
     +row.raceId === raceId
   )).map(row => ({
-    raceId: +row.raceId,
     driverId: +row.driverId,
     lap: +row.lap,
     position: +row.position

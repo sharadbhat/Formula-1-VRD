@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import * as d3 from 'd3'
 
 // Utils
@@ -6,11 +7,15 @@ import driverIdMapper from '../../utils/driverIdMapper'
 
 const RacePositionViz = ({ data }) => {
     const selectedPaths = new Set()
+    const [driverName, setDriverName] = useState(null)
+    const [currentLap, setCurrentLap] = useState(null)
+    const [currentPosition, setCurrentPosition] = useState(null)
+
     const svgWidth = 1000
     const svgHeight = 500
 
-    const cardHeight = 40
-    const cardWidth = 150
+    const cardHeight = 100
+    const cardWidth = 200
     const cardCornerRadius = 10
     const cardColor = '#25262b'
 
@@ -45,6 +50,8 @@ const RacePositionViz = ({ data }) => {
             .domain(Array.from(groupedData.keys()))
             .range(['#32964d', '#21f0b6', '#195036', '#ace1b7', '#0a7fb2', '#9ab9f9', '#82269b', '#fa79f5', '#6e446b', '#20d8fd', '#135ac2', '#faafe3', '#7d0af6', '#bae342', '#6e3901', '#fe8f06', '#a20655', '#fb8c77', '#d02023', '#d8c3b4', '#738a69', '#67f059', '#e0c645'])
 
+        const bisect = d3.bisector(d => +d.lap).left;
+
         svg.select('#content')
             .selectAll('path')
             .data(groupedData)
@@ -72,11 +79,19 @@ const RacePositionViz = ({ data }) => {
                 svg.select('#hover-card-group')
                     .attr('visibility', 'visible')
 
-                svg.select('#hover-card-content')
-                    .text(driverIdMapper[d.target.getAttribute('driverId')].name)
+                setDriverName(driverIdMapper[d.target.getAttribute('driverId')].name)
             })
             .on('mousemove', d => {
                 let [xPosition, yPosition] = d3.pointer(d)
+
+                const currentDriverId = +d.target.getAttribute('driverId')
+                const closestLap = xScale.invert(xPosition - margin)
+                const index = bisect(groupedData.get(currentDriverId), closestLap)
+                const datapoint = groupedData.get(currentDriverId)[index]
+
+                setCurrentLap(datapoint['lap'])
+                setCurrentPosition(datapoint['position'])
+
                 if (xPosition > svgWidth / 2) {
                     xPosition -= (cardWidth + 10)
                 } else {
@@ -143,13 +158,35 @@ const RacePositionViz = ({ data }) => {
                     rx={cardCornerRadius}
                     ry={cardCornerRadius}
                 />
-                <text
-                    id='hover-card-content'
-                    textAnchor='middle'
-                    fill='white'
-                    x={cardWidth / 2}
-                    y={cardHeight / 2 + 5}
-                />
+                <g id='hover-card-content-group'>
+                    <text
+                        id='hover-card-driver-name'
+                        textAnchor='middle'
+                        fill='white'
+                        x={cardWidth / 2}
+                        y={cardHeight / 4 + 5}
+                    >
+                        {driverName}
+                    </text>
+                    <text
+                        id='hover-card-current-lap'
+                        textAnchor='middle'
+                        fill='white'
+                        x={cardWidth / 2}
+                        y={cardHeight / 2 + 5}
+                    >
+                        Lap: {currentLap}
+                    </text>
+                    <text
+                        id='hover-card-current-position'
+                        textAnchor='middle'
+                        fill='white'
+                        x={cardWidth / 2}
+                        y={3 * cardHeight / 4 + 5}
+                    >
+                        Position: {currentPosition}
+                    </text>
+                </g>
             </g>
         </svg>
     )
