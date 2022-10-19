@@ -9,7 +9,7 @@ const RacePositionViz = ({ data }) => {
     const svgWidth = 1000
     const svgHeight = 500
 
-    const cardHeight = 200
+    const cardHeight = 40
     const cardWidth = 150
     const cardCornerRadius = 10
     const cardColor = '#25262b'
@@ -27,12 +27,14 @@ const RacePositionViz = ({ data }) => {
 
         svg.select('#xAxis')
             .attr('transform', `translate(${margin}, ${svgHeight - margin})`)
+            .attr('stroke-width', 2)
             .transition()
             .duration(500)
             .call(d3.axisBottom(xScale))
 
         svg.select('#yAxis')
             .attr('transform', `translate(${margin}, 0)`)
+            .attr('stroke-width', 2)
             .transition()
             .duration(500)
             .call(d3.axisLeft(yScale))
@@ -65,15 +67,12 @@ const RacePositionViz = ({ data }) => {
                     .transition()
                     .duration(500)
                     .attr('stroke-width', 10)
-                
+
                 // Show card
                 svg.select('#hover-card-group')
                     .attr('visibility', 'visible')
-                
+
                 svg.select('#hover-card-content')
-                    .style('fill', 'white')
-                    .attr('x', 15)
-                    .attr('y', 25)
                     .text(driverIdMapper[d.target.getAttribute('driverId')].name)
             })
             .on('mousemove', d => {
@@ -97,7 +96,7 @@ const RacePositionViz = ({ data }) => {
                     .transition()
                     .duration(500)
                     .attr('stroke-width', 5)
-                
+
                 // Hide card group
                 svg.select('#hover-card-group')
                     .attr('visibility', 'hidden')
@@ -144,7 +143,13 @@ const RacePositionViz = ({ data }) => {
                     rx={cardCornerRadius}
                     ry={cardCornerRadius}
                 />
-                <text id='hover-card-content' color='#ffffff' />
+                <text
+                    id='hover-card-content'
+                    textAnchor='middle'
+                    fill='white'
+                    x={cardWidth / 2}
+                    y={cardHeight / 2 + 5}
+                />
             </g>
         </svg>
     )
