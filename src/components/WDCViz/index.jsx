@@ -4,32 +4,41 @@ import * as d3 from 'd3'
 // Utils
 import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
-import constants from '../../utils/constants';
+import constants from '../../utils/constants'
 
-const RacePositionViz = ({ data }) => {
+const WDCViz = ({ raceList, data }) => {
     const selectedPaths = new Set()
+
     const [driverName, setDriverName] = useState(null)
-    const [currentLap, setCurrentLap] = useState(null)
-    const [currentPosition, setCurrentPosition] = useState(null)
+    const [currentRound, setCurrentRound] = useState(null)
+    const [currentPoints, setCurrentPoints] = useState(null)
+    const [roundToNameMap, setRoundToNameMap] = useState({})
 
     const svgWidth = 1000
     const svgHeight = 500
 
-    const cardHeight = 100
-    const cardWidth = 200
+    const cardHeight = 120
+    const cardWidth = 250
     const cardCornerRadius = constants.cardCornerRadius
     const cardColor = constants.cardColor
 
     const margin = 30
 
     const ref = useD3(svg => {
+        setRoundToNameMap({})
+        let roundMap = {}
+        for (const race of raceList) {
+            roundMap[+race.round] = race.name
+        }
+        setRoundToNameMap(roundMap)
+
         const xScale = d3.scaleLinear()
-            .domain(d3.extent(data.map(d => +d.lap)))
+            .domain([0, d3.max(raceList.map(d => +d.round))])
             .range([0, svgWidth - margin])
 
         const yScale = d3.scaleLinear()
-            .domain(d3.extent(data.map(d => +d.position)))
-            .range([0, svgHeight - margin])
+            .domain([0, d3.max(data.map(d => +d.points))])
+            .range([svgHeight - margin, 0])
 
         svg.select('#xAxis')
             .attr('transform', `translate(${margin}, ${svgHeight - margin})`)
@@ -44,28 +53,37 @@ const RacePositionViz = ({ data }) => {
             .transition()
             .duration(500)
             .call(d3.axisLeft(yScale))
-
+        
         const groupedData = d3.group(data, d => +d.driverId)
+
+        for (const group of groupedData) {
+            group[1].unshift({
+                driverId: +group[0],
+                raceId: 0,
+                points: 0,
+                round: 0
+            })
+        }
 
         const colorScale = d3.scaleOrdinal()
             .domain(Array.from(groupedData.keys()))
             .range(constants.categoricalColors)
 
-        const bisect = d3.bisector(d => +d.lap).left;
+        const bisect = d3.bisector(d => +d.round).left;
 
         svg.select('#content')
             .selectAll('path')
             .data(groupedData)
             .join('path')
-            .attr('id', d => `racePositionVizDriverId-${d[0]}`)
+            .attr('id', d => `WDCVizDriverId-${d[0]}`)
             .attr('driverId', d => +d[0])
             .attr('fill', 'none')
             .attr('stroke', d => colorScale(+d[0]))
             .attr('stroke-width', 5)
             .attr('d', d => {
                 return d3.line()
-                    .x(d => margin + xScale(+d.lap))
-                    .y(d => yScale(+d.position))
+                    .x(d => margin + xScale(+d.round))
+                    .y(d => yScale(+d.points))
                     (d[1])
             })
             .on('mouseover', d => {
@@ -89,8 +107,8 @@ const RacePositionViz = ({ data }) => {
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
 
-                setCurrentLap(datapoint['lap'])
-                setCurrentPosition(datapoint['position'])
+                setCurrentPoints(datapoint['points'])
+                setCurrentRound(datapoint['round'])
 
                 if (xPosition > svgWidth / 2) {
                     xPosition -= (cardWidth + 10)
@@ -159,12 +177,12 @@ const RacePositionViz = ({ data }) => {
                     ry={cardCornerRadius}
                 />
                 <g id='hover-card-content-group'>
-                    <text
+                <text
                         id='hover-card-driver-name'
                         textAnchor='middle'
                         fill='white'
                         x={cardWidth / 2}
-                        y={cardHeight / 4 + 5}
+                        y={cardHeight / 4}
                         fontWeight={700}
                     >
                         {driverName}
@@ -174,18 +192,27 @@ const RacePositionViz = ({ data }) => {
                         textAnchor='middle'
                         fill='white'
                         x={cardWidth / 2}
-                        y={cardHeight / 2 + 5}
+                        y={cardHeight / 2 - 5}
                     >
-                        Lap: {currentLap}
+                        Round: {currentRound}
+                    </text>
+                    <text
+                        id='hover-card-current-lap'
+                        textAnchor='middle'
+                        fill='white'
+                        x={cardWidth / 2}
+                        y={cardHeight / 2 + 20}
+                    >
+                        {roundToNameMap[currentRound]}
                     </text>
                     <text
                         id='hover-card-current-position'
                         textAnchor='middle'
                         fill='white'
                         x={cardWidth / 2}
-                        y={3 * cardHeight / 4 + 5}
+                        y={3 * cardHeight / 4 + 15}
                     >
-                        Position: {currentPosition}
+                        Points: {currentPoints}
                     </text>
                 </g>
             </g>
@@ -193,4 +220,4 @@ const RacePositionViz = ({ data }) => {
     )
 }
 
-export default RacePositionViz
+export default WDCViz

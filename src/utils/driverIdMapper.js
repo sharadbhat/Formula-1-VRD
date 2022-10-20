@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 // Utils
 import getDataFilePath from './getDataFilePath'
 
-let driverIdMap = {}
+const driverIdMap = {}
 
 d3.csv(getDataFilePath('drivers.csv')).then(d => {
   for (const driver of d) {

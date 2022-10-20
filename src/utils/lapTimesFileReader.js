@@ -7,12 +7,12 @@ let lapTimes = []
 
 export const getRacePositions = async (raceId) => {
   if (lapTimes.length === 0) {
-    let data = await d3.csv(getDataFilePath('lap_times.csv'))
+    const data = await d3.csv(getDataFilePath('lap_times.csv'))
     lapTimes = data
   }
 
   return lapTimes.filter(row => (
-    +row.raceId === raceId
+    +row.raceId === +raceId
   )).map(row => ({
     driverId: +row.driverId,
     lap: +row.lap,
@@ -22,12 +22,12 @@ export const getRacePositions = async (raceId) => {
 
 export const getLapTimes = async (raceId) => {
   if (lapTimes.length === 0) {
-    let data = await d3.csv(getDataFilePath('lap_times.csv'))
+    const data = await d3.csv(getDataFilePath('lap_times.csv'))
     lapTimes = data
   }
 
   return lapTimes.filter(row => (
-    +row.raceId === raceId
+    +row.raceId === +raceId
   )).map(row => ({
     driverId: +row.driverId,
     lap: +row.lap,

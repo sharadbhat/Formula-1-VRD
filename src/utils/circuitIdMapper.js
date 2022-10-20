@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 // Utils
 import getDataFilePath from './getDataFilePath'
 
-let circuitIdMap = {}
+const circuitIdMap = {}
 
 d3.csv(getDataFilePath('circuits.csv')).then(d => {
   for (const circuit of d) {

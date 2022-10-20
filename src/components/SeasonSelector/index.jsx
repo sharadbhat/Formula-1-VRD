@@ -18,8 +18,8 @@ const SelectItem = forwardRef(
   )
 
 const SeasonSelector = () => {
-    let setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
-    let data = []
+    const setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
+    const data = []
     for (let i = 1950; i <= 2022; i++) {
         data.push({
             value: i,

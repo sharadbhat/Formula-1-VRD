@@ -38,7 +38,7 @@ const NavHeader = () => {
 }
 
 const renderDropdown = () => {
-  let pathname = useLocation().pathname
+  const pathname = useLocation().pathname
   if (pathname === '/') {
     return <SeasonSelector />
   }

@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 // Utils
 import getDataFilePath from './getDataFilePath'
 
-let constructorIdMap = {}
+const constructorIdMap = {}
 
 d3.csv(getDataFilePath('constructors.csv')).then(d => {
   for (const constructor of d) {
