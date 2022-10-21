@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 
 // Utils
-import getDataFilePath from './getDataFilePath'
+import { getDataFilePath } from './getFilePath'
 
 let races = []
 

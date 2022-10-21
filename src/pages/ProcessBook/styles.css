@@ -1,0 +1,35 @@
+a, a:visited, a:hover, a:active {
+    color: inherit;
+}
+
+.process-book-container {
+    width: 700px;
+}
+
+.process-book-proposal-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.process-book-mt-20 {
+    margin-top: 20px;
+}
+
+.process-book-mt-30 {
+    margin-top: 30px;
+}
+
+.process-book-table-container {
+    width: 300px;
+}
+
+.process-book-pl-50 {
+    padding-left: 50px;
+}
+
+.process-book-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
