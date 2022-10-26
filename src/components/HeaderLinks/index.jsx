@@ -11,7 +11,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import './styles.css'
 
 const HeaderLinks = () => {
-    const { toggle, fullscreen } = useFullscreen();
+    const { toggle: toggleFullscreen, fullscreen } = useFullscreen()
     return (
         <div className='linksContainer'>
             <Button
@@ -43,7 +43,7 @@ const HeaderLinks = () => {
                     color='gray'
                     compact
                     className='actionButton item'
-                    onClick={toggle}
+                    onClick={toggleFullscreen}
                 >
                     <FontAwesomeIcon color='white' icon={fullscreen ? faDownLeftAndUpRightToCenter : faExpand} size='lg' />
                 </Button>
