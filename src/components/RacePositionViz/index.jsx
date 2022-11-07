@@ -6,7 +6,7 @@ import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants';
 
-const RacePositionViz = ({ data }) => {
+const RacePositionViz = ({ data, raceId }) => {
     const selectedPaths = new Set()
     const [driverName, setDriverName] = useState(null)
     const [currentLap, setCurrentLap] = useState(null)
@@ -147,7 +147,7 @@ const RacePositionViz = ({ data }) => {
                         .attr('opacity', 1)
                 }
             })
-    }, [data.length])
+    }, [raceId])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>

@@ -6,7 +6,7 @@ import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
-const WDCViz = ({ raceList, data }) => {
+const WDCViz = ({ raceList, data, season }) => {
     const selectedPaths = new Set()
 
     const [driverName, setDriverName] = useState(null)
@@ -165,7 +165,7 @@ const WDCViz = ({ raceList, data }) => {
                         .attr('opacity', 1)
                 }
             })
-    }, [data.length])
+    }, [season])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>

@@ -6,7 +6,7 @@ import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
-const WDCHeatmapViz = ({ raceList, data }) => {
+const WDCHeatmapViz = ({ raceList, data, season }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentRound, setCurrentRound] = useState(null)
     const [currentPoints, setCurrentPoints] = useState(null)
@@ -62,13 +62,13 @@ const WDCHeatmapViz = ({ raceList, data }) => {
             .join('rect')
             .attr('driverId', d => +d.driverId)
             .attr('id', d => `WDCHeatmapViz-${d.driverId}-${d.round}`)
+            .style('fill', colorScale(0))
             .attr('x', d => xScale(d.round))
             .attr('y', d => yScale(d.driverId))
             .attr('rx', 4)
             .attr('ry', 4)
-            .attr('width', xScale.bandwidth() )
-            .attr('height', yScale.bandwidth() )
-            .style('fill', d => colorScale(d.points) )
+            .attr('width', xScale.bandwidth())
+            .attr('height', yScale.bandwidth())
             .style('stroke-width', 4)
             .style('stroke', 'none')
             .style('opacity', 1)
@@ -121,8 +121,11 @@ const WDCHeatmapViz = ({ raceList, data }) => {
                 svg.select('#hover-card-group')
                     .attr('visibility', 'hidden')
             })
-
-    }, [data.length])
+            .transition()
+            .duration(500)
+            .delay((_, i) => i)
+            .style('fill', d => colorScale(+d.points))
+    }, [season])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>

@@ -20,7 +20,7 @@ const SelectItem = forwardRef(
 const SeasonSelector = () => {
     const setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
     const data = []
-    for (let i = 1950; i <= 2022; i++) {
+    for (let i = 2022; i >= 1993; i--) {
         data.push({
             value: i,
             label: `${i} Formula 1 Season`

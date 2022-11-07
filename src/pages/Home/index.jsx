@@ -17,6 +17,7 @@ const Home = () => {
 	const [data, setData] = useState([])
 	const [WDCData, setWDCData] = useState([])
 	const [raceList, setRaceList] = useState([])
+	const [selectedSeason, setSelectedSeason] = useState(null)
 
 	let raceId = 1073
 	const year = useGlobalStore(state => state.selectedYear)
@@ -41,6 +42,7 @@ const Home = () => {
 			setLoading(false)
 		}
 		fetchData()
+		setSelectedSeason(year)
 	}, [year])
 
 	return (
@@ -48,9 +50,9 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
-				<RacePositionViz data={data} />
-				<WDCViz raceList={raceList} data={WDCData} />
-				<WDCHeatmapViz raceList={raceList} data={WDCData} />
+				<RacePositionViz raceId={raceId} data={data} />
+				<WDCViz season={selectedSeason} raceList={raceList} data={WDCData} />
+				<WDCHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
 		   	</>
 		}
 		</>
