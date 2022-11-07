@@ -68,9 +68,9 @@ const RacePositionViz = ({ data }) => {
                     .y(d => yScale(+d.position))
                     (d[1])
             })
-            .on('mouseover', d => {
+            .on('mouseover', e => {
                 // Thicker line
-                svg.select(`#${d.target.id}`)
+                svg.select(`#${e.target.id}`)
                     .transition()
                     .duration(500)
                     .attr('stroke-width', 10)
@@ -79,12 +79,12 @@ const RacePositionViz = ({ data }) => {
                 svg.select('#hover-card-group')
                     .attr('visibility', 'visible')
 
-                setDriverName(driverIdMapper[d.target.getAttribute('driverId')].name)
+                setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
             })
-            .on('mousemove', d => {
-                let [xPosition, yPosition] = d3.pointer(d)
+            .on('mousemove', e => {
+                let [xPosition, yPosition] = d3.pointer(e)
 
-                const currentDriverId = +d.target.getAttribute('driverId')
+                const currentDriverId = +e.target.getAttribute('driverId')
                 const closestLap = xScale.invert(xPosition - margin)
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
@@ -105,9 +105,9 @@ const RacePositionViz = ({ data }) => {
                 svg.select('#hover-card-group')
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
-            .on('mouseout', d => {
+            .on('mouseout', e => {
                 // Reset line thickness
-                svg.select(`#${d.target.id}`)
+                svg.select(`#${e.target.id}`)
                     .transition()
                     .duration(500)
                     .attr('stroke-width', 5)
@@ -116,10 +116,10 @@ const RacePositionViz = ({ data }) => {
                 svg.select('#hover-card-group')
                     .attr('visibility', 'hidden')
             })
-            .on('click', d => {
-                if (selectedPaths.has(d.target.id)) {
-                    selectedPaths.delete(d.target.id)
-                    svg.select(`#${d.target.id}`)
+            .on('click', e => {
+                if (selectedPaths.has(e.target.id)) {
+                    selectedPaths.delete(e.target.id)
+                    svg.select(`#${e.target.id}`)
                         .attr('opacity', 0.2)
 
                     // If no line selected, reset opacity of all lines
@@ -129,7 +129,7 @@ const RacePositionViz = ({ data }) => {
                             .attr('opacity', 1)
                     }
                 } else {
-                    selectedPaths.add(d.target.id)
+                    selectedPaths.add(e.target.id)
                     if (selectedPaths.size === 1) {
                         // Reduce opacity of all lines
                         svg.select('#content')
@@ -138,7 +138,7 @@ const RacePositionViz = ({ data }) => {
                     }
 
                     // Reset opacity of selected line
-                    svg.select(`#${d.target.id}`)
+                    svg.select(`#${e.target.id}`)
                         .attr('opacity', 1)
                 }
             })

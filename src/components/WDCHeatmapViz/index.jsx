@@ -6,9 +6,7 @@ import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
-const WDCViz = ({ raceList, data }) => {
-    const selectedPaths = new Set()
-
+const WDCHeatmapViz = ({ raceList, data }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentRound, setCurrentRound] = useState(null)
     const [currentPoints, setCurrentPoints] = useState(null)
@@ -22,8 +20,6 @@ const WDCViz = ({ raceList, data }) => {
     const cardCornerRadius = constants.cardCornerRadius
     const cardColor = constants.cardColor
 
-    const margin = 30
-
     const ref = useD3(svg => {
         setRoundToNameMap({})
         let roundMap = {}
@@ -32,83 +28,77 @@ const WDCViz = ({ raceList, data }) => {
         }
         setRoundToNameMap(roundMap)
 
-        const xScale = d3.scaleLinear()
-            .domain([0, d3.max(raceList.map(d => +d.round))])
-            .range([0, svgWidth - margin])
-
-        const yScale = d3.scaleLinear()
-            .domain([0, d3.max(data.map(d => +d.cumulativePoints))])
-            .range([svgHeight - margin, 0])
-
-        svg.select('#xAxis')
-            .attr('transform', `translate(${margin}, ${svgHeight - margin})`)
-            .attr('stroke-width', 2)
-            .transition()
-            .duration(500)
-            .call(d3.axisBottom(xScale))
-
-        svg.select('#yAxis')
-            .attr('transform', `translate(${margin}, 0)`)
-            .attr('stroke-width', 2)
-            .transition()
-            .duration(500)
-            .call(d3.axisLeft(yScale))
-        
-        const groupedData = d3.group(data, d => +d.driverId)
-
-        for (const group of groupedData) {
-            group[1].unshift({
-                driverId: +group[0],
-                raceId: 0,
-                cumulativePoints: 0,
-                round: 0
-            })
+        let roundsList = []
+        for (let i = 1; i <= d3.max(raceList.map(d => +d.round)); i++) {
+            roundsList.push(i)
         }
 
-        const colorScale = d3.scaleOrdinal()
-            .domain(Array.from(groupedData.keys()))
-            .range(constants.categoricalColors)
+        let xScale = d3.scaleBand()
+                    .domain(roundsList)
+                    .range([0, svgWidth])
+                    .padding(0.05)
+        
+        const groupedData = d3.group(data, d => +d.driverId)
+        for (const group of groupedData) {
+            for (let i = group[1].length - 1; i > 0; i--) {
+                group[1][i]['points'] = group[1][i]['cumulativePoints'] - group[1][i - 1]['cumulativePoints']
+            }
+        }
 
-        const bisect = d3.bisector(d => +d.round).left;
+        const sortedDriverIds = d3.groupSort(data, (a, b) => d3.descending(d3.max(a, d => d.cumulativePoints), d3.max(b, d => d.cumulativePoints)), d => +d.driverId)
+
+        let yScale = d3.scaleBand()
+                    .domain(sortedDriverIds)
+                    .range([0, svgHeight])
+                    .padding(0.05)
+        
+        let colorScale = d3.scaleSequential()
+                        .domain([0, d3.max(data.map(d => +d.points))])
+                        .interpolator(d3.interpolateInferno)
 
         svg.select('#content')
-            .selectAll('path')
-            .data(groupedData)
-            .join('path')
-            .attr('id', d => `WDCVizDriverId-${d[0]}`)
-            .attr('driverId', d => +d[0])
-            .attr('fill', 'none')
-            .attr('stroke', d => colorScale(+d[0]))
-            .attr('stroke-width', 5)
-            .attr('d', d => {
-                return d3.line()
-                    .x(d => margin + xScale(+d.round))
-                    .y(d => yScale(+d.cumulativePoints))
-                    (d[1])
-            })
-            .on('mouseover', e => {
-                // Thicker line
+            .selectAll('rect')
+            .data(data)
+            .join('rect')
+            .attr('driverId', d => +d.driverId)
+            .attr('id', d => `WDCHeatmapViz-${d.driverId}-${d.round}`)
+            .attr('x', d => xScale(d.round))
+            .attr('y', d => yScale(d.driverId))
+            .attr('rx', 4)
+            .attr('ry', 4)
+            .attr('width', xScale.bandwidth() )
+            .attr('height', yScale.bandwidth() )
+            .style('fill', d => colorScale(d.points) )
+            .style('stroke-width', 4)
+            .style('stroke', 'none')
+            .style('opacity', 1)
+            .on('mouseover', (e, d) => {
                 svg.select(`#${e.target.id}`)
-                    .transition()
-                    .duration(500)
-                    .attr('stroke-width', 10)
+                    .style('stroke', 'black')
 
                 // Show card
                 svg.select('#hover-card-group')
                     .attr('visibility', 'visible')
+                
+                let [xPosition, yPosition] = d3.pointer(e)
 
-                setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
+                if (xPosition > svgWidth / 2) {
+                    xPosition -= (cardWidth + 10)
+                } else {
+                    xPosition += 10
+                }
+                if (yPosition > svgHeight / 2) {
+                    yPosition -= (cardHeight + 10)
+                } else {
+                    yPosition += 10
+                }
+
+                setDriverName(driverIdMapper[d['driverId']].name)
+                setCurrentPoints(d['points'])
+                setCurrentRound(d['round'])
             })
             .on('mousemove', e => {
                 let [xPosition, yPosition] = d3.pointer(e)
-
-                const currentDriverId = +e.target.getAttribute('driverId')
-                const closestLap = xScale.invert(xPosition - margin)
-                const index = bisect(groupedData.get(currentDriverId), closestLap)
-                const datapoint = groupedData.get(currentDriverId)[index]
-
-                setCurrentPoints(datapoint['cumulativePoints'])
-                setCurrentRound(datapoint['round'])
 
                 if (xPosition > svgWidth / 2) {
                     xPosition -= (cardWidth + 10)
@@ -124,48 +114,18 @@ const WDCViz = ({ raceList, data }) => {
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
             .on('mouseout', e => {
-                // Reset line thickness
                 svg.select(`#${e.target.id}`)
-                    .transition()
-                    .duration(500)
-                    .attr('stroke-width', 5)
+                    .style('stroke', '')
 
                 // Hide card group
                 svg.select('#hover-card-group')
                     .attr('visibility', 'hidden')
             })
-            .on('click', e => {
-                if (selectedPaths.has(e.target.id)) {
-                    selectedPaths.delete(e.target.id)
-                    svg.select(`#${e.target.id}`)
-                        .attr('opacity', 0.2)
 
-                    // If no line selected, reset opacity of all lines
-                    if (selectedPaths.size === 0) {
-                        svg.select('#content')
-                            .selectAll('path')
-                            .attr('opacity', 1)
-                    }
-                } else {
-                    selectedPaths.add(e.target.id)
-                    if (selectedPaths.size === 1) {
-                        // Reduce opacity of all lines
-                        svg.select('#content')
-                            .selectAll('path')
-                            .attr('opacity', 0.2)
-                    }
-
-                    // Reset opacity of selected line
-                    svg.select(`#${e.target.id}`)
-                        .attr('opacity', 1)
-                }
-            })
     }, [data.length])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
-            <g id='xAxis' />
-            <g id='yAxis' />
             <g id='content' />
             <g id='hover-card-group' visibility={'hidden'}>
                 <rect
@@ -220,4 +180,4 @@ const WDCViz = ({ raceList, data }) => {
     )
 }
 
-export default WDCViz
+export default WDCHeatmapViz

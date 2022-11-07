@@ -4,6 +4,7 @@ import { LoadingOverlay } from '@mantine/core'
 // Components
 import WDCViz from '../../components/WDCViz'
 import RacePositionViz from '../../components/RacePositionViz'
+import WDCHeatmapViz from '../../components/WDCHeatmapViz'
 
 //Utils
 import useGlobalStore from '../../utils/store';
@@ -32,12 +33,12 @@ const Home = () => {
 
 	useEffect(() => {
 		async function fetchData() {
-		setLoading(true)
-		setWDCData([])
-		const races = await getRacesBySeason(year)
-		setRaceList(races)
-		setWDCData(await getDriverStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
-		setLoading(false)
+			setLoading(true)
+			setWDCData([])
+			const races = await getRacesBySeason(year)
+			setRaceList(races)
+			setWDCData(await getDriverStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
+			setLoading(false)
 		}
 		fetchData()
 	}, [year])
@@ -49,6 +50,7 @@ const Home = () => {
 		  : <>
 				<RacePositionViz data={data} />
 				<WDCViz raceList={raceList} data={WDCData} />
+				<WDCHeatmapViz raceList={raceList} data={WDCData} />
 		   	</>
 		}
 		</>

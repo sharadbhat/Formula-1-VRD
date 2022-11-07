@@ -23,6 +23,7 @@ const getDriverStandings = async (raceIdList) => {
         driverId: +row.driverId,
         raceId: +row.raceId,
         points: +row.points,
+        cumulativePoints: +row.points,
         round: +raceIdToRoundMap[+row.raceId]
     }))
     .sort((a, b) => a.round - b.round)
