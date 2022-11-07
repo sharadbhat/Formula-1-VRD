@@ -137,7 +137,7 @@ const WDCHeatmapViz = ({ raceList, data }) => {
                     ry={cardCornerRadius}
                 />
                 <g id='hover-card-content-group'>
-                <text
+                    <text
                         id='hover-card-driver-name'
                         textAnchor='middle'
                         fill='white'
@@ -148,13 +148,13 @@ const WDCHeatmapViz = ({ raceList, data }) => {
                         {driverName}
                     </text>
                     <text
-                        id='hover-card-current-lap'
+                        id='hover-card-current-points'
                         textAnchor='middle'
                         fill='white'
                         x={cardWidth / 2}
                         y={cardHeight / 2 - 5}
                     >
-                        Round: {currentRound}
+                        Points: {currentPoints}
                     </text>
                     <text
                         id='hover-card-current-lap'
@@ -163,16 +163,16 @@ const WDCHeatmapViz = ({ raceList, data }) => {
                         x={cardWidth / 2}
                         y={cardHeight / 2 + 20}
                     >
-                        {roundToNameMap[currentRound]}
+                        Round: {currentRound}
                     </text>
                     <text
-                        id='hover-card-current-position'
+                        id='hover-card-current-lap'
                         textAnchor='middle'
                         fill='white'
                         x={cardWidth / 2}
                         y={3 * cardHeight / 4 + 15}
                     >
-                        Points: {currentPoints}
+                        {roundToNameMap[currentRound]}
                     </text>
                 </g>
             </g>
