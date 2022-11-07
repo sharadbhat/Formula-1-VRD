@@ -32,8 +32,13 @@ const WDCViz = ({ raceList, data }) => {
         }
         setRoundToNameMap(roundMap)
 
-        const xScale = d3.scaleLinear()
-            .domain([0, d3.max(raceList.map(d => +d.round))])
+        let roundsList = []
+        for (let i = 0; i <= d3.max(raceList.map(d => +d.round)); i++) {
+            roundsList.push(i)
+        }
+
+        const xScale = d3.scalePoint()
+            .domain(roundsList)
             .range([0, svgWidth - margin])
 
         const yScale = d3.scaleLinear()

@@ -27,8 +27,13 @@ const RacePositionViz = ({ data }) => {
             .domain(d3.extent(data.map(d => +d.lap)))
             .range([0, svgWidth - margin])
 
-        const yScale = d3.scaleLinear()
-            .domain(d3.extent(data.map(d => +d.position)))
+        let positionsList = []
+        for (let i = 1; i <= d3.max(data.map(d => +d.position)); i++) {
+            positionsList.push(i)
+        }
+
+        const yScale = d3.scalePoint()
+            .domain(positionsList)
             .range([0, svgHeight - margin])
 
         svg.select('#xAxis')
