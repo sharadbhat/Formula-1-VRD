@@ -41,7 +41,7 @@ const OvertakeDensityViz = ({ raceId, data }) => {
 
         let colorScale = d3.scaleSequential()
                         .domain([0, d3.max(reworkedData.map(d => +d.overtakeCount))])
-                        .interpolator(d3.interpolateViridis)
+                        .interpolator(d3.interpolateInferno)
         
         let linearGradient = svg.select('#linearGradient')
 
