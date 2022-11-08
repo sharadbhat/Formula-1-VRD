@@ -51,11 +51,12 @@ const OvertakeDensityViz = ({ raceId, data }) => {
         
         const linearGradient = svg.select('#linearGradient')
 
-        for (const datapoint of reworkedData) {
-            linearGradient.append('stop')
-                .attr('offset', `${xScalePercent(datapoint['lap'])}%`)
-                .style('stop-color', colorScale(datapoint['overtakeCount']))
-        }
+        linearGradient
+            .selectAll('stop')
+            .data(reworkedData)
+            .join('stop')
+            .attr('offset', d => `${xScalePercent(d['lap'])}%`)
+            .style('stop-color', d => colorScale(d['overtakeCount']))
 
         const lineGenerator = d3.line()
             .x(d => xScaleWidth(d.lap))
