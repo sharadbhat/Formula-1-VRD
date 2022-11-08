@@ -50,7 +50,7 @@ const OvertakeDensityViz = ({ raceId, data }) => {
                 .attr('offset', `${xScale(datapoint['lap'])}%`)
                 .style('stop-color', colorScale(datapoint['overtakeCount']))
         }
-    }, [raceId])
+    }, [data.length])
 
     return (
         <svg ref={ref} height={svgHeight} width={svgWidth}>
