@@ -41,6 +41,10 @@ const WDCViz = ({ raceList, data, season }) => {
             .domain(roundsList)
             .range([0, svgWidth - margin])
 
+        const xScaleLinear = d3.scaleLinear()
+            .domain([0, d3.max(data, d => +d.round)])
+            .range([0, svgWidth - margin])
+
         const yScale = d3.scaleLinear()
             .domain([0, d3.max(data.map(d => +d.cumulativePoints))])
             .range([svgHeight - margin, 0])
@@ -98,17 +102,38 @@ const WDCViz = ({ raceList, data, season }) => {
                     .duration(500)
                     .attr('stroke-width', 10)
 
+                let [xPosition, yPosition] = d3.pointer(e)
+
+                const currentDriverId = +e.target.getAttribute('driverId')
+                const closestLap = xScaleLinear.invert(xPosition - margin)
+                const index = bisect(groupedData.get(currentDriverId), closestLap)
+                const datapoint = groupedData.get(currentDriverId)[index]
+
+                setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
+                setCurrentPoints(datapoint['cumulativePoints'])
+                setCurrentRound(datapoint['round'])
+
+                if (xPosition > svgWidth / 2) {
+                    xPosition -= (cardWidth + 10)
+                } else {
+                    xPosition += 10
+                }
+                if (yPosition > svgHeight / 2) {
+                    yPosition -= (cardHeight + 10)
+                } else {
+                    yPosition += 10
+                }
+
                 // Show card
                 svg.select('#hover-card-group')
                     .attr('visibility', 'visible')
-
-                setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
+                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
             .on('mousemove', e => {
                 let [xPosition, yPosition] = d3.pointer(e)
 
                 const currentDriverId = +e.target.getAttribute('driverId')
-                const closestLap = xScale.invert(xPosition - margin)
+                const closestLap = xScaleLinear.invert(xPosition - margin)
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
 

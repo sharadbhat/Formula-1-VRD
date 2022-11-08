@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
 
 // Components
-import WDCViz from '../../components/WDCViz'
+import OvertakeDensityViz from '../../components/OvertakeDensityViz'
 import RacePositionViz from '../../components/RacePositionViz'
+import WDCViz from '../../components/WDCViz'
 import WDCHeatmapViz from '../../components/WDCHeatmapViz'
 
 //Utils
@@ -51,6 +52,7 @@ const Home = () => {
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
 				<RacePositionViz raceId={raceId} data={data} />
+				<OvertakeDensityViz raceId={raceId} data={data} />
 				<WDCViz season={selectedSeason} raceList={raceList} data={WDCData} />
 				<WDCHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
 		   	</>

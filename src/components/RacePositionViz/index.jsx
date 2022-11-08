@@ -4,7 +4,7 @@ import * as d3 from 'd3'
 // Utils
 import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
-import constants from '../../utils/constants';
+import constants from '../../utils/constants'
 
 const RacePositionViz = ({ data, raceId }) => {
     const selectedPaths = new Set()
@@ -78,13 +78,34 @@ const RacePositionViz = ({ data, raceId }) => {
                 svg.select(`#${e.target.id}`)
                     .transition()
                     .duration(500)
-                    .attr('stroke-width', 10)
+                    .attr('stroke-width', 10)                    
 
-                // Show card
+                let [xPosition, yPosition] = d3.pointer(e)
+                
+                const currentDriverId = +e.target.getAttribute('driverId')
+                const closestLap = xScale.invert(xPosition - margin)
+                const index = bisect(groupedData.get(currentDriverId), closestLap)
+                const datapoint = groupedData.get(currentDriverId)[index]
+                
+                setCurrentLap(datapoint['lap'])
+                setCurrentPosition(datapoint['position'])
+                setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
+
+                if (xPosition > svgWidth / 2) {
+                    xPosition -= (cardWidth + 10)
+                } else {
+                    xPosition += 10
+                }
+                if (yPosition > svgHeight / 2) {
+                    yPosition -= (cardHeight + 10)
+                } else {
+                    yPosition += 10
+                }
+
+                // Show and move card
                 svg.select('#hover-card-group')
                     .attr('visibility', 'visible')
-
-                setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
+                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
             .on('mousemove', e => {
                 let [xPosition, yPosition] = d3.pointer(e)
