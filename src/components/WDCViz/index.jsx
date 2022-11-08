@@ -26,13 +26,13 @@ const WDCViz = ({ raceList, data, season }) => {
 
     const ref = useD3(svg => {
         setRoundToNameMap({})
-        let roundMap = {}
+        const roundMap = {}
         for (const race of raceList) {
             roundMap[+race.round] = race.name
         }
         setRoundToNameMap(roundMap)
 
-        let roundsList = []
+        const roundsList = []
         for (let i = 0; i <= d3.max(raceList.map(d => +d.round)); i++) {
             roundsList.push(i)
         }

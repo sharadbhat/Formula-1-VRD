@@ -22,18 +22,18 @@ const WDCHeatmapViz = ({ raceList, data, season }) => {
 
     const ref = useD3(svg => {
         setRoundToNameMap({})
-        let roundMap = {}
+        const roundMap = {}
         for (const race of raceList) {
             roundMap[+race.round] = race.name
         }
         setRoundToNameMap(roundMap)
 
-        let roundsList = []
+        const roundsList = []
         for (let i = 1; i <= d3.max(raceList.map(d => +d.round)); i++) {
             roundsList.push(i)
         }
 
-        let xScale = d3.scaleBand()
+        const xScale = d3.scaleBand()
                     .domain(roundsList)
                     .range([0, svgWidth])
                     .padding(0.05)
@@ -47,12 +47,12 @@ const WDCHeatmapViz = ({ raceList, data, season }) => {
 
         const sortedDriverIds = d3.groupSort(data, (a, b) => d3.descending(d3.max(a, d => d.cumulativePoints), d3.max(b, d => d.cumulativePoints)), d => +d.driverId)
 
-        let yScale = d3.scaleBand()
+        const yScale = d3.scaleBand()
                     .domain(sortedDriverIds)
                     .range([0, svgHeight])
                     .padding(0.05)
         
-        let colorScale = d3.scaleSequential()
+        const colorScale = d3.scaleSequential()
                         .domain([0, d3.max(data.map(d => +d.points))])
                         .interpolator(d3.interpolateInferno)
 

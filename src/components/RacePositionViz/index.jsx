@@ -27,7 +27,7 @@ const RacePositionViz = ({ data, raceId }) => {
             .domain(d3.extent(data.map(d => +d.lap)))
             .range([0, svgWidth - margin])
 
-        let positionsList = []
+        const positionsList = []
         for (let i = 1; i <= d3.max(data.map(d => +d.position)); i++) {
             positionsList.push(i)
         }
