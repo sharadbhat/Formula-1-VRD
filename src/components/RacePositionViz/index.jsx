@@ -78,7 +78,7 @@ const RacePositionViz = ({ data, raceId }) => {
                 svg.select(`#${e.target.id}`)
                     .transition()
                     .duration(500)
-                    .attr('stroke-width', 10)                    
+                    .attr('stroke-width', 10)
 
                 let [xPosition, yPosition] = d3.pointer(e)
                 
@@ -168,7 +168,7 @@ const RacePositionViz = ({ data, raceId }) => {
                         .attr('opacity', 1)
                 }
             })
-    }, [raceId])
+    }, [data.length])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>

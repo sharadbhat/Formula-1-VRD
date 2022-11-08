@@ -25,10 +25,10 @@ const Home = () => {
 
 	useEffect(() => {
 		async function fetchData() {
-		setLoading(true)
-		setData([])
-		setData(await getRacePositions(raceId))
-		setLoading(false)
+			setLoading(true)
+			setData([])
+			setData(await getRacePositions(raceId))
+			setLoading(false)
 		}
 		fetchData()
 	}, [raceId])
