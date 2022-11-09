@@ -71,6 +71,7 @@ const RacePositionViz = ({ data, raceId }) => {
                 return d3.line()
                     .x(d => margin + xScale(+d.lap))
                     .y(d => yScale(+d.position))
+                    .curve(d3.curveMonotoneX)
                     (d[1])
             })
             .on('mouseover', e => {
