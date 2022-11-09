@@ -4,8 +4,8 @@ import { LoadingOverlay } from '@mantine/core'
 // Components
 import OvertakeDensityViz from '../../components/OvertakeDensityViz'
 import RacePositionViz from '../../components/RacePositionViz'
-import WDCViz from '../../components/WDCViz'
-import WDCHeatmapViz from '../../components/WDCHeatmapViz'
+import WorldChampionshipViz from '../../components/WorldChampionshipViz'
+import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
 
 //Utils
 import useGlobalStore from '../../utils/store';
@@ -57,9 +57,10 @@ const Home = () => {
 		  : <>
 				<RacePositionViz raceId={raceId} data={data} />
 				<OvertakeDensityViz raceId={raceId} data={data} />
-				<WDCViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
-				<WDCViz season={selectedSeason} raceList={raceList} data={WDCData} />
-				<WDCHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
+				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
+				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WDCData} />
+				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
+				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
 		   	</>
 		}
 		</>

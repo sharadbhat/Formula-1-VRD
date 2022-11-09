@@ -3,11 +3,22 @@ import * as d3 from 'd3'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
-import driverIdMapper from '../../utils/driverIdMapper'
+import driverIdMap from '../../utils/driverIdMapper'
+import constructorIdMap from '../../utils/constructorIdMapper'
 import constants from '../../utils/constants'
 
-const WDCHeatmapViz = ({ raceList, data, season }) => {
-    const [driverName, setDriverName] = useState(null)
+const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
+    let key = 'driverId'
+    let id = 'WDCHeatmapViz'
+    let mapper = driverIdMap
+
+    if (isWCC) {
+        key = 'constructorId'
+        id = 'WCCHeatmapViz'
+        mapper = constructorIdMap
+    }
+
+    const [name, setName] = useState(null)
     const [currentRound, setCurrentRound] = useState(null)
     const [currentPoints, setCurrentPoints] = useState(null)
     const [roundToNameMap, setRoundToNameMap] = useState({})
@@ -38,17 +49,17 @@ const WDCHeatmapViz = ({ raceList, data, season }) => {
                     .range([0, svgWidth])
                     .padding(0.05)
         
-        const groupedData = d3.group(data, d => +d.driverId)
+        const groupedData = d3.group(data, d => +d[key])
         for (const group of groupedData) {
             for (let i = group[1].length - 1; i > 0; i--) {
                 group[1][i]['points'] = group[1][i]['cumulativePoints'] - group[1][i - 1]['cumulativePoints']
             }
         }
 
-        const sortedDriverIds = d3.groupSort(data, (a, b) => d3.descending(d3.max(a, d => d.cumulativePoints), d3.max(b, d => d.cumulativePoints)), d => +d.driverId)
+        const sortedIds = d3.groupSort(data, (a, b) => d3.descending(d3.max(a, d => d.cumulativePoints), d3.max(b, d => d.cumulativePoints)), d => +d[key])
 
         const yScale = d3.scaleBand()
-                    .domain(sortedDriverIds)
+                    .domain(sortedIds)
                     .range([0, svgHeight])
                     .padding(0.05)
         
@@ -60,11 +71,11 @@ const WDCHeatmapViz = ({ raceList, data, season }) => {
             .selectAll('rect')
             .data(data)
             .join('rect')
-            .attr('driverId', d => +d.driverId)
-            .attr('id', d => `WDCHeatmapViz-${d.driverId}-${d.round}`)
+            .attr('driverId', d => +d[key])
+            .attr('id', d => `${id}-${d[key]}-${d.round}`)
             .style('fill', colorScale(0))
             .attr('x', d => xScale(d.round))
-            .attr('y', d => yScale(d.driverId))
+            .attr('y', d => yScale(d[key]))
             .attr('rx', 4)
             .attr('ry', 4)
             .attr('width', xScale.bandwidth())
@@ -93,7 +104,7 @@ const WDCHeatmapViz = ({ raceList, data, season }) => {
                     yPosition += 10
                 }
 
-                setDriverName(driverIdMapper[d['driverId']].name)
+                setName(mapper[d[key]].name)
                 setCurrentPoints(d['points'])
                 setCurrentRound(d['round'])
             })
@@ -141,14 +152,14 @@ const WDCHeatmapViz = ({ raceList, data, season }) => {
                 />
                 <g id='hover-card-content-group'>
                     <text
-                        id='hover-card-driver-name'
+                        id='hover-card-name'
                         textAnchor='middle'
                         fill='white'
                         x={cardWidth / 2}
                         y={cardHeight / 4}
                         fontWeight={700}
                     >
-                        {driverName}
+                        {name}
                     </text>
                     <text
                         id='hover-card-current-points'
@@ -183,4 +194,4 @@ const WDCHeatmapViz = ({ raceList, data, season }) => {
     )
 }
 
-export default WDCHeatmapViz
+export default WorldChampionshipHeatmapViz

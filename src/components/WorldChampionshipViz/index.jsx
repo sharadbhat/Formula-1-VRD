@@ -7,7 +7,7 @@ import driverIdMap from '../../utils/driverIdMapper'
 import constructorIdMap from '../../utils/constructorIdMapper'
 import constants from '../../utils/constants'
 
-const WDCViz = ({ raceList, data, season, isWCC }) => {
+const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
     let mapper = driverIdMap
     let key = 'driverId'
     let id = 'WDCVizDriverId'
@@ -261,4 +261,4 @@ const WDCViz = ({ raceList, data, season, isWCC }) => {
     )
 }
 
-export default WDCViz
+export default WorldChampionshipViz
