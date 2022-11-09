@@ -3,13 +3,24 @@ import * as d3 from 'd3'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
-import driverIdMapper from '../../utils/driverIdMapper'
+import driverIdMap from '../../utils/driverIdMapper'
+import constructorIdMap from '../../utils/constructorIdMapper'
 import constants from '../../utils/constants'
 
-const WDCViz = ({ raceList, data, season }) => {
+const WDCViz = ({ raceList, data, season, isWCC }) => {
+    let mapper = driverIdMap
+    let key = 'driverId'
+    let id = 'WDCVizDriverId'
+
+    if (isWCC) {
+        mapper = constructorIdMap
+        key = 'constructorId'
+        id = 'WCCVizConstructorId'
+    }
+
     const selectedPaths = new Set()
 
-    const [driverName, setDriverName] = useState(null)
+    const [name, setName] = useState(null)
     const [currentRound, setCurrentRound] = useState(null)
     const [currentPoints, setCurrentPoints] = useState(null)
     const [roundToNameMap, setRoundToNameMap] = useState({})
@@ -63,11 +74,11 @@ const WDCViz = ({ raceList, data, season }) => {
             .duration(500)
             .call(d3.axisLeft(yScale))
         
-        const groupedData = d3.group(data, d => +d.driverId)
+        const groupedData = d3.group(data, d => +d[key])
 
         for (const group of groupedData) {
             group[1].unshift({
-                driverId: +group[0],
+                [key]: +group[0],
                 raceId: 0,
                 cumulativePoints: 0,
                 round: 0
@@ -78,14 +89,14 @@ const WDCViz = ({ raceList, data, season }) => {
             .domain(Array.from(groupedData.keys()))
             .range(constants.categoricalColors)
 
-        const bisect = d3.bisector(d => +d.round).left;
+        const bisect = d3.bisector(d => +d.round).left
 
         svg.select('#content')
             .selectAll('path')
             .data(groupedData)
             .join('path')
-            .attr('id', d => `WDCVizDriverId-${d[0]}`)
-            .attr('driverId', d => +d[0])
+            .attr('id', d => `${id}-${d[0]}`)
+            .attr(key, d => +d[0])
             .attr('fill', 'none')
             .attr('stroke', d => colorScale(+d[0]))
             .attr('stroke-width', 5)
@@ -104,12 +115,12 @@ const WDCViz = ({ raceList, data, season }) => {
 
                 let [xPosition, yPosition] = d3.pointer(e)
 
-                const currentDriverId = +e.target.getAttribute('driverId')
+                const currentId = +e.target.getAttribute(key)
                 const closestLap = xScaleLinear.invert(xPosition - margin)
-                const index = bisect(groupedData.get(currentDriverId), closestLap)
-                const datapoint = groupedData.get(currentDriverId)[index]
+                const index = bisect(groupedData.get(currentId), closestLap)
+                const datapoint = groupedData.get(currentId)[index]
 
-                setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
+                setName(mapper[e.target.getAttribute(key)].name)
                 setCurrentPoints(datapoint['cumulativePoints'])
                 setCurrentRound(datapoint['round'])
 
@@ -132,10 +143,10 @@ const WDCViz = ({ raceList, data, season }) => {
             .on('mousemove', e => {
                 let [xPosition, yPosition] = d3.pointer(e)
 
-                const currentDriverId = +e.target.getAttribute('driverId')
+                const currentId = +e.target.getAttribute(key)
                 const closestLap = xScaleLinear.invert(xPosition - margin)
-                const index = bisect(groupedData.get(currentDriverId), closestLap)
-                const datapoint = groupedData.get(currentDriverId)[index]
+                const index = bisect(groupedData.get(currentId), closestLap)
+                const datapoint = groupedData.get(currentId)[index]
 
                 setCurrentPoints(datapoint['cumulativePoints'])
                 setCurrentRound(datapoint['round'])
@@ -208,14 +219,14 @@ const WDCViz = ({ raceList, data, season }) => {
                 />
                 <g id='hover-card-content-group'>
                 <text
-                        id='hover-card-driver-name'
+                        id='hover-card-name'
                         textAnchor='middle'
                         fill='white'
                         x={cardWidth / 2}
                         y={cardHeight / 4}
                         fontWeight={700}
                     >
-                        {driverName}
+                        {name}
                     </text>
                     <text
                         id='hover-card-current-lap'

@@ -12,11 +12,13 @@ import useGlobalStore from '../../utils/store';
 import { getRacePositions } from '../../utils/lapTimesFileReader'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
+import getConstructorStandings from '../../utils/getConstructorStandings'
 
 const Home = () => {
 	const [loading, setLoading] = useState(true)
 	const [data, setData] = useState([])
 	const [WDCData, setWDCData] = useState([])
+	const [WCCData, setWCCData] = useState([])
 	const [raceList, setRaceList] = useState([])
 	const [selectedSeason, setSelectedSeason] = useState(null)
 
@@ -37,9 +39,11 @@ const Home = () => {
 		async function fetchData() {
 			setLoading(true)
 			setWDCData([])
+			setWCCData([])
 			const races = await getRacesBySeason(year)
 			setRaceList(races)
 			setWDCData(await getDriverStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
+			setWCCData(await getConstructorStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
 			setLoading(false)
 		}
 		fetchData()
@@ -53,6 +57,7 @@ const Home = () => {
 		  : <>
 				<RacePositionViz raceId={raceId} data={data} />
 				<OvertakeDensityViz raceId={raceId} data={data} />
+				<WDCViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
 				<WDCViz season={selectedSeason} raceList={raceList} data={WDCData} />
 				<WDCHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
 		   	</>
