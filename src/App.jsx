@@ -1,4 +1,4 @@
-import { MantineProvider, AppShell } from '@mantine/core'
+import { MantineProvider, AppShell, ColorSchemeProvider } from '@mantine/core'
 import {
   BrowserRouter as Router,
   Routes,
