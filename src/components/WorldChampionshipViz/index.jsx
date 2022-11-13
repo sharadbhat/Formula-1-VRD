@@ -104,6 +104,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                 return d3.line()
                     .x(d => margin + xScale(+d.round))
                     .y(d => yScale(+d.cumulativePoints))
+                    .curve(d3.curveMonotoneX)
                     (d[1])
             })
             .on('mouseover', e => {
