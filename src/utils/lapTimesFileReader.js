@@ -31,7 +31,6 @@ export const getLapTimes = async (raceId) => {
   )).map(row => ({
     driverId: +row.driverId,
     lap: +row.lap,
-    position: +row.position,
     time: row.time,
     milliseconds: +row.milliseconds
   }))

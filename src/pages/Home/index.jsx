@@ -6,17 +6,19 @@ import OvertakeDensityViz from '../../components/OvertakeDensityViz'
 import RacePositionViz from '../../components/RacePositionViz'
 import WorldChampionshipViz from '../../components/WorldChampionshipViz'
 import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
+import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
 
 //Utils
 import useGlobalStore from '../../utils/store';
-import { getRacePositions } from '../../utils/lapTimesFileReader'
+import { getLapTimes, getRacePositions } from '../../utils/lapTimesFileReader'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
 import getConstructorStandings from '../../utils/getConstructorStandings'
 
 const Home = () => {
 	const [loading, setLoading] = useState(true)
-	const [data, setData] = useState([])
+	const [racePositionData, setRacePositionData] = useState([])
+	const [lapTimeData, setLapTimeData] = useState([])
 	const [WDCData, setWDCData] = useState([])
 	const [WCCData, setWCCData] = useState([])
 	const [raceList, setRaceList] = useState([])
@@ -28,8 +30,10 @@ const Home = () => {
 	useEffect(() => {
 		async function fetchData() {
 			setLoading(true)
-			setData([])
-			setData(await getRacePositions(raceId))
+			setRacePositionData([])
+			setLapTimeData([])
+			setRacePositionData(await getRacePositions(raceId))
+			setLapTimeData(await getLapTimes(raceId))
 			setLoading(false)
 		}
 		fetchData()
@@ -55,8 +59,9 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
-				<RacePositionViz raceId={raceId} data={data} />
-				<OvertakeDensityViz raceId={raceId} data={data} />
+				<RacePositionViz raceId={raceId} data={racePositionData} />
+				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
+				<OvertakeDensityViz raceId={raceId} data={racePositionData} />
 				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
 				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WDCData} />
 				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />

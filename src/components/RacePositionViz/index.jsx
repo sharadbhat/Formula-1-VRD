@@ -3,10 +3,14 @@ import * as d3 from 'd3'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
+import useGlobalStore from '../../utils/store'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
 const RacePositionViz = ({ data, raceId }) => {
+    const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
+
+    const selectedDrivers = new Set()
     const selectedPaths = new Set()
     const [driverName, setDriverName] = useState(null)
     const [currentLap, setCurrentLap] = useState(null)
@@ -145,6 +149,7 @@ const RacePositionViz = ({ data, raceId }) => {
             })
             .on('click', e => {
                 if (selectedPaths.has(e.target.id)) {
+                    selectedDrivers.delete(+e.target.getAttribute('driverId'))
                     selectedPaths.delete(e.target.id)
                     svg.select(`#${e.target.id}`)
                         .attr('opacity', 0.2)
@@ -156,6 +161,7 @@ const RacePositionViz = ({ data, raceId }) => {
                             .attr('opacity', 1)
                     }
                 } else {
+                    selectedDrivers.add(+e.target.getAttribute('driverId'))
                     selectedPaths.add(e.target.id)
                     if (selectedPaths.size === 1) {
                         // Reduce opacity of all lines
@@ -168,6 +174,7 @@ const RacePositionViz = ({ data, raceId }) => {
                     svg.select(`#${e.target.id}`)
                         .attr('opacity', 1)
                 }
+                setSelectedDrivers(selectedDrivers)
             })
     }, [data.length])
 
