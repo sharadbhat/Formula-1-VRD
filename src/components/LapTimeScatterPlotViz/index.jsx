@@ -15,7 +15,7 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
 
     const circleRadius = 6
     const whiteCircleOpacityNormal = 0.25
-    const whiteCircleOpacitySelected = 0.05
+    const whiteCircleOpacitySelected = 0.15
     const whiteCircleFill = 'white'
 
     const ref = useD3(svg => {
