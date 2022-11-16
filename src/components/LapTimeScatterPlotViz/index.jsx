@@ -52,7 +52,14 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
             .attr('ry', 5)
             .attr('fill', 'none')
 
-        svg.on('mouseover', () => {
+        svg.on('mouseover', e => {
+            let [xPosition] = d3.pointer(e)
+
+            let currentLap = Math.round(xScale.invert(xPosition))
+
+            svg.select('#hoverRect')
+                .attr('x', xScale(currentLap) - rectWidth / 2)
+
             svg.select('#hoverRect')
                 .attr('visibility', 'visible')
         }).on('mousemove', e => {
