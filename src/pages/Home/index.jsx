@@ -7,6 +7,7 @@ import RacePositionViz from '../../components/RacePositionViz'
 import WorldChampionshipViz from '../../components/WorldChampionshipViz'
 import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
 import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
+import WorldMapViz from '../../components/WorldMapViz'
 
 //Utils
 import useGlobalStore from '../../utils/store';
@@ -51,10 +52,11 @@ const Home = () => {
 			setLoading(true)
 			setWDCData([])
 			setWCCData([])
+
 			const races = await getRacesBySeason(year)
 			setRaceList(races)
-			setWDCData(await getDriverStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
-			setWCCData(await getConstructorStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
+			setWDCData(await getDriverStandings(races.map(row => ({ raceId: +row.raceId, round: +row.round }))))
+			setWCCData(await getConstructorStandings(races.map(row => ({ raceId: +row.raceId, round: +row.round }))))
 			setLoading(false)
 		}
 		fetchData()
@@ -63,23 +65,24 @@ const Home = () => {
 
 	return (
 		<>
-		{loading
-		  ? <LoadingOverlay visible overlayBlur={2} />
-		  : <>
-				<RacePositionViz
-					raceId={raceId}
-					data={racePositionData}
-					driverFinishPositions={driverFinishPositions}
-					driverPositionsByLap={driverPositionsByLap}
-				/>
-				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
-				<OvertakeDensityViz raceId={raceId} data={racePositionData} />
-				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
-				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WDCData} />
-				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
-				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
-		   	</>
-		}
+			{loading
+				? <LoadingOverlay visible overlayBlur={2} />
+				: <>
+					<WorldMapViz season={selectedSeason} raceList={raceList} />
+					<RacePositionViz
+						raceId={raceId}
+						data={racePositionData}
+						driverFinishPositions={driverFinishPositions}
+						driverPositionsByLap={driverPositionsByLap}
+					/>
+					<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
+					<OvertakeDensityViz raceId={raceId} data={racePositionData} />
+					<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
+					<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WDCData} />
+					<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
+					<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
+				</>
+			}
 		</>
 	)
 }
