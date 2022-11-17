@@ -15,7 +15,7 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
 
     const circleRadius = 6
     const whiteCircleOpacityNormal = 0.25
-    const whiteCircleOpacitySelected = 0.05
+    const whiteCircleOpacitySelected = 0.1
     const whiteCircleFill = 'white'
 
     const ref = useD3(svg => {
@@ -74,7 +74,8 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
             .attr('class', d => `driverId-${d.driverId}`)
             .attr('cx', d => xScale(+d.lap))
             .attr('cy', d => yScale(+d.milliseconds))
-            .attr('opacity', 1)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2)
             .attr('visibility', 'hidden')
             .attr('fill', d => colorScale(+d.driverId))
             .attr('r', circleRadius)
