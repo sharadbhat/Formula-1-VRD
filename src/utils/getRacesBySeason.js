@@ -19,7 +19,7 @@ const getRacesBySeason = async (year) => {
         round: +row.round,
         circuitId: +row.circuitId,
         name: row.name
-    })).sort((a ,b) => a.round - b.round)
+    })).sort((a ,b) => +a.round - +b.round)
 }
 
 export default getRacesBySeason

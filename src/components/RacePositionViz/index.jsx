@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import * as d3 from 'd3'
+
+// Components
+import RacePositionListViz from '../RacePositionListViz'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
@@ -7,7 +10,7 @@ import useGlobalStore from '../../utils/store'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
-const RacePositionViz = ({ data, raceId }) => {
+const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsByLap }) => {
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
 
     const selectedDrivers = new Set()
@@ -15,6 +18,9 @@ const RacePositionViz = ({ data, raceId }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentLap, setCurrentLap] = useState(null)
     const [currentPosition, setCurrentPosition] = useState(null)
+
+    const [driverPositions, setDriverPositions] = useState(driverFinishPositions)
+    const [lap, setLap] = useState(null)
 
     const svgWidth = 1000
     const svgHeight = 500
@@ -26,6 +32,9 @@ const RacePositionViz = ({ data, raceId }) => {
 
     const margin = 30
 
+    const [yScaleRef, setYScaleRef] = useState(null)
+    const [colorScaleRef, setColorScaleRef] = useState(null)
+
     const ref = useD3(svg => {
         const xScale = d3.scaleLinear()
             .domain(d3.extent(data.map(d => +d.lap)))
@@ -36,9 +45,11 @@ const RacePositionViz = ({ data, raceId }) => {
             positionsList.push(i)
         }
 
-        const yScale = d3.scalePoint()
+        let yScale = d3.scalePoint()
             .domain(positionsList)
             .range([0, svgHeight - margin])
+
+        setYScaleRef(() => yScale)
 
         svg.select('#xAxis')
             .attr('transform', `translate(${margin}, ${svgHeight - margin})`)
@@ -59,6 +70,8 @@ const RacePositionViz = ({ data, raceId }) => {
         const colorScale = d3.scaleOrdinal()
             .domain(Array.from(groupedData.keys()))
             .range(constants.categoricalColors)
+
+        setColorScaleRef(() => colorScale)
 
         const bisect = d3.bisector(d => +d.lap).left;
 
@@ -180,83 +193,99 @@ const RacePositionViz = ({ data, raceId }) => {
             svg.on('mouseenter', e => {
                 let [xPosition] = d3.pointer(e)
 
-                xPosition = xScale(Math.round(xScale.invert(xPosition - margin)) || 1) + margin
+                let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
+
+                xPosition = xScale(closestLap) + margin
 
                 svg.select('#hoverLine')
                     .attr('x1', xPosition)
                     .attr('x2', xPosition)
                     .attr('visibility', 'visible')
+
+                setDriverPositions(driverPositionsByLap.get(closestLap))
+                setLap(closestLap)
             }).on('mousemove', e => {
                 let [xPosition] = d3.pointer(e)
 
-                xPosition = xScale(Math.round(xScale.invert(xPosition - margin)) || 1) + margin
+                let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
+
+                xPosition = xScale(closestLap) + margin
 
                 svg.select('#hoverLine')
                     .attr('x1', xPosition)
                     .attr('x2', xPosition)
+
+                setDriverPositions(driverPositionsByLap.get(closestLap))
+                setLap(closestLap)
             }).on('mouseleave', () => {
                 svg.select('#hoverLine')
                     .attr('visibility', 'hidden')
+
+                setDriverPositions(driverFinishPositions)
+                setLap(null)
             })
     }, [data.length])
 
     return (
-        <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
-            <g id='xAxis' />
-            <g id='yAxis' />
-            <line
-                id='hoverLine'
-                x1={0}
-                x2={0}
-                y1={0}
-                y2={svgHeight - margin}
-                stroke={'gray'}
-                strokeWidth={5}
-                opacity={0.75}
-                visibility={'hidden'}
-            />
-            <g id='content' />
-            <g id='hover-card-group' visibility={'hidden'}>
-                <rect
-                    id='hover-card'
-                    fill={cardColor}
-                    height={cardHeight}
-                    width={cardWidth}
-                    rx={cardCornerRadius}
-                    ry={cardCornerRadius}
+        <>
+            <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
+                <g id='xAxis' />
+                <g id='yAxis' />
+                <line
+                    id='hoverLine'
+                    x1={0}
+                    x2={0}
+                    y1={0}
+                    y2={svgHeight - margin}
+                    stroke={'gray'}
+                    strokeWidth={5}
+                    opacity={0.75}
+                    visibility={'hidden'}
                 />
-                <g id='hover-card-content-group'>
-                    <text
-                        id='hover-card-driver-name'
-                        textAnchor='middle'
-                        fill='white'
-                        x={cardWidth / 2}
-                        y={cardHeight / 4 + 5}
-                        fontWeight={700}
-                    >
-                        {driverName}
-                    </text>
-                    <text
-                        id='hover-card-current-lap'
-                        textAnchor='middle'
-                        fill='white'
-                        x={cardWidth / 2}
-                        y={cardHeight / 2 + 5}
-                    >
-                        Lap: {currentLap}
-                    </text>
-                    <text
-                        id='hover-card-current-position'
-                        textAnchor='middle'
-                        fill='white'
-                        x={cardWidth / 2}
-                        y={3 * cardHeight / 4 + 5}
-                    >
-                        Position: {currentPosition}
-                    </text>
+                <g id='content' />
+                <g id='hover-card-group' visibility={'hidden'}>
+                    <rect
+                        id='hover-card'
+                        fill={cardColor}
+                        height={cardHeight}
+                        width={cardWidth}
+                        rx={cardCornerRadius}
+                        ry={cardCornerRadius}
+                    />
+                    <g id='hover-card-content-group'>
+                        <text
+                            id='hover-card-driver-name'
+                            textAnchor='middle'
+                            fill='white'
+                            x={cardWidth / 2}
+                            y={cardHeight / 4 + 5}
+                            fontWeight={700}
+                        >
+                            {driverName}
+                        </text>
+                        <text
+                            id='hover-card-current-lap'
+                            textAnchor='middle'
+                            fill='white'
+                            x={cardWidth / 2}
+                            y={cardHeight / 2 + 5}
+                        >
+                            Lap: {currentLap}
+                        </text>
+                        <text
+                            id='hover-card-current-position'
+                            textAnchor='middle'
+                            fill='white'
+                            x={cardWidth / 2}
+                            y={3 * cardHeight / 4 + 5}
+                        >
+                            Position: {currentPosition}
+                        </text>
+                    </g>
                 </g>
-            </g>
-        </svg>
+            </svg>
+            <RacePositionListViz lap={lap} data={driverPositions} yScale={yScaleRef} colorScale={colorScaleRef} />
+        </>
     )
 }
 

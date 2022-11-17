@@ -10,7 +10,8 @@ import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
 
 //Utils
 import useGlobalStore from '../../utils/store';
-import { getLapTimes, getRacePositions } from '../../utils/lapTimesFileReader'
+import { getLapTimes, getRacePositions, getRacePositionsByLap } from '../../utils/lapTimesFileReader'
+import getDriverRaceResults from '../../utils/getDriverRaceResults'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
 import getConstructorStandings from '../../utils/getConstructorStandings'
@@ -18,21 +19,27 @@ import getConstructorStandings from '../../utils/getConstructorStandings'
 const Home = () => {
 	const [loading, setLoading] = useState(true)
 	const [racePositionData, setRacePositionData] = useState([])
+	const [driverFinishPositions, setDriverFinishPositions] = useState([])
+	const [driverPositionsByLap, setDriverPositionsByLap] = useState([])
 	const [lapTimeData, setLapTimeData] = useState([])
 	const [WDCData, setWDCData] = useState([])
 	const [WCCData, setWCCData] = useState([])
 	const [raceList, setRaceList] = useState([])
 	const [selectedSeason, setSelectedSeason] = useState(null)
 
-	let raceId = 1073
+	let raceId = 1071
 	const year = useGlobalStore(state => state.selectedYear)
 
 	useEffect(() => {
 		async function fetchData() {
 			setLoading(true)
 			setRacePositionData([])
+			setDriverFinishPositions([])
 			setLapTimeData([])
+			setDriverPositionsByLap([])
 			setRacePositionData(await getRacePositions(raceId))
+			setDriverFinishPositions(await getDriverRaceResults(raceId))
+			setDriverPositionsByLap(await getRacePositionsByLap(raceId))
 			setLapTimeData(await getLapTimes(raceId))
 			setLoading(false)
 		}
@@ -59,7 +66,12 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
-				<RacePositionViz raceId={raceId} data={racePositionData} />
+				<RacePositionViz
+					raceId={raceId}
+					data={racePositionData}
+					driverFinishPositions={driverFinishPositions}
+					driverPositionsByLap={driverPositionsByLap}
+				/>
 				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
 				<OvertakeDensityViz raceId={raceId} data={racePositionData} />
 				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />

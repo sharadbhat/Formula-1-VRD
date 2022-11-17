@@ -26,7 +26,7 @@ const getConstructorStandings = async (raceIdList) => {
         cumulativePoints: +row.points,
         round: +raceIdToRoundMap[+row.raceId]
     }))
-    .sort((a, b) => a.round - b.round)
+    .sort((a, b) => +a.round - +b.round)
 }
 
 export default getConstructorStandings
