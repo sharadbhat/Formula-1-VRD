@@ -52,7 +52,7 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
             .attr('ry', 5)
             .attr('fill', 'none')
 
-        svg.on('mouseover', e => {
+        svg.on('mouseenter', e => {
             let [xPosition] = d3.pointer(e)
 
             let currentLap = Math.round(xScale.invert(xPosition))
@@ -69,7 +69,7 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
 
             svg.select('#hoverRect')
                 .attr('x', xScale(currentLap) - rectWidth / 2)
-        }).on('mouseout', () => {
+        }).on('mouseleave', () => {
             svg.select('#hoverRect')
                 .attr('visibility', 'hidden')
         })

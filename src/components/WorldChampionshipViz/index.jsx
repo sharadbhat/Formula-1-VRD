@@ -107,7 +107,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                     .curve(d3.curveMonotoneX)
                     (d[1])
             })
-            .on('mouseover', e => {
+            .on('mouseenter', e => {
                 // Thicker line
                 svg.select(`#${e.target.id}`)
                     .transition()
@@ -117,7 +117,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                 let [xPosition, yPosition] = d3.pointer(e)
 
                 const currentId = +e.target.getAttribute(key)
-                const closestLap = xScaleLinear.invert(xPosition - margin)
+                const closestLap = Math.round(xScaleLinear.invert(xPosition - margin))
                 const index = bisect(groupedData.get(currentId), closestLap)
                 const datapoint = groupedData.get(currentId)[index]
 
@@ -145,7 +145,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                 let [xPosition, yPosition] = d3.pointer(e)
 
                 const currentId = +e.target.getAttribute(key)
-                const closestLap = xScaleLinear.invert(xPosition - margin)
+                const closestLap = Math.round(xScaleLinear.invert(xPosition - margin))
                 const index = bisect(groupedData.get(currentId), closestLap)
                 const datapoint = groupedData.get(currentId)[index]
 
@@ -165,7 +165,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                 svg.select('#hover-card-group')
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
-            .on('mouseout', e => {
+            .on('mouseleave', e => {
                 // Reset line thickness
                 svg.select(`#${e.target.id}`)
                     .transition()

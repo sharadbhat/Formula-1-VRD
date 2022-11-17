@@ -78,7 +78,7 @@ const RacePositionViz = ({ data, raceId }) => {
                     .curve(d3.curveMonotoneX)
                     (d[1])
             })
-            .on('mouseover', e => {
+            .on('mouseenter', e => {
                 // Thicker line
                 svg.select(`#${e.target.id}`)
                     .transition()
@@ -88,7 +88,7 @@ const RacePositionViz = ({ data, raceId }) => {
                 let [xPosition, yPosition] = d3.pointer(e)
                 
                 const currentDriverId = +e.target.getAttribute('driverId')
-                const closestLap = xScale.invert(xPosition - margin)
+                const closestLap = Math.round(xScale.invert(xPosition - margin))
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
                 
@@ -116,7 +116,7 @@ const RacePositionViz = ({ data, raceId }) => {
                 let [xPosition, yPosition] = d3.pointer(e)
 
                 const currentDriverId = +e.target.getAttribute('driverId')
-                const closestLap = xScale.invert(xPosition - margin)
+                const closestLap = Math.round(xScale.invert(xPosition - margin))
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
 
@@ -136,7 +136,7 @@ const RacePositionViz = ({ data, raceId }) => {
                 svg.select('#hover-card-group')
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
-            .on('mouseout', e => {
+            .on('mouseleave', e => {
                 // Reset line thickness
                 svg.select(`#${e.target.id}`)
                     .transition()
@@ -176,12 +176,45 @@ const RacePositionViz = ({ data, raceId }) => {
                 }
                 setSelectedDrivers(selectedDrivers)
             })
+
+            svg.on('mouseenter', e => {
+                let [xPosition] = d3.pointer(e)
+
+                xPosition = xScale(Math.round(xScale.invert(xPosition - margin)) || 1) + margin
+
+                svg.select('#hoverLine')
+                    .attr('x1', xPosition)
+                    .attr('x2', xPosition)
+                    .attr('visibility', 'visible')
+            }).on('mousemove', e => {
+                let [xPosition] = d3.pointer(e)
+
+                xPosition = xScale(Math.round(xScale.invert(xPosition - margin)) || 1) + margin
+
+                svg.select('#hoverLine')
+                    .attr('x1', xPosition)
+                    .attr('x2', xPosition)
+            }).on('mouseleave', () => {
+                svg.select('#hoverLine')
+                    .attr('visibility', 'hidden')
+            })
     }, [data.length])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
             <g id='xAxis' />
             <g id='yAxis' />
+            <line
+                id='hoverLine'
+                x1={0}
+                x2={0}
+                y1={0}
+                y2={svgHeight - margin}
+                stroke={'gray'}
+                strokeWidth={5}
+                opacity={0.75}
+                visibility={'hidden'}
+            />
             <g id='content' />
             <g id='hover-card-group' visibility={'hidden'}>
                 <rect

@@ -83,7 +83,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             .style('stroke-width', 4)
             .style('stroke', 'none')
             .style('opacity', 1)
-            .on('mouseover', (e, d) => {
+            .on('mouseenter', (e, d) => {
                 svg.select(`#${e.target.id}`)
                     .style('stroke', 'black')
 
@@ -124,7 +124,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 svg.select('#hover-card-group')
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
-            .on('mouseout', e => {
+            .on('mouseleave', e => {
                 svg.select(`#${e.target.id}`)
                     .style('stroke', '')
 
