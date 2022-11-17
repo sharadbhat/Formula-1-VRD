@@ -19,7 +19,6 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsB
     const [currentLap, setCurrentLap] = useState(null)
     const [currentPosition, setCurrentPosition] = useState(null)
 
-    const [driverPositions, setDriverPositions] = useState(driverFinishPositions)
     const [lap, setLap] = useState(null)
 
     const svgWidth = 1000
@@ -99,12 +98,12 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsB
                     .attr('stroke-width', 10)
 
                 let [xPosition, yPosition] = d3.pointer(e)
-                
+
                 const currentDriverId = +e.target.getAttribute('driverId')
                 const closestLap = Math.round(xScale.invert(xPosition - margin))
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
-                
+
                 setCurrentLap(datapoint['lap'])
                 setCurrentPosition(datapoint['position'])
                 setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
@@ -190,40 +189,37 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsB
                 setSelectedDrivers(selectedDrivers)
             })
 
-            svg.on('mouseenter', e => {
-                let [xPosition] = d3.pointer(e)
+        svg.on('mouseenter', e => {
+            let [xPosition] = d3.pointer(e)
 
-                let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
+            let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
 
-                xPosition = xScale(closestLap) + margin
+            xPosition = xScale(closestLap) + margin
 
-                svg.select('#hoverLine')
-                    .attr('x1', xPosition)
-                    .attr('x2', xPosition)
-                    .attr('visibility', 'visible')
+            svg.select('#hoverLine')
+                .attr('x1', xPosition)
+                .attr('x2', xPosition)
+                .attr('visibility', 'visible')
 
-                setDriverPositions(driverPositionsByLap.get(closestLap))
-                setLap(closestLap)
-            }).on('mousemove', e => {
-                let [xPosition] = d3.pointer(e)
+            setLap(closestLap)
+        }).on('mousemove', e => {
+            let [xPosition] = d3.pointer(e)
 
-                let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
+            let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
 
-                xPosition = xScale(closestLap) + margin
+            xPosition = xScale(closestLap) + margin
 
-                svg.select('#hoverLine')
-                    .attr('x1', xPosition)
-                    .attr('x2', xPosition)
+            svg.select('#hoverLine')
+                .attr('x1', xPosition)
+                .attr('x2', xPosition)
 
-                setDriverPositions(driverPositionsByLap.get(closestLap))
-                setLap(closestLap)
-            }).on('mouseleave', () => {
-                svg.select('#hoverLine')
-                    .attr('visibility', 'hidden')
+            setLap(closestLap)
+        }).on('mouseleave', () => {
+            svg.select('#hoverLine')
+                .attr('visibility', 'hidden')
 
-                setDriverPositions(driverFinishPositions)
-                setLap(null)
-            })
+            setLap(null)
+        })
     }, [data.length])
 
     return (
@@ -284,7 +280,13 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsB
                     </g>
                 </g>
             </svg>
-            <RacePositionListViz lap={lap} data={driverPositions} yScale={yScaleRef} colorScale={colorScaleRef} />
+            <RacePositionListViz
+                lap={lap}
+                driverFinishPositions={driverFinishPositions}
+                driverPositionsByLap={driverPositionsByLap}
+                yScale={yScaleRef}
+                colorScale={colorScaleRef}
+            />
         </>
     )
 }
