@@ -43,7 +43,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
             .range([padding, svgWidth - margin])
 
         const positionsList = []
-        for (let i = 1; i <= d3.max(data.map(d => +d.position)); i++) {
+        for (let i = 1; i <= d3.max(driverFinishPositions.map(d => +d.positionOrder)); i++) {
             positionsList.push(i)
         }
 
@@ -215,7 +215,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
 
             setLap(null)
         })
-    }, [data.length, selectedDrivers, hoveredDriverId])
+    }, [data.length, driverFinishPositions.length, selectedDrivers, hoveredDriverId])
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -277,7 +277,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                     </g>
                 </svg>
             </div>
-            {(yScaleRef && colorScaleRef && driverFinishPositions.length)
+            {(yScaleRef && yScaleRef.domain().length && colorScaleRef && colorScaleRef.domain().length && driverFinishPositions.length)
                 ?   <RacePositionListViz
                         lap={lap}
                         driverFinishPositions={driverFinishPositions}

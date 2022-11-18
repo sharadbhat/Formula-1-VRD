@@ -24,8 +24,6 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
             data = driverPositionsByLap.get(lap)
         }
 
-        let finishCount = d3.max(data, d => +d.position)
-
         svg.select('#content')
             .select('#positions')
             .selectAll('text')
@@ -33,19 +31,19 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
             .join(
                 enter => {
                     return enter.append('text')
-                        .attr('id', d => `driverId-${+d.driverId}`)
                         .attr('driverId', d => +d.driverId)
                         .attr('text-anchor', 'end')
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
                         .attr('x', 50)
-                        .attr('y', d => yScale(+d.position || ++finishCount) + 5)
+                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .text(d => `${+d.position ? 'P' + +d.position : 'Ret'}`)
                 },
                 update => {
                     return update
+                        .attr('driverId', d => +d.driverId)
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('text-anchor', 'end')
@@ -54,7 +52,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .transition()
                         .duration(100)
-                        .attr('y', d => yScale(+d.position || ++finishCount) + 5)
+                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
                 },
                 exit => {
                     return exit.remove()
@@ -78,8 +76,6 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                 setHoveredDriverId(null)
             })
 
-            finishCount = d3.max(data, d => +d.position)
-
             svg.select('#content')
             .select('#names')
             .selectAll('text')
@@ -87,18 +83,18 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
             .join(
                 enter => {
                     return enter.append('text')
-                        .attr('id', d => `driverIdName-${+d.driverId}`)
                         .attr('driverId', d => +d.driverId)
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
                         .attr('x', 65)
-                        .attr('y', d => yScale(+d.position || ++finishCount) + 5)
+                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .text(d => driverIdMapper[+d.driverId].name)
                 },
                 update => {
                     return update
+                        .attr('driverId', d => +d.driverId)
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
@@ -106,7 +102,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .transition()
                         .duration(100)
-                        .attr('y', d => yScale(+d.position || ++finishCount) + 5)
+                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
                 },
                 exit => {
                     return exit.remove()
@@ -131,7 +127,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                 setHoveredDriverId(null)
             })
 
-    }, [lap, yScale, colorScale, driverFinishPositions, driverPositionsByLap, selectedDrivers])
+    }, [lap, yScale.domain(), colorScale.domain(), selectedDrivers])
 
     return (
         <div style={{ display: 'inline-flex', flexDirection: 'column' }}>

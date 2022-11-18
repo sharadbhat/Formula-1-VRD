@@ -7,6 +7,7 @@ import RacePositionViz from '../../components/RacePositionViz'
 import WorldChampionshipViz from '../../components/WorldChampionshipViz'
 import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
 import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
+import RaceSelector from '../../components/RaceSelector'
 
 //Utils
 import useGlobalStore from '../../utils/store';
@@ -26,7 +27,7 @@ const Home = () => {
 	const [raceList, setRaceList] = useState([])
 	const [selectedSeason, setSelectedSeason] = useState(null)
 
-	let raceId = 1071
+	const raceId = useGlobalStore(state => state.selectedRaceId)
 	const year = useGlobalStore(state => state.selectedYear)
 
 	useEffect(() => {
@@ -63,6 +64,7 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
+		  		<RaceSelector />
 				<RacePositionViz
 					raceId={raceId}
 					data={racePositionData}
