@@ -280,13 +280,16 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsB
                     </g>
                 </g>
             </svg>
-            <RacePositionListViz
-                lap={lap}
-                driverFinishPositions={driverFinishPositions}
-                driverPositionsByLap={driverPositionsByLap}
-                yScale={yScaleRef}
-                colorScale={colorScaleRef}
-            />
+            {(yScaleRef && colorScaleRef)
+                ? <RacePositionListViz
+                        lap={lap}
+                        driverFinishPositions={driverFinishPositions}
+                        driverPositionsByLap={driverPositionsByLap}
+                        yScale={yScaleRef}
+                        colorScale={colorScaleRef}
+                    />
+                : null
+            }
         </>
     )
 }
