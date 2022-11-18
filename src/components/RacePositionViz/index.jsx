@@ -11,10 +11,12 @@ import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
 const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
+    const selectedDrivers = useGlobalStore((state) => state.selectedDrivers)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
+    const hoveredDriverId = useGlobalStore((state) => state.hoveredDriverId)
+    const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
 
-    const selectedDrivers = new Set()
-    const selectedPaths = new Set()
+    const selectedDriversSet = new Set(selectedDrivers)
     const [driverName, setDriverName] = useState(null)
     const [currentLap, setCurrentLap] = useState(null)
     const [currentPosition, setCurrentPosition] = useState(null)
@@ -30,6 +32,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
     const cardColor = constants.cardColor
 
     const margin = 30
+    const padding = 15
 
     const [yScaleRef, setYScaleRef] = useState(null)
     const [colorScaleRef, setColorScaleRef] = useState(null)
@@ -37,7 +40,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
     const ref = useD3(svg => {
         const xScale = d3.scaleLinear()
             .domain(d3.extent(data.map(d => +d.lap)))
-            .range([0, svgWidth - margin])
+            .range([padding, svgWidth - margin])
 
         const positionsList = []
         for (let i = 1; i <= d3.max(data.map(d => +d.position)); i++) {
@@ -46,12 +49,12 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
 
         let yScale = d3.scalePoint()
             .domain(positionsList)
-            .range([0, svgHeight - margin])
+            .range([padding, svgHeight - margin])
 
         setYScaleRef(() => yScale)
 
         svg.select('#xAxis')
-            .attr('transform', `translate(${margin}, ${svgHeight - margin})`)
+            .attr('transform', `translate(${margin - padding}, ${svgHeight - margin})`)
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
@@ -82,31 +85,26 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
             .attr('driverId', d => +d[0])
             .attr('fill', 'none')
             .attr('stroke', d => colorScale(+d[0]))
-            .attr('stroke-width', 5)
+            .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d[0]) ? 1 : 0.2) : 1)
             .attr('d', d => {
                 return d3.line()
-                    .x(d => margin + xScale(+d.lap))
+                    .x(d => margin + xScale(+d.lap) - padding)
                     .y(d => yScale(+d.position))
                     .curve(d3.curveMonotoneX)
                     (d[1])
             })
             .on('mouseenter', e => {
-                // Thicker line
-                svg.select(`#${e.target.id}`)
-                    .transition()
-                    .duration(500)
-                    .attr('stroke-width', 10)
-
                 let [xPosition, yPosition] = d3.pointer(e)
 
                 const currentDriverId = +e.target.getAttribute('driverId')
-                const closestLap = Math.round(xScale.invert(xPosition - margin))
+                const closestLap = Math.round(xScale.invert(xPosition - margin + padding))
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
 
                 setCurrentLap(datapoint['lap'])
                 setCurrentPosition(datapoint['position'])
                 setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
+                setHoveredDriverId(currentDriverId)
 
                 if (xPosition > svgWidth / 2) {
                     xPosition -= (cardWidth + 10)
@@ -128,7 +126,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                 let [xPosition, yPosition] = d3.pointer(e)
 
                 const currentDriverId = +e.target.getAttribute('driverId')
-                const closestLap = Math.round(xScale.invert(xPosition - margin))
+                const closestLap = Math.round(xScale.invert(xPosition - margin + padding))
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
 
@@ -148,53 +146,42 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                 svg.select('#hover-card-group')
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
-            .on('mouseleave', e => {
-                // Reset line thickness
-                svg.select(`#${e.target.id}`)
-                    .transition()
-                    .duration(500)
-                    .attr('stroke-width', 5)
+            .on('mouseleave', () => {
+                setHoveredDriverId(null)
 
                 // Hide card group
                 svg.select('#hover-card-group')
                     .attr('visibility', 'hidden')
             })
             .on('click', e => {
-                if (selectedPaths.has(e.target.id)) {
-                    selectedDrivers.delete(+e.target.getAttribute('driverId'))
-                    selectedPaths.delete(e.target.id)
-                    svg.select(`#${e.target.id}`)
-                        .attr('opacity', 0.2)
+                let driverId = +e.target.getAttribute('driverId')
 
-                    // If no line selected, reset opacity of all lines
-                    if (selectedPaths.size === 0) {
-                        svg.select('#content')
-                            .selectAll('path')
-                            .attr('opacity', 1)
-                    }
+                if (selectedDriversSet.has(driverId)) {
+                    selectedDriversSet.delete(driverId)
                 } else {
-                    selectedDrivers.add(+e.target.getAttribute('driverId'))
-                    selectedPaths.add(e.target.id)
-                    if (selectedPaths.size === 1) {
-                        // Reduce opacity of all lines
-                        svg.select('#content')
-                            .selectAll('path')
-                            .attr('opacity', 0.2)
-                    }
-
-                    // Reset opacity of selected line
-                    svg.select(`#${e.target.id}`)
-                        .attr('opacity', 1)
+                    selectedDriversSet.add(driverId)
                 }
-                setSelectedDrivers(selectedDrivers)
+
+                setSelectedDrivers(selectedDriversSet)
             })
+            .transition()
+            .duration(500)
+            .attr('stroke-width', d => hoveredDriverId === +d[0] ? 10 : 5)
 
         svg.on('mouseenter', e => {
             let [xPosition] = d3.pointer(e)
 
-            let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
+            let [xScaleStart, xScaleEnd] = xScale.domain()
 
-            xPosition = xScale(closestLap) + margin
+            let closestLap = Math.round(xScale.invert(xPosition - margin + padding))
+
+            if (closestLap > xScaleEnd) {
+                closestLap = xScaleEnd
+            } else if (closestLap < xScaleStart) {
+                closestLap = xScaleStart
+            }
+
+            xPosition = xScale(closestLap) + margin - padding
 
             svg.select('#hoverLine')
                 .attr('x1', xPosition)
@@ -205,9 +192,17 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
         }).on('mousemove', e => {
             let [xPosition] = d3.pointer(e)
 
-            let closestLap = Math.round(xScale.invert(xPosition - margin)) || 1
+            let [xScaleStart, xScaleEnd] = xScale.domain()
 
-            xPosition = xScale(closestLap) + margin
+            let closestLap = Math.round(xScale.invert(xPosition - margin + padding))
+
+            if (closestLap > xScaleEnd) {
+                closestLap = xScaleEnd
+            } else if (closestLap < xScaleStart) {
+                closestLap = xScaleStart
+            }
+
+            xPosition = xScale(closestLap) + margin - padding
 
             svg.select('#hoverLine')
                 .attr('x1', xPosition)
@@ -220,66 +215,68 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
 
             setLap(null)
         })
-    }, [data.length])
+    }, [data.length, selectedDrivers, hoveredDriverId])
 
     return (
-        <>
-            <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
-                <g id='xAxis' />
-                <g id='yAxis' />
-                <line
-                    id='hoverLine'
-                    x1={0}
-                    x2={0}
-                    y1={0}
-                    y2={svgHeight - margin}
-                    stroke={'gray'}
-                    strokeWidth={5}
-                    opacity={0.75}
-                    visibility={'hidden'}
-                />
-                <g id='content' />
-                <g id='hover-card-group' visibility={'hidden'}>
-                    <rect
-                        id='hover-card'
-                        fill={cardColor}
-                        height={cardHeight}
-                        width={cardWidth}
-                        rx={cardCornerRadius}
-                        ry={cardCornerRadius}
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ marginTop: 30 }}>
+                <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
+                    <g id='xAxis' />
+                    <g id='yAxis' />
+                    <line
+                        id='hoverLine'
+                        x1={0}
+                        x2={0}
+                        y1={0}
+                        y2={svgHeight - margin}
+                        stroke={'gray'}
+                        strokeWidth={5}
+                        opacity={0.75}
+                        visibility={'hidden'}
                     />
-                    <g id='hover-card-content-group'>
-                        <text
-                            id='hover-card-driver-name'
-                            textAnchor='middle'
-                            fill='white'
-                            x={cardWidth / 2}
-                            y={cardHeight / 4 + 5}
-                            fontWeight={700}
-                        >
-                            {driverName}
-                        </text>
-                        <text
-                            id='hover-card-current-lap'
-                            textAnchor='middle'
-                            fill='white'
-                            x={cardWidth / 2}
-                            y={cardHeight / 2 + 5}
-                        >
-                            Lap: {currentLap}
-                        </text>
-                        <text
-                            id='hover-card-current-position'
-                            textAnchor='middle'
-                            fill='white'
-                            x={cardWidth / 2}
-                            y={3 * cardHeight / 4 + 5}
-                        >
-                            Position: {currentPosition}
-                        </text>
+                    <g id='content' />
+                    <g id='hover-card-group' visibility={'hidden'}>
+                        <rect
+                            id='hover-card'
+                            fill={cardColor}
+                            height={cardHeight}
+                            width={cardWidth}
+                            rx={cardCornerRadius}
+                            ry={cardCornerRadius}
+                        />
+                        <g id='hover-card-content-group'>
+                            <text
+                                id='hover-card-driver-name'
+                                textAnchor='middle'
+                                fill='white'
+                                x={cardWidth / 2}
+                                y={cardHeight / 4 + 5}
+                                fontWeight={700}
+                            >
+                                {driverName}
+                            </text>
+                            <text
+                                id='hover-card-current-lap'
+                                textAnchor='middle'
+                                fill='white'
+                                x={cardWidth / 2}
+                                y={cardHeight / 2 + 5}
+                            >
+                                Lap: {currentLap}
+                            </text>
+                            <text
+                                id='hover-card-current-position'
+                                textAnchor='middle'
+                                fill='white'
+                                x={cardWidth / 2}
+                                y={3 * cardHeight / 4 + 5}
+                            >
+                                Position: {currentPosition}
+                            </text>
+                        </g>
                     </g>
-                </g>
-            </svg>
+                </svg>
+            </div>
             {(yScaleRef && colorScaleRef && driverFinishPositions.length)
                 ?   <RacePositionListViz
                         lap={lap}
@@ -290,7 +287,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                     />
                 :   null
             }
-        </>
+        </div>
     )
 }
 

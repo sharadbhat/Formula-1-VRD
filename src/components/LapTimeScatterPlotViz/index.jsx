@@ -7,6 +7,7 @@ import useGlobalStore from '../../utils/store'
 
 const LapTimeScatterPlotViz = ({ raceId, data }) => {
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
+    const hoveredDriverId = useGlobalStore(state => state.hoveredDriverId)
 
     const svgWidth = 1000
     const svgHeight = 500
@@ -91,7 +92,11 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
             svg.selectAll(`.driverId-${driverId}`)
                 .attr('visibility', 'visible')
         }
-    }, [data.length, selectedDrivers.length])
+
+        svg.selectAll(`.driverId-${hoveredDriverId}`)
+            .attr('visibility', 'visible')
+
+    }, [data.length, selectedDrivers.length, hoveredDriverId])
 
     return (
         <svg ref={ref} height={svgHeight} width={svgWidth}>
