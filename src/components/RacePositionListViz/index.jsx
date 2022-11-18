@@ -17,32 +17,31 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
         }
 
         let finishCount = d3.max(data, d => +d.position)
-        if (yScale && colorScale) {
-            svg.select('#content')
-                .selectAll('text')
-                .data(data)
-                .join(
-                    enter => {
-                        return enter.append('text')
-                            .attr('id', d => `driverId-${+d.driverId}`)
-                            .attr('fill', d => colorScale(+d.driverId))
-                            .attr('x', 10)
-                            .attr('y', d => yScale(+d.position || ++finishCount) + 5)
-                            .text(d => `${+d.position ? 'P' + +d.position : 'Ret'} ${driverIdMapper[+d.driverId].name}`)
-                    },
-                    update => {
-                        return update
-                            .attr('fill', d => colorScale(+d.driverId))
-                            .text(d => `${+d.position ? 'P' + +d.position : 'Ret'} ${driverIdMapper[+d.driverId].name}`)
-                            .transition()
-                            .duration(100)
-                            .attr('y', d => yScale(+d.position || ++finishCount) + 5)
-                    }),
-                exit => {
-                    return exit.remove()
-                }
+
+        svg.select('#content')
+            .selectAll('text')
+            .data(data)
+            .join(
+                enter => {
+                    return enter.append('text')
+                        .attr('id', d => `driverId-${+d.driverId}`)
+                        .attr('fill', d => colorScale(+d.driverId))
+                        .attr('x', 10)
+                        .attr('y', d => yScale(+d.position || ++finishCount) + 5)
+                        .text(d => `${+d.position ? 'P' + +d.position : 'Ret'} ${driverIdMapper[+d.driverId].name}`)
+                },
+                update => {
+                    return update
+                        .attr('fill', d => colorScale(+d.driverId))
+                        .text(d => `${+d.position ? 'P' + +d.position : 'Ret'} ${driverIdMapper[+d.driverId].name}`)
+                        .transition()
+                        .duration(100)
+                        .attr('y', d => yScale(+d.position || ++finishCount) + 5)
+                }),
+            exit => {
+                return exit.remove()
         }
-    }, [lap, yScale, colorScale])
+    }, [lap, yScale, colorScale, driverFinishPositions, driverPositionsByLap])
 
     return (
         <svg ref={ref} height={svgHeight} width={svgWidth}>
