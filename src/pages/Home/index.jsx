@@ -20,7 +20,6 @@ const Home = () => {
 	const [loading, setLoading] = useState(true)
 	const [racePositionData, setRacePositionData] = useState([])
 	const [driverFinishPositions, setDriverFinishPositions] = useState([])
-	const [driverPositionsByLap, setDriverPositionsByLap] = useState([])
 	const [lapTimeData, setLapTimeData] = useState([])
 	const [WDCData, setWDCData] = useState([])
 	const [WCCData, setWCCData] = useState([])
@@ -36,10 +35,8 @@ const Home = () => {
 			setRacePositionData([])
 			setDriverFinishPositions([])
 			setLapTimeData([])
-			setDriverPositionsByLap([])
 			setRacePositionData(await getRacePositions(raceId))
 			setDriverFinishPositions(await getDriverRaceResults(raceId))
-			setDriverPositionsByLap(await getRacePositionsByLap(raceId))
 			setLapTimeData(await getLapTimes(raceId))
 			setLoading(false)
 		}
@@ -70,7 +67,6 @@ const Home = () => {
 					raceId={raceId}
 					data={racePositionData}
 					driverFinishPositions={driverFinishPositions}
-					driverPositionsByLap={driverPositionsByLap}
 				/>
 				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
 				<OvertakeDensityViz raceId={raceId} data={racePositionData} />

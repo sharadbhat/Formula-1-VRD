@@ -17,7 +17,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
         }
 
         let finishCount = d3.max(data, d => +d.position)
-        
+
         svg.select('#content')
             .selectAll('text')
             .data(data)
@@ -41,7 +41,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
             exit => {
                 return exit.remove()
         }
-    }, [lap, yScale, colorScale])
+    }, [lap, yScale, colorScale, driverFinishPositions, driverPositionsByLap])
 
     return (
         <svg ref={ref} height={svgHeight} width={svgWidth}>
