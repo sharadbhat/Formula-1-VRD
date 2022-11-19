@@ -32,10 +32,10 @@ const WorldMapViz = ({ season, raceList, worldMap, circuitData}) => {
           .attr("gradientTransform", "rotate(90)");
       gradient.append("stop")
           .attr("offset", "5%")
-          .attr("stop-color", "rgb(225,6,0)")
+          .attr("stop-color", "gray")
       gradient.append("stop")
           .attr("offset", "95%")
-          .attr("stop-color", "#480000")
+          .attr("stop-color", "rgb(60,112,126)")
 
       //append map
       d3.select("#mapGroup").selectAll("path")
@@ -43,7 +43,7 @@ const WorldMapViz = ({ season, raceList, worldMap, circuitData}) => {
       .join(
         enter => enter
           .append("path")
-          .attr("stroke", "rgb(225,6,0)")
+          .attr("stroke", "#A1B2C3")
           .attr("stroke-width", 0.8)
           .attr("fill", "url('#gradient')")
           .attr("d", d => path(d.geometry))
@@ -96,7 +96,7 @@ const WorldMapViz = ({ season, raceList, worldMap, circuitData}) => {
           .delay((d,i) => i*20) 
           .duration(300)
           .attr("r", 5)
-          .attr("fill", "white")
+          .attr("fill", "#D1D1D1")
           .attr("stroke", "black")
           .attr("r", 6),
         update => update
@@ -107,7 +107,7 @@ const WorldMapViz = ({ season, raceList, worldMap, circuitData}) => {
           .delay((d,i) => i*20) 
           .duration(300)
           .attr("r", 5)
-          .attr("fill", "white")
+          .attr("fill", "#D3D3D3")
           .attr("stroke", "black")
           .attr("r", 6),
         exit => exit
