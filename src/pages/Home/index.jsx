@@ -16,6 +16,7 @@ import getDriverRaceResults from '../../utils/getDriverRaceResults'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
 import getConstructorStandings from '../../utils/getConstructorStandings'
+import circuitIdMap from '../../utils/circuitIdMapper'
 
 //Assets
 import worldMapJson from '../../assets/world-simplified'
@@ -71,7 +72,7 @@ const Home = () => {
 			{loading
 				? <LoadingOverlay visible overlayBlur={2} />
 				: <>
-					<WorldMapViz season={selectedSeason} raceList={raceList} worldMap = {worldMapJson}/>
+					<WorldMapViz season={selectedSeason} raceList={raceList} worldMap = {worldMapJson} circuitData = {circuitIdMap}/>
 					<RacePositionViz
 						raceId={raceId}
 						data={racePositionData}
