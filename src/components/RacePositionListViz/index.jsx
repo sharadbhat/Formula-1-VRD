@@ -5,11 +5,12 @@ import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import useGlobalStore from '../../utils/store'
 
-const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, yScale, colorScale, lap }) => {
+const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, yScale, colorScale }) => {
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
     const setSelectedDrivers = useGlobalStore(state => state.setSelectedDrivers)
     const hoveredDriverId = useGlobalStore((state) => state.hoveredDriverId)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
+    const hoveredLap = useGlobalStore((state) => state.hoveredLap)
 
     const svgWidth = 250
     const svgHeight = 500
@@ -18,10 +19,10 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
 
     const ref = useD3(svg => {
         let data = []
-        if (!lap) {
+        if (!hoveredLap) {
             data = driverFinishPositions
         } else {
-            data = driverPositionsByLap.get(lap)
+            data = driverPositionsByLap.get(hoveredLap)
         }
 
         svg.select('#content')
@@ -37,7 +38,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
                         .attr('x', 50)
-                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
+                        .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .text(d => `${+d.position ? 'P' + +d.position : 'Ret'}`)
                 },
@@ -52,7 +53,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .transition()
                         .duration(100)
-                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
+                        .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                 },
                 exit => {
                     return exit.remove()
@@ -88,7 +89,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
                         .attr('x', 65)
-                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
+                        .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .text(d => driverIdMapper[+d.driverId].name)
                 },
@@ -102,7 +103,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .transition()
                         .duration(100)
-                        .attr('y', d => yScale(lap ? +d.position : +d.positionOrder) + 5)
+                        .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                 },
                 exit => {
                     return exit.remove()
@@ -127,12 +128,12 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                 setHoveredDriverId(null)
             })
 
-    }, [lap, yScale.domain(), colorScale.domain(), selectedDrivers])
+    }, [hoveredLap, yScale.domain(), colorScale.domain(), selectedDrivers])
 
     return (
         <div style={{ display: 'inline-flex', flexDirection: 'column' }}>
             <div style={{ height: 30 }}>
-                <b>{lap ? `Lap ${lap}` : 'Final Results'}</b>
+                <b>{hoveredLap ? `Lap ${hoveredLap}` : 'Final Results'}</b>
             </div>
             <svg ref={ref} height={svgHeight} width={svgWidth}>
                 <rect fill='white' height={svgHeight} width={svgWidth} rx={5} opacity={0.05} />

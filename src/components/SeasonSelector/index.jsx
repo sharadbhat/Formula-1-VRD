@@ -22,6 +22,8 @@ const SeasonSelector = () => {
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
+    const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
+
     const data = []
     for (let i = 2022; i >= 1996; i--) {
         data.push({
@@ -35,6 +37,7 @@ const SeasonSelector = () => {
         setSelectedRaceId(null)
         setSelectedDrivers([])
         setHoveredDriverId(null)
+        setHoveredLap(null)
     }
 
     return (

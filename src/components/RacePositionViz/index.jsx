@@ -15,13 +15,12 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const hoveredDriverId = useGlobalStore((state) => state.hoveredDriverId)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
+    const hoveredLap = useGlobalStore((state) => state.hoveredLap)
+    const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
 
     const selectedDriversSet = new Set(selectedDrivers)
     const [driverName, setDriverName] = useState(null)
-    const [currentLap, setCurrentLap] = useState(null)
     const [currentPosition, setCurrentPosition] = useState(null)
-
-    const [lap, setLap] = useState(null)
 
     const svgWidth = 1000
     const svgHeight = 500
@@ -101,7 +100,6 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
 
-                setCurrentLap(datapoint['lap'])
                 setCurrentPosition(datapoint['position'])
                 setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
                 setHoveredDriverId(currentDriverId)
@@ -130,7 +128,6 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                 const index = bisect(groupedData.get(currentDriverId), closestLap)
                 const datapoint = groupedData.get(currentDriverId)[index]
 
-                setCurrentLap(datapoint['lap'])
                 setCurrentPosition(datapoint['position'])
 
                 if (xPosition > svgWidth / 2) {
@@ -165,7 +162,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                 setSelectedDrivers(selectedDriversSet)
             })
             .transition()
-            .duration(500)
+            .duration(100)
             .attr('stroke-width', d => hoveredDriverId === +d[0] ? 10 : 5)
 
         svg.on('mouseenter', e => {
@@ -176,19 +173,12 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
             let closestLap = Math.round(xScale.invert(xPosition - margin + padding))
 
             if (closestLap > xScaleEnd) {
-                closestLap = xScaleEnd
+                closestLap = null
             } else if (closestLap < xScaleStart) {
-                closestLap = xScaleStart
+                closestLap = null
             }
 
-            xPosition = xScale(closestLap) + margin - padding
-
-            svg.select('#hoverLine')
-                .attr('x1', xPosition)
-                .attr('x2', xPosition)
-                .attr('visibility', 'visible')
-
-            setLap(closestLap)
+            setHoveredLap(closestLap)
         }).on('mousemove', e => {
             let [xPosition] = d3.pointer(e)
 
@@ -197,25 +187,23 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
             let closestLap = Math.round(xScale.invert(xPosition - margin + padding))
 
             if (closestLap > xScaleEnd) {
-                closestLap = xScaleEnd
+                closestLap = null
             } else if (closestLap < xScaleStart) {
-                closestLap = xScaleStart
+                closestLap = null
             }
 
-            xPosition = xScale(closestLap) + margin - padding
-
-            svg.select('#hoverLine')
-                .attr('x1', xPosition)
-                .attr('x2', xPosition)
-
-            setLap(closestLap)
+            setHoveredLap(closestLap)
         }).on('mouseleave', () => {
-            svg.select('#hoverLine')
-                .attr('visibility', 'hidden')
-
-            setLap(null)
+            setHoveredLap(null)
         })
-    }, [data.length, driverFinishPositions.length, selectedDrivers, hoveredDriverId])
+
+        let hoverLinePosition = xScale(hoveredLap) + margin - padding
+
+        svg.select('#hoverLine')
+            .attr('visibility', hoveredLap ? 'visible' : 'hidden')
+            .attr('x1', hoverLinePosition)
+            .attr('x2', hoverLinePosition)
+    }, [data.length, driverFinishPositions.length, selectedDrivers, hoveredDriverId, hoveredLap])
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -262,7 +250,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                                 x={cardWidth / 2}
                                 y={cardHeight / 2 + 5}
                             >
-                                Lap: {currentLap}
+                                Lap: {hoveredLap}
                             </text>
                             <text
                                 id='hover-card-current-position'
@@ -279,7 +267,6 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
             </div>
             {(yScaleRef && yScaleRef.domain().length && colorScaleRef && colorScaleRef.domain().length && driverFinishPositions.length)
                 ?   <RacePositionListViz
-                        lap={lap}
                         driverFinishPositions={driverFinishPositions}
                         driverPositionsByLap={d3.group(data, d => +d.lap)}
                         yScale={yScaleRef}

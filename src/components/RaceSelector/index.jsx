@@ -11,6 +11,7 @@ const RaceSelector = () => {
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
+    const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
 
     const [selectDataOptions, setSelectDataOptions] = useState([])
 
@@ -34,6 +35,7 @@ const RaceSelector = () => {
         setSelectedRaceId(raceId)
         setSelectedDrivers([])
         setHoveredDriverId(null)
+        setHoveredLap(null)
     }
 
     return (

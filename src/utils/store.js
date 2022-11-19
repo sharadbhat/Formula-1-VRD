@@ -10,7 +10,9 @@ const globalStore = (set) => ({
   selectedDrivers: [],
   setSelectedDrivers: (driverSet) => set(() => ({ selectedDrivers: Array.from(driverSet) })),
   hoveredDriverId: null,
-  setHoveredDriverId: (driverId) => set(() => ({ hoveredDriverId: driverId }))
+  setHoveredDriverId: (driverId) => set(() => ({ hoveredDriverId: driverId })),
+  hoveredLap: null,
+  setHoveredLap: (lap) => set(() => ({ hoveredLap: lap }))
 })
 
 const useGlobalStore = create(
