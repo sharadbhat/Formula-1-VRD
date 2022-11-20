@@ -19,13 +19,27 @@ const SelectItem = forwardRef(
 
 const SeasonSelector = () => {
     const setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
+    const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
+    const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
+    const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
+    const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
+
     const data = []
-    for (let i = 2022; i >= 1993; i--) {
+    for (let i = 2022; i >= 1996; i--) {
         data.push({
             value: i,
             label: `${i} Formula 1 Season`
         })
     }
+
+    const onChangeHandler = year => {
+        setSelectedYear(year)
+        setSelectedRaceId(null)
+        setSelectedDrivers([])
+        setHoveredDriverId(null)
+        setHoveredLap(null)
+    }
+
     return (
         <Select
             placeholder='Select a season'
@@ -34,7 +48,7 @@ const SeasonSelector = () => {
             transition='pop-top-left'
             transitionDuration={80}
             transitionTimingFunction='ease'
-            onChange={setSelectedYear}
+            onChange={onChangeHandler}
         />
     )
 }
