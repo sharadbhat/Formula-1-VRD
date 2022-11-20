@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { usePrevious } from '@mantine/hooks'
 import * as d3 from 'd3'
 
 // Utils
@@ -6,11 +7,14 @@ import { useD3 } from '../../utils/useD3'
 import driverIdMap from '../../utils/driverIdMapper'
 import constructorIdMap from '../../utils/constructorIdMapper'
 import constants from '../../utils/constants'
+import useGlobalStore from '../../utils/store'
 
 // Assets
 import gradientImage from '../../assets/inferno.png'
 
 const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
+    const hoveredRound = useGlobalStore(state => state.hoveredRound)
+    const setHoveredRound = useGlobalStore(state => state.setHoveredRound)
     let key = 'driverId'
     let id = 'WDCHeatmapViz'
     let mapper = driverIdMap
@@ -42,146 +46,179 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
     const cardCornerRadius = constants.cardCornerRadius
     const cardColor = constants.cardColor
 
+    const prevSeason = usePrevious(season)
+    const prevHoveredRound = usePrevious(hoveredRound)
+
     const ref = useD3(svg => {
-        setRoundToNameMap({})
-        const roundMap = {}
-        for (const race of raceList) {
-            roundMap[+race.round] = race.name
+        if (season !== prevSeason) {
+            setRoundToNameMap({})
+            const roundMap = {}
+            for (const race of raceList) {
+                roundMap[+race.round] = race.name
+            }
+            setRoundToNameMap(roundMap)
+    
+            const roundsList = []
+            for (let i = 1; i <= d3.max(raceList.map(d => +d.round)); i++) {
+                roundsList.push(i)
+            }
+    
+            const xScale = d3.scaleBand()
+                        .domain(roundsList)
+                        .range([offsetX, svgWidth])
+                        .padding(0.05)
+            
+            const groupedData = d3.group(data, d => +d[key])
+            for (const group of groupedData) {
+                for (let i = group[1].length - 1; i > 0; i--) {
+                    group[1][i]['points'] = group[1][i]['cumulativePoints'] - group[1][i - 1]['cumulativePoints']
+                }
+            }
+    
+            const sortedIds = d3.groupSort(data, (a, b) => d3.descending(d3.max(a, d => d.cumulativePoints), d3.max(b, d => d.cumulativePoints)), d => +d[key])
+    
+            const yScale = d3.scaleBand()
+                        .domain(sortedIds)
+                        .range([offsetY, svgHeight])
+                        .padding(0.05)
+            
+            const colorScale = d3.scaleSequential()
+                            .domain([0, d3.max(data.map(d => +d.points))])
+                            .interpolator(d3.interpolateInferno)
+    
+            setLegendMax(colorScale.domain()[1])
+    
+            svg.select('#content')
+                .selectAll('rect')
+                .data(data)
+                .join('rect')
+                .attr('driverId', d => +d[key])
+                .attr('id', d => `${id}-${d[key]}-${d.round}`)
+                .style('fill', colorScale(0))
+                .attr('x', d => xScale(d.round))
+                .attr('y', d => yScale(d[key]))
+                .attr('rx', 4)
+                .attr('ry', 4)
+                .attr('width', xScale.bandwidth())
+                .attr('height', yScale.bandwidth())
+                .style('stroke-width', 4)
+                .style('stroke', 'none')
+                .style('opacity', 1)
+                .attr('class', d => `round-${d.round}`)
+                .on('mouseenter', (e, d) => {
+                    svg.select(`#${e.target.id}`)
+                        .style('stroke', 'black')
+    
+                    // Show card
+                    svg.select('#hover-card-group')
+                        .attr('visibility', 'visible')
+                    
+                    let [xPosition, yPosition] = d3.pointer(e)
+    
+                    if (xPosition > svgWidth / 2) {
+                        xPosition -= (cardWidth + 10)
+                    } else {
+                        xPosition += 10
+                    }
+                    if (yPosition > svgHeight / 2) {
+                        yPosition -= (cardHeight + 10)
+                    } else {
+                        yPosition += 10
+                    }
+    
+                    setName(mapper[d[key]].name)
+                    setCurrentPoints(d['points'])
+                    setCurrentRound(d['round'])
+                })
+                .on('mousemove', e => {
+                    let [xPosition, yPosition] = d3.pointer(e)
+    
+                    if (xPosition > svgWidth / 2) {
+                        xPosition -= (cardWidth + 10)
+                    } else {
+                        xPosition += 10
+                    }
+                    if (yPosition > svgHeight / 2) {
+                        yPosition -= (cardHeight + 10)
+                    } else {
+                        yPosition += 10
+                    }
+                    svg.select('#hover-card-group')
+                        .attr('transform', `translate(${xPosition}, ${yPosition})`)
+                })
+                .on('mouseleave', e => {
+                    svg.select(`#${e.target.id}`)
+                        .style('stroke', '')
+    
+                    // Hide card group
+                    svg.select('#hover-card-group')
+                        .attr('visibility', 'hidden')
+                })
+                .transition()
+                .duration(500)
+                .delay((_, i) => i)
+                .style('fill', d => colorScale(+d.points))
+    
+            svg.select('#participants')
+                .selectAll('text')
+                .data(groupedData)
+                .join('text')
+                .attr('fill', 'white')
+                .attr('text-anchor', 'end')
+                .attr('x', offsetX - 10)
+                .attr('y', d => yScale(d[0]) + yScale.bandwidth() / 2 + 4)
+                .attr('opacity', 0)
+                .text(d => mapper[d[0]].name)
+                .transition()
+                .delay(d => yScale(d[0]))
+                .attr('opacity', 1)
+            
+            svg.select('#rounds')
+                .selectAll('text')
+                .data(roundsList)
+                .join('text')
+                .attr('id', d => `${id}-round-header-${d}`)
+                .attr('fill', 'white')
+                .attr('text-anchor', 'start')
+                .attr('x', -offsetY + 10)
+                .attr('y', d => xScale(d))
+                .attr('transform', () => `translate(${xScale.bandwidth() / 2 + 5}, 0), rotate(-90)`)
+                .attr('opacity', 0)
+                .text(d => `Round ${d}`)
+                .on('mouseenter', (_, data) => {
+                    setHoveredRound(data)
+                }).on('mouseleave', () => {
+                    setHoveredRound(null)
+                })
+                .transition()
+                .delay((_, i) => i * 20)
+                .attr('opacity', 1)
+            
+            svg.select('#legend')
+                .attr('transform', `translate(${offsetX / 2 - legendWidth / 2}, ${(offsetY / 2 - legendHeight / 2) + 30})`)
         }
-        setRoundToNameMap(roundMap)
 
-        const roundsList = []
-        for (let i = 1; i <= d3.max(raceList.map(d => +d.round)); i++) {
-            roundsList.push(i)
-        }
+        if (hoveredRound !== prevHoveredRound) {
+            if (hoveredRound) {
+                svg.select('#rounds')
+                    .selectAll('text')
+                    .filter(d => d !== hoveredRound)
+                    .attr('opacity', 0.2)
 
-        const xScale = d3.scaleBand()
-                    .domain(roundsList)
-                    .range([offsetX, svgWidth])
-                    .padding(0.05)
-        
-        const groupedData = d3.group(data, d => +d[key])
-        for (const group of groupedData) {
-            for (let i = group[1].length - 1; i > 0; i--) {
-                group[1][i]['points'] = group[1][i]['cumulativePoints'] - group[1][i - 1]['cumulativePoints']
+                svg.select('#content')
+                    .selectAll('rect')
+                    .filter(d => d.round !== hoveredRound)
+                    .style('opacity', 0.2)
+            } else {
+                svg.select('#rounds')
+                    .selectAll('text')
+                    .attr('opacity', 1)
+                
+                svg.selectAll('rect')
+                    .style('opacity', 1)
             }
         }
-
-        const sortedIds = d3.groupSort(data, (a, b) => d3.descending(d3.max(a, d => d.cumulativePoints), d3.max(b, d => d.cumulativePoints)), d => +d[key])
-
-        const yScale = d3.scaleBand()
-                    .domain(sortedIds)
-                    .range([offsetY, svgHeight])
-                    .padding(0.05)
-        
-        const colorScale = d3.scaleSequential()
-                        .domain([0, d3.max(data.map(d => +d.points))])
-                        .interpolator(d3.interpolateInferno)
-
-        setLegendMax(colorScale.domain()[1])
-
-        svg.select('#content')
-            .selectAll('rect')
-            .data(data)
-            .join('rect')
-            .attr('driverId', d => +d[key])
-            .attr('id', d => `${id}-${d[key]}-${d.round}`)
-            .style('fill', colorScale(0))
-            .attr('x', d => xScale(d.round))
-            .attr('y', d => yScale(d[key]))
-            .attr('rx', 4)
-            .attr('ry', 4)
-            .attr('width', xScale.bandwidth())
-            .attr('height', yScale.bandwidth())
-            .style('stroke-width', 4)
-            .style('stroke', 'none')
-            .style('opacity', 1)
-            .on('mouseenter', (e, d) => {
-                svg.select(`#${e.target.id}`)
-                    .style('stroke', 'black')
-
-                // Show card
-                svg.select('#hover-card-group')
-                    .attr('visibility', 'visible')
-                
-                let [xPosition, yPosition] = d3.pointer(e)
-
-                if (xPosition > svgWidth / 2) {
-                    xPosition -= (cardWidth + 10)
-                } else {
-                    xPosition += 10
-                }
-                if (yPosition > svgHeight / 2) {
-                    yPosition -= (cardHeight + 10)
-                } else {
-                    yPosition += 10
-                }
-
-                setName(mapper[d[key]].name)
-                setCurrentPoints(d['points'])
-                setCurrentRound(d['round'])
-            })
-            .on('mousemove', e => {
-                let [xPosition, yPosition] = d3.pointer(e)
-
-                if (xPosition > svgWidth / 2) {
-                    xPosition -= (cardWidth + 10)
-                } else {
-                    xPosition += 10
-                }
-                if (yPosition > svgHeight / 2) {
-                    yPosition -= (cardHeight + 10)
-                } else {
-                    yPosition += 10
-                }
-                svg.select('#hover-card-group')
-                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
-            })
-            .on('mouseleave', e => {
-                svg.select(`#${e.target.id}`)
-                    .style('stroke', '')
-
-                // Hide card group
-                svg.select('#hover-card-group')
-                    .attr('visibility', 'hidden')
-            })
-            .transition()
-            .duration(500)
-            .delay((_, i) => i)
-            .style('fill', d => colorScale(+d.points))
-
-        svg.select('#participants')
-            .selectAll('text')
-            .data(groupedData)
-            .join('text')
-            .attr('fill', 'white')
-            .attr('text-anchor', 'end')
-            .attr('x', offsetX - 10)
-            .attr('y', d => yScale(d[0]) + yScale.bandwidth() / 2 + 4)
-            .attr('opacity', 0)
-            .text(d => mapper[d[0]].name)
-            .transition()
-            .delay(d => yScale(d[0]))
-            .attr('opacity', 1)
-        
-        svg.select('#rounds')
-            .selectAll('text')
-            .data(roundsList)
-            .join('text')
-            .attr('fill', 'white')
-            .attr('text-anchor', 'start')
-            .attr('x', -offsetY + 10)
-            .attr('y', d => xScale(d))
-            .attr('transform', () => `translate(${xScale.bandwidth() / 2 + 5}, 0), rotate(-90)`)
-            .attr('opacity', 0)
-            .text(d => `Round ${d}`)
-            .transition()
-            .delay((_, i) => i * 20)
-            .attr('opacity', 1)
-        
-        svg.select('#legend')
-            .attr('transform', `translate(${offsetX / 2 - legendWidth / 2}, ${(offsetY / 2 - legendHeight / 2) + 30})`)
-    }, [season])
+    }, [season, hoveredRound])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
