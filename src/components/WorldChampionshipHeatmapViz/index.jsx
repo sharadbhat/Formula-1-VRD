@@ -86,7 +86,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                             .domain([0, d3.max(data.map(d => +d.points))])
                             .interpolator(d3.interpolateInferno)
     
-            setLegendMax(colorScale.domain()[1])
+            setLegendMax(colorScale.domain()[1] || null)
     
             svg.select('#content')
                 .selectAll('rect')
