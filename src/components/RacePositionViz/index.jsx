@@ -10,7 +10,7 @@ import useGlobalStore from '../../utils/store'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
-const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsByLap }) => {
+const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
 
     const selectedDrivers = new Set()
@@ -280,13 +280,16 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions, driverPositionsB
                     </g>
                 </g>
             </svg>
-            <RacePositionListViz
-                lap={lap}
-                driverFinishPositions={driverFinishPositions}
-                driverPositionsByLap={driverPositionsByLap}
-                yScale={yScaleRef}
-                colorScale={colorScaleRef}
-            />
+            {(yScaleRef && colorScaleRef && driverFinishPositions.length)
+                ?   <RacePositionListViz
+                        lap={lap}
+                        driverFinishPositions={driverFinishPositions}
+                        driverPositionsByLap={d3.group(data, d => +d.lap)}
+                        yScale={yScaleRef}
+                        colorScale={colorScaleRef}
+                    />
+                :   null
+            }
         </>
     )
 }
