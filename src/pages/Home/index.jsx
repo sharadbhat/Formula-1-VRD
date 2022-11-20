@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
+import { Card } from '@mantine/core'
 
 // Components
 import OvertakeDensityViz from '../../components/OvertakeDensityViz'
