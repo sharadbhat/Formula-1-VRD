@@ -17,8 +17,9 @@ const getDriverRaceResults = async (raceId) => {
         driverId: +row.driverId,
         grid: +row.grid,
         position: +row.position,
-        positionText: row.positionText
-    })).sort((a, b) => +a.position - +b.position)
+        positionText: row.positionText,
+        positionOrder: +row.positionOrder
+    })).sort((a, b) => +a.positionOrder - +b.positionOrder)
 }
 
 export default getDriverRaceResults
