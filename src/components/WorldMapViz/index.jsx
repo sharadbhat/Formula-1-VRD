@@ -49,11 +49,11 @@ const WorldMapViz = ({ season, raceList }) => {
         let topology = worldMapJson
         let geoJSON = topojson.feature(topology, topology.objects.countries)   
 
-        svg.select('#linearGradient').append('stop')
+        svg.select('#linearGradientMap').append('stop')
             .attr('offset', `${firstOffset}%`)
             .attr('stop-color', firstStopColor)
 
-        svg.select('#linearGradient').append('stop')
+        svg.select('#linearGradientMap').append('stop')
             .attr('offset', `${secondOffset}%`)
             .attr('stop-color', secondStopColor)
 
@@ -65,7 +65,7 @@ const WorldMapViz = ({ season, raceList }) => {
                 .append('path')
                 .attr('stroke', strokeColor)
                 .attr('stroke-width', strokeWidth)
-                .attr('fill', `url('#linearGradient')`)
+                .attr('fill', `url('#linearGradientMap')`)
                 .attr('d', d => path(d.geometry))
         )
 
@@ -132,7 +132,7 @@ const WorldMapViz = ({ season, raceList }) => {
 
   return (
     <svg ref={ref} height={svgHeight} width={svgWidth}>
-        <linearGradient id='linearGradient' gradientTransform='rotate(90)' />
+        <linearGradient id='linearGradientMap' gradientTransform='rotate(90)' />
         <g id='mapGroup' />
         <g id='mapLocations' />
         <g id='hover-card-group' visibility={'hidden'}>
