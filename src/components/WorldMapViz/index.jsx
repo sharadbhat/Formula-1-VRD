@@ -1,124 +1,161 @@
+import { useState } from 'react'
 import * as d3 from 'd3'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
 import circuitIdMapper from '../../utils/circuitIdMapper'
-var onLoadWorldMap = false;
+import constants from '../../utils/constants'
+import useGlobalStore from '../../utils/store'
 
-const WorldMapViz = ({ season, raceList, worldMap, circuitData}) => {
-  const svgWidth = 1000
-  const svgHeight = 500
+// Assets
+import worldMapJson from '../../assets/world-simplified.json'
 
-  const ref = useD3(svg => {
-    let geoProjection = d3.geoNaturalEarth1();
-    let projection = geoProjection
-      .scale(175) 
-      .translate([svgWidth/2, svgHeight/2]);
+const WorldMapViz = ({ season, raceList }) => {
+    const hoveredRound = useGlobalStore(state => state.hoveredRound)
+    const setHoveredRound = useGlobalStore(state => state.setHoveredRound)
 
-    //define world map
-    if (onLoadWorldMap === false){
+    const [hoveredRaceName, setHoveredRaceName] = useState(null)
 
-      // This converts the projected lat/lon coordinates into an SVG path string
-      let path = d3.geoPath().projection(projection);
+    const svgWidth = 1000
+    const svgHeight = 500
+    const scale = 175
 
-      //topology setup
-      let topology = worldMap;
-      let geoJSON = topojson.feature(topology, topology.objects.countries);   
-      
-      //append gradient
-      let gradient = d3.select("#mapGroup").append("defs")
-          .append("linearGradient")
-          .attr("id", "gradient")
-          .attr("gradientTransform", "rotate(90)");
-      gradient.append("stop")
-          .attr("offset", "5%")
-          .attr("stop-color", "gray")
-      gradient.append("stop")
-          .attr("offset", "95%")
-          .attr("stop-color", "rgb(60,112,126)")
+    const firstOffset = 5
+    const firstStopColor = 'gray'
+    const secondOffset = 95
+    const secondStopColor = 'rgb(60,112,126)'
 
-      //append map
-      d3.select("#mapGroup").selectAll("path")
-      .data(geoJSON.features)
-      .join(
-        enter => enter
-          .append("path")
-          .attr("stroke", "#A1B2C3")
-          .attr("stroke-width", 0.8)
-          .attr("fill", "url('#gradient')")
-          .attr("d", d => path(d.geometry))
-      );
-    }
+    const strokeColor = '#A1B2C3'
+    const strokeWidth = 0.8
 
-    //update circles
-    d3.select("#mapLocations").selectAll("circle")
-      .data(raceList)
-      .join(
-        enter => enter
-          .append("circle")
-            .on("mouseover", function(event, data){
-              let width = 250;
-              let height = 25;
+    const circleFill = '#d1d1d1'
+    const circleStroke = 'black'
 
-              let currentCircle = d3.select('#mapLocations')
-                  .append("svg")
-                  .attr("x", event.offsetX + width > svgWidth ? 
-                    event.offsetX - width :
-                    event.offsetX)
-                  .attr("y", event.offsetY)
-                  .attr("width", width)
-                  .attr("height", height);
+    const cardWidth = 250
+    const cardHeight = 100
+    const cardCornerRadius = constants.cardCornerRadius
+    const cardColor = constants.cardColor
 
-              currentCircle.append("rect")
-                  .attr("width", "100%")
-                  .attr("height", "100%")
-                  .attr("rx", "10")
-                  .attr("ry", "10")
-                  .attr("fill", "#25262b");
+    const ref = useD3(svg => {
+        let geoProjection = d3.geoNaturalEarth1()
+        let projection = geoProjection
+            .scale(scale) 
+            .translate([svgWidth / 2, svgHeight / 2])
 
-              currentCircle.append("text")
-                  .attr("text-anchor", "middle")
-                  .attr("dominant-baseline", "middle")
-                  .style("font-size", 15)
-                  .style("font-weight", 700)
-                  .style("fill", "white")
-                  .attr("x", "50%")
-                  .attr("y", "50%")
-                  .text(data.name);
-          })
-          .on("mouseout", function(event, data){
-              d3.select('#mapLocations').select("svg").remove();
-          })
-          .attr("cx", d => projection([circuitData[d.circuitId].lng, circuitData[d.circuitId].lat])[0])
-          .attr("cy", d => projection([circuitData[d.circuitId].lng, circuitData[d.circuitId].lat])[1])
-          .attr("r", 0)
-          .transition()
-          .delay((d,i) => i*20) 
-          .duration(300)
-          .attr("r", 5)
-          .attr("fill", "#D1D1D1")
-          .attr("stroke", "black")
-          .attr("r", 6),
-        update => update
-          .attr("cx", d => projection([circuitData[d.circuitId].lng, circuitData[d.circuitId].lat])[0])
-          .attr("cy", d => projection([circuitData[d.circuitId].lng, circuitData[d.circuitId].lat])[1])
-          .attr("r", 0)
-          .transition()
-          .delay((d,i) => i*20) 
-          .duration(300)
-          .attr("r", 5)
-          .attr("fill", "#D3D3D3")
-          .attr("stroke", "black")
-          .attr("r", 6),
-        exit => exit
-          .remove()
-      );
-  }, [season])
+        // This converts the projected lat/lon coordinates into an SVG path string
+        let path = d3.geoPath().projection(projection)
+
+        //topology setup
+        let topology = worldMapJson
+        let geoJSON = topojson.feature(topology, topology.objects.countries)   
+
+        svg.select('#linearGradientMap').append('stop')
+            .attr('offset', `${firstOffset}%`)
+            .attr('stop-color', firstStopColor)
+
+        svg.select('#linearGradientMap').append('stop')
+            .attr('offset', `${secondOffset}%`)
+            .attr('stop-color', secondStopColor)
+
+        //append map
+        svg.select('#mapGroup').selectAll('path')
+        .data(geoJSON.features)
+        .join(
+            enter => enter
+                .append('path')
+                .attr('stroke', strokeColor)
+                .attr('stroke-width', strokeWidth)
+                .attr('fill', `url('#linearGradientMap')`)
+                .attr('d', d => path(d.geometry))
+        )
+
+        //update circles
+        svg.select('#mapLocations').selectAll('circle')
+            .data(raceList)
+            .join('circle')
+            .attr('id', d => `roundNumber-${d.round}`)
+            .attr('cx', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[0])
+            .attr('cy', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[1])
+            .attr('r', 0)
+            .on('mouseenter', (event, data) => {
+                let [xPosition, yPosition] = d3.pointer(event)
+
+                if (xPosition > svgWidth / 2) {
+                    xPosition -= (cardWidth + 10)
+                } else {
+                    xPosition += 10
+                }
+                if (yPosition > svgHeight / 2) {
+                    yPosition -= (cardHeight + 10)
+                } else {
+                    yPosition += 10
+                }
+
+                svg.select('#hover-card-group')
+                    .attr('visibility', 'visible')
+                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
+
+                setHoveredRound(data.round)
+                setHoveredRaceName(data.name)
+            })
+            .on('mousemove', (event) => {
+                let [xPosition, yPosition] = d3.pointer(event)
+
+                if (xPosition > svgWidth / 2) {
+                    xPosition -= (cardWidth + 10)
+                } else {
+                    xPosition += 10
+                }
+                if (yPosition > svgHeight / 2) {
+                    yPosition -= (cardHeight + 10)
+                } else {
+                    yPosition += 10
+                }
+
+                svg.select('#hover-card-group')
+                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
+            })
+            .on('mouseleave', () => {
+                setHoveredRound(null)
+
+                svg.select('#hover-card-group')
+                    .attr('visibility', 'hidden')
+            })
+            .transition()
+            .delay((_, i) => i * 20) 
+            .duration(300)
+            .attr('r', 5)
+            .attr('fill', circleFill)
+            .attr('stroke', circleStroke)
+            .attr('r', 6)
+    }, [season])
 
   return (
-    <svg height={svgHeight} width={svgWidth}>
-      <g id='mapGroup' />
-      <g id='mapLocations' />
+    <svg ref={ref} height={svgHeight} width={svgWidth}>
+        <linearGradient id='linearGradientMap' gradientTransform='rotate(90)' />
+        <g id='mapGroup' />
+        <g id='mapLocations' />
+        <g id='hover-card-group' visibility={'hidden'}>
+            <rect height={cardHeight} width={cardWidth} rx={cardCornerRadius} fill={cardColor} />
+            <text
+                id='hover-card-current-lap'
+                textAnchor='middle'
+                fill='white'
+                x={cardWidth / 2}
+                y={cardHeight / 3 + 5}
+            >
+                Round: {hoveredRound}
+            </text>
+            <text
+                id='hover-card-current-lap'
+                textAnchor='middle'
+                fill='white'
+                x={cardWidth / 2}
+                y={2 * cardHeight / 3 + 5}
+            >
+                {hoveredRaceName}
+            </text>
+        </g>
     </svg>
   )
 }
