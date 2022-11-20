@@ -7,9 +7,10 @@ import RacePositionViz from '../../components/RacePositionViz'
 import WorldChampionshipViz from '../../components/WorldChampionshipViz'
 import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
 import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
+import WorldMapViz from '../../components/WorldMapViz'
 import RaceSelector from '../../components/RaceSelector'
 
-//Utils
+// Utils
 import useGlobalStore from '../../utils/store';
 import { getLapTimes, getRacePositions, getRacePositionsByLap } from '../../utils/lapTimesFileReader'
 import getDriverRaceResults from '../../utils/getDriverRaceResults'
@@ -49,10 +50,11 @@ const Home = () => {
 			setLoading(true)
 			setWDCData([])
 			setWCCData([])
+
 			const races = await getRacesBySeason(year)
 			setRaceList(races)
-			setWDCData(await getDriverStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
-			setWCCData(await getConstructorStandings(races.map(row => ({raceId: +row.raceId, round: +row.round}))))
+			setWDCData(await getDriverStandings(races.map(row => ({ raceId: +row.raceId, round: +row.round }))))
+			setWCCData(await getConstructorStandings(races.map(row => ({ raceId: +row.raceId, round: +row.round }))))
 			setLoading(false)
 		}
 		fetchData()
@@ -64,6 +66,10 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
+		  		<WorldMapViz
+					season={selectedSeason}
+					raceList={raceList}
+				/>
 		  		<RaceSelector />
 				<RacePositionViz
 					raceId={raceId}
