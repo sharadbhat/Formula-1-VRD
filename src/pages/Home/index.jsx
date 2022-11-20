@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
-import { Card } from '@mantine/core'
 
 // Components
 import OvertakeDensityViz from '../../components/OvertakeDensityViz'
@@ -9,6 +8,7 @@ import WorldChampionshipViz from '../../components/WorldChampionshipViz'
 import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
 import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
 import WorldMapViz from '../../components/WorldMapViz'
+import RaceScrapeViz from '../../components/RaceScrapeViz'
 import RaceSelector from '../../components/RaceSelector'
 
 // Utils
@@ -18,6 +18,7 @@ import getDriverRaceResults from '../../utils/getDriverRaceResults'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
 import getConstructorStandings from '../../utils/getConstructorStandings'
+import getScrapedTrackData from '../../utils/getScrapedTrackData'
 
 const Home = () => {
 	const [loading, setLoading] = useState(true)
@@ -28,6 +29,7 @@ const Home = () => {
 	const [WCCData, setWCCData] = useState([])
 	const [raceList, setRaceList] = useState([])
 	const [selectedSeason, setSelectedSeason] = useState(null)
+	const [scrapedTrackData, setScrapedTrackData] = useState(null)
 
 	const raceId = useGlobalStore(state => state.selectedRaceId)
 	const year = useGlobalStore(state => state.selectedYear)
@@ -40,6 +42,7 @@ const Home = () => {
 			setLapTimeData([])
 			setRacePositionData(await getRacePositions(raceId))
 			setDriverFinishPositions(await getDriverRaceResults(raceId))
+			setScrapedTrackData(await getScrapedTrackData())
 			setLapTimeData(await getLapTimes(raceId))
 			setLoading(false)
 		}
@@ -70,6 +73,10 @@ const Home = () => {
 		  		<WorldMapViz
 					season={selectedSeason}
 					raceList={raceList}
+				/>
+				<RaceScrapeViz
+					raceList={raceList}
+					scrapedRaceList={scrapedTrackData}
 				/>
 		  		<RaceSelector />
 				<RacePositionViz
