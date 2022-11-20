@@ -188,7 +188,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             <g id='content' />
             <g id='rounds' />
             <g id='participants' />
-            <g id='legend'>
+            <g id='legend' visibility={season ? 'visible' : 'hidden'}>
                 <image width={125} href={gradientImage} />
                 <text id='legend-min' fill='white' y={-10}>0</text>
                 <text id='legend-max' fill='white' x={125 - 8} y={-10}>{legendMax}</text>
