@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { usePrevious } from '@mantine/hooks'
 import * as d3 from 'd3'
 
 // Utils
@@ -36,105 +37,120 @@ const WorldMapViz = ({ season, raceList }) => {
     const cardCornerRadius = constants.cardCornerRadius
     const cardColor = constants.cardColor
 
+    const prevSeason = usePrevious(season)
+    const prevHoveredRound = usePrevious(hoveredRound)
+
     const ref = useD3(svg => {
-        let geoProjection = d3.geoNaturalEarth1()
-        let projection = geoProjection
-            .scale(scale) 
-            .translate([svgWidth / 2, svgHeight / 2])
+        if (season !== prevSeason) {
+            let geoProjection = d3.geoNaturalEarth1()
+            let projection = geoProjection
+                .scale(scale)
+                .translate([svgWidth / 2, svgHeight / 2])
+    
+            // This converts the projected lat/lon coordinates into an SVG path string
+            let path = d3.geoPath().projection(projection)
+    
+            //topology setup
+            let topology = worldMapJson
+            let geoJSON = topojson.feature(topology, topology.objects.countries)
 
-        // This converts the projected lat/lon coordinates into an SVG path string
-        let path = d3.geoPath().projection(projection)
+            svg.select('#linearGradientMap').append('stop')
+                .attr('offset', `${firstOffset}%`)
+                .attr('stop-color', firstStopColor)
 
-        //topology setup
-        let topology = worldMapJson
-        let geoJSON = topojson.feature(topology, topology.objects.countries)   
+            svg.select('#linearGradientMap').append('stop')
+                .attr('offset', `${secondOffset}%`)
+                .attr('stop-color', secondStopColor)
 
-        svg.select('#linearGradientMap').append('stop')
-            .attr('offset', `${firstOffset}%`)
-            .attr('stop-color', firstStopColor)
+            //append map
+            svg.select('#mapGroup').selectAll('path')
+            .data(geoJSON.features)
+            .join(
+                enter => enter
+                    .append('path')
+                    .attr('stroke', strokeColor)
+                    .attr('stroke-width', strokeWidth)
+                    .attr('fill', `url('#linearGradientMap')`)
+                    .attr('d', d => path(d.geometry))
+            )
 
-        svg.select('#linearGradientMap').append('stop')
-            .attr('offset', `${secondOffset}%`)
-            .attr('stop-color', secondStopColor)
+            //update circles
+            svg.select('#mapLocations').selectAll('circle')
+                .data(raceList)
+                .join('circle')
+                .attr('id', d => `roundNumber-${d.round}`)
+                .attr('cx', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[0])
+                .attr('cy', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[1])
+                .attr('r', 0)
+                .on('mouseenter', (event, data) => {
+                    svg.select(`#${event.target.id}`)
+                        .attr('fill', 'red')
+    
+                    let [xPosition, yPosition] = d3.pointer(event)
+    
+                    if (xPosition > svgWidth / 2) {
+                        xPosition -= (cardWidth + 10)
+                    } else {
+                        xPosition += 10
+                    }
+                    if (yPosition > svgHeight / 2) {
+                        yPosition -= (cardHeight + 10)
+                    } else {
+                        yPosition += 10
+                    }
+    
+                    svg.select('#hover-card-group')
+                        .attr('visibility', 'visible')
+                        .attr('transform', `translate(${xPosition}, ${yPosition})`)
+    
+                    setHoveredRound(data.round)
+                    setHoveredRaceName(data.name)
+                })
+                .on('mousemove', (event) => {
+                    let [xPosition, yPosition] = d3.pointer(event)
+    
+                    if (xPosition > svgWidth / 2) {
+                        xPosition -= (cardWidth + 10)
+                    } else {
+                        xPosition += 10
+                    }
+                    if (yPosition > svgHeight / 2) {
+                        yPosition -= (cardHeight + 10)
+                    } else {
+                        yPosition += 10
+                    }
+    
+                    svg.select('#hover-card-group')
+                        .attr('transform', `translate(${xPosition}, ${yPosition})`)
+                })
+                .on('mouseleave', (event) => {
+                    svg.select(`#${event.target.id}`)
+                        .attr('fill', circleFill)
+    
+                    setHoveredRound(null)
+    
+                    svg.select('#hover-card-group')
+                        .attr('visibility', 'hidden')
+                })
+                .transition()
+                .delay((_, i) => i * 20)
+                .duration(300)
+                .attr('r', 5)
+                .attr('fill', circleFill)
+                .attr('stroke', circleStroke)
+                .attr('r', 6)
+        }
 
-        //append map
-        svg.select('#mapGroup').selectAll('path')
-        .data(geoJSON.features)
-        .join(
-            enter => enter
-                .append('path')
-                .attr('stroke', strokeColor)
-                .attr('stroke-width', strokeWidth)
-                .attr('fill', `url('#linearGradientMap')`)
-                .attr('d', d => path(d.geometry))
-        )
-
-        //update circles
-        svg.select('#mapLocations').selectAll('circle')
-            .data(raceList)
-            .join('circle')
-            .attr('id', d => `roundNumber-${d.round}`)
-            .attr('cx', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[0])
-            .attr('cy', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[1])
-            .attr('r', 0)
-            .on('mouseenter', (event, data) => {
-                svg.select(`#${event.target.id}`)
+        if (hoveredRound !== prevHoveredRound) {
+            if (hoveredRound) {
+                svg.select(`#roundNumber-${hoveredRound}`)
                     .attr('fill', 'red')
-
-                let [xPosition, yPosition] = d3.pointer(event)
-
-                if (xPosition > svgWidth / 2) {
-                    xPosition -= (cardWidth + 10)
-                } else {
-                    xPosition += 10
-                }
-                if (yPosition > svgHeight / 2) {
-                    yPosition -= (cardHeight + 10)
-                } else {
-                    yPosition += 10
-                }
-
-                svg.select('#hover-card-group')
-                    .attr('visibility', 'visible')
-                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
-
-                setHoveredRound(data.round)
-                setHoveredRaceName(data.name)
-            })
-            .on('mousemove', (event) => {
-                let [xPosition, yPosition] = d3.pointer(event)
-
-                if (xPosition > svgWidth / 2) {
-                    xPosition -= (cardWidth + 10)
-                } else {
-                    xPosition += 10
-                }
-                if (yPosition > svgHeight / 2) {
-                    yPosition -= (cardHeight + 10)
-                } else {
-                    yPosition += 10
-                }
-
-                svg.select('#hover-card-group')
-                    .attr('transform', `translate(${xPosition}, ${yPosition})`)
-            })
-            .on('mouseleave', (event) => {
-                svg.select(`#${event.target.id}`)
-                    .attr('fill', circleFill)
-
-                setHoveredRound(null)
-
-                svg.select('#hover-card-group')
-                    .attr('visibility', 'hidden')
-            })
-            .transition()
-            .delay((_, i) => i * 20) 
-            .duration(300)
-            .attr('r', 5)
-            .attr('fill', circleFill)
-            .attr('stroke', circleStroke)
-            .attr('r', 6)
-    }, [season])
+            } else {
+                svg.selectAll('circle')
+                    .attr('fill', 'white')
+            }
+        }
+    }, [season, hoveredRound])
 
   return (
     <svg ref={ref} height={svgHeight} width={svgWidth}>
