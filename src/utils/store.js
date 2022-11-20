@@ -12,7 +12,9 @@ const globalStore = (set) => ({
   hoveredDriverId: null,
   setHoveredDriverId: (driverId) => set(() => ({ hoveredDriverId: driverId })),
   hoveredLap: null,
-  setHoveredLap: (lap) => set(() => ({ hoveredLap: lap }))
+  setHoveredLap: (lap) => set(() => ({ hoveredLap: lap })),
+  hoveredRound: null,
+  setHoveredRound: (round) => set(() => ({ hoveredRound: round }))
 })
 
 const useGlobalStore = create(

@@ -10,17 +10,13 @@ import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
 import WorldMapViz from '../../components/WorldMapViz'
 import RaceSelector from '../../components/RaceSelector'
 
-//Utils
+// Utils
 import useGlobalStore from '../../utils/store';
 import { getLapTimes, getRacePositions, getRacePositionsByLap } from '../../utils/lapTimesFileReader'
 import getDriverRaceResults from '../../utils/getDriverRaceResults'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
 import getConstructorStandings from '../../utils/getConstructorStandings'
-import circuitIdMap from '../../utils/circuitIdMapper'
-
-//Assets
-import worldMapJson from '../../assets/world-simplified'
 
 const Home = () => {
 	const [loading, setLoading] = useState(true)
@@ -70,7 +66,10 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
-		  		<WorldMapViz season={selectedSeason} raceList={raceList} worldMap = {worldMapJson} circuitData = {circuitIdMap}/>
+		  		<WorldMapViz
+					season={selectedSeason}
+					raceList={raceList}
+				/>
 		  		<RaceSelector />
 				<RacePositionViz
 					raceId={raceId}
