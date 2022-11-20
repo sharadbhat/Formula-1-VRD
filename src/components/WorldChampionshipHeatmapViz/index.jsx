@@ -7,6 +7,9 @@ import driverIdMap from '../../utils/driverIdMapper'
 import constructorIdMap from '../../utils/constructorIdMapper'
 import constants from '../../utils/constants'
 
+// Assets
+import gradientImage from '../../assets/inferno.png'
+
 const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
     let key = 'driverId'
     let id = 'WDCHeatmapViz'
@@ -23,8 +26,16 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
     const [currentPoints, setCurrentPoints] = useState(null)
     const [roundToNameMap, setRoundToNameMap] = useState({})
 
+    const [legendMax, setLegendMax] = useState(null)
+
     const svgWidth = 1000
-    const svgHeight = 500
+    const svgHeight = isWCC ? 500 : 750
+
+    const legendHeight = 30
+    const legendWidth = 125
+
+    const offsetX = 175
+    const offsetY = 100
 
     const cardHeight = 120
     const cardWidth = 250
@@ -46,7 +57,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
 
         const xScale = d3.scaleBand()
                     .domain(roundsList)
-                    .range([0, svgWidth])
+                    .range([offsetX, svgWidth])
                     .padding(0.05)
         
         const groupedData = d3.group(data, d => +d[key])
@@ -60,12 +71,14 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
 
         const yScale = d3.scaleBand()
                     .domain(sortedIds)
-                    .range([0, svgHeight])
+                    .range([offsetY, svgHeight])
                     .padding(0.05)
         
         const colorScale = d3.scaleSequential()
                         .domain([0, d3.max(data.map(d => +d.points))])
                         .interpolator(d3.interpolateInferno)
+
+        setLegendMax(colorScale.domain()[1])
 
         svg.select('#content')
             .selectAll('rect')
@@ -136,11 +149,50 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             .duration(500)
             .delay((_, i) => i)
             .style('fill', d => colorScale(+d.points))
+
+        svg.select('#participants')
+            .selectAll('text')
+            .data(groupedData)
+            .join('text')
+            .attr('fill', 'white')
+            .attr('text-anchor', 'end')
+            .attr('x', offsetX - 10)
+            .attr('y', d => yScale(d[0]) + yScale.bandwidth() / 2 + 4)
+            .attr('opacity', 0)
+            .text(d => mapper[d[0]].name)
+            .transition()
+            .delay(d => yScale(d[0]))
+            .attr('opacity', 1)
+        
+        svg.select('#rounds')
+            .selectAll('text')
+            .data(roundsList)
+            .join('text')
+            .attr('fill', 'white')
+            .attr('text-anchor', 'start')
+            .attr('x', -offsetY + 10)
+            .attr('y', d => xScale(d))
+            .attr('transform', () => `translate(${xScale.bandwidth() / 2 + 5}, 0), rotate(-90)`)
+            .attr('opacity', 0)
+            .text(d => `Round ${d}`)
+            .transition()
+            .delay((_, i) => i * 20)
+            .attr('opacity', 1)
+        
+        svg.select('#legend')
+            .attr('transform', `translate(${offsetX / 2 - legendWidth / 2}, ${(offsetY / 2 - legendHeight / 2) + 30})`)
     }, [season])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
             <g id='content' />
+            <g id='rounds' />
+            <g id='participants' />
+            <g id='legend'>
+                <image width={125} href={gradientImage} />
+                <text id='legend-min' fill='white' y={-10}>0</text>
+                <text id='legend-max' fill='white' x={125 - 10} y={-10}>{legendMax}</text>
+            </g>
             <g id='hover-card-group' visibility={'hidden'}>
                 <rect
                     id='hover-card'
