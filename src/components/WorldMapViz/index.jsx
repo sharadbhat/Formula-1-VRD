@@ -78,6 +78,9 @@ const WorldMapViz = ({ season, raceList }) => {
             .attr('cy', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[1])
             .attr('r', 0)
             .on('mouseenter', (event, data) => {
+                svg.select(`#${event.target.id}`)
+                    .attr('fill', 'red')
+
                 let [xPosition, yPosition] = d3.pointer(event)
 
                 if (xPosition > svgWidth / 2) {
@@ -115,7 +118,10 @@ const WorldMapViz = ({ season, raceList }) => {
                 svg.select('#hover-card-group')
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
-            .on('mouseleave', () => {
+            .on('mouseleave', (event) => {
+                svg.select(`#${event.target.id}`)
+                    .attr('fill', circleFill)
+
                 setHoveredRound(null)
 
                 svg.select('#hover-card-group')
