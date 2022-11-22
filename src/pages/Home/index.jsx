@@ -9,8 +9,8 @@ import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatm
 import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
 import WorldMapViz from '../../components/WorldMapViz'
 import RaceSelector from '../../components/RaceSelector'
-import RaceScrapeViz from '../../components/RaceScrapeViz'
-import DriverScrapeViz from '../../components/DriverScrapeViz'
+import TrackDetails from '../../components/TrackDetails'
+import DriverDetails from '../../components/DriverDetails'
 
 // Utils
 import useGlobalStore from '../../utils/store';
@@ -78,7 +78,7 @@ const Home = () => {
 					season={selectedSeason}
 					raceList={raceList}
 				/>
-				<RaceScrapeViz
+				<TrackDetails
 					raceList={raceList}
 					scrapedRaceList={scrapedTrackData}
 				/>
@@ -88,7 +88,7 @@ const Home = () => {
 					data={racePositionData}
 					driverFinishPositions={driverFinishPositions}
 				/>
-				<DriverScrapeViz
+				<DriverDetails
 					data={driverFinishPositions}
 					scrapedDriverList={scrapedDriverData}
 				/>
