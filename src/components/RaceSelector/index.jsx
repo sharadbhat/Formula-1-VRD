@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Select } from '@mantine/core'
+import { Box, Button, Loader, ScrollArea, Stack } from '@mantine/core'
 
 // Utils
 import useGlobalStore from '../../utils/store'
@@ -10,46 +10,67 @@ const RaceSelector = () => {
     const selectedRaceId = useGlobalStore((state) => state.selectedRaceId)
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
+    const setSelectedRound = useGlobalStore((state) => state.setSelectedRound)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
+    const setHoveredRound = useGlobalStore((state) => state.setHoveredRound)
+    const hoveredRound = useGlobalStore((state) => state.hoveredRound)
 
-    const [selectDataOptions, setSelectDataOptions] = useState([])
+    const [raceList, setRaceList] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         async function fetchData() {
-            const raceList = await getRacesBySeason(selectedYear)
-            
-            const data = []
-            for (const race of raceList) {
-                data.push({
-                    value: race.raceId,
-                    label: race.name
-                })
-            }
-            setSelectDataOptions(data)
+            setLoading(true)
+            setRaceList([])
+            setRaceList(await getRacesBySeason(selectedYear))
+            setLoading(false)
 		}
 		fetchData()
 	}, [selectedYear])
 
-    const onChangeHandler = raceId => {
+    const onChangeHandler = (raceId, round) => {
         setSelectedRaceId(raceId)
         setSelectedDrivers([])
+        setSelectedRound(round)
         setHoveredDriverId(null)
         setHoveredLap(null)
     }
 
     return (
-        <div style={{ width: 200 }}>
-            <Select
-                value={selectedRaceId}
-                placeholder='Select a race'
-                data={selectDataOptions}
-                transition='pop-top-left'
-                transitionDuration={80}
-                transitionTimingFunction='ease'
-                onChange={onChangeHandler}
-            />
-        </div>
+        <>
+            <Box
+                sx={(theme) => ({
+                    backgroundColor: theme.colors.dark[6],
+                    borderRadius: theme.radius.md,
+                    width: 400,
+                    padding: 25
+                })}
+            >
+                <ScrollArea style={{ width: 350, height: 475 }}>
+                    {loading
+                        ?   <div>
+                                <Loader />
+                            </div>
+                        :   <Stack>
+                                {raceList.map(race => {
+                                    return (
+                                        <Button
+                                            key={race.raceId}
+                                            variant={race.raceId === selectedRaceId ? 'filled' : (race.round === hoveredRound ? 'light' : 'outline')}
+                                            onMouseEnter={() => setHoveredRound(race.round)}
+                                            onMouseLeave={() => setHoveredRound(null)}
+                                            onClick={() => onChangeHandler(race.raceId, race.round)}
+                                        >
+                                            Round: {race.round} - {race.name}
+                                        </Button>
+                                    )
+                                })}
+                            </Stack>
+                    }
+                </ScrollArea>
+            </Box>
+        </>
     )
 }
 

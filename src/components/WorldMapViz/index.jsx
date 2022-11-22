@@ -14,6 +14,9 @@ import worldMapJson from '../../assets/world-simplified.json'
 const WorldMapViz = ({ season, raceList }) => {
     const hoveredRound = useGlobalStore(state => state.hoveredRound)
     const setHoveredRound = useGlobalStore(state => state.setHoveredRound)
+    const selectedRound = useGlobalStore(state => state.selectedRound)
+    const setSelectedRound = useGlobalStore(state => state.setSelectedRound)
+    const setSelectedRaceId = useGlobalStore(state => state.setSelectedRaceId)
 
     const [hoveredRaceName, setHoveredRaceName] = useState(null)
 
@@ -31,6 +34,9 @@ const WorldMapViz = ({ season, raceList }) => {
 
     const circleFill = '#d1d1d1'
     const circleStroke = 'black'
+    const circleRadiusStart = 5
+    const circleRadius = 6
+    const circleRadiusLarge = 10
 
     const cardWidth = 250
     const cardHeight = 100
@@ -39,7 +45,8 @@ const WorldMapViz = ({ season, raceList }) => {
 
     const prevSeason = usePrevious(season)
     const prevHoveredRound = usePrevious(hoveredRound)
-
+    const prevSelectedRound = usePrevious(selectedRound)
+    
     const ref = useD3(svg => {
         if (season !== prevSeason) {
             let geoProjection = d3.geoNaturalEarth1()
@@ -82,6 +89,7 @@ const WorldMapViz = ({ season, raceList }) => {
                 .attr('cx', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[0])
                 .attr('cy', d => projection([circuitIdMapper[d.circuitId].lng, circuitIdMapper[d.circuitId].lat])[1])
                 .attr('r', 0)
+                .style('cursor', 'pointer')
                 .on('mouseenter', (event, data) => {
                     svg.select(`#${event.target.id}`)
                         .attr('fill', 'red')
@@ -132,25 +140,45 @@ const WorldMapViz = ({ season, raceList }) => {
                     svg.select('#hover-card-group')
                         .attr('visibility', 'hidden')
                 })
+                .on('click', (_, data) => {
+                    setSelectedRound(data.round)
+                    setSelectedRaceId(data.raceId)
+                })
                 .transition()
                 .delay((_, i) => i * 20)
                 .duration(300)
-                .attr('r', 5)
+                .attr('r', circleRadiusStart)
                 .attr('fill', circleFill)
                 .attr('stroke', circleStroke)
-                .attr('r', 6)
+                .attr('r', circleRadius)
         }
 
-        if (hoveredRound !== prevHoveredRound) {
+        if (hoveredRound !== prevHoveredRound || selectedRound !== prevSelectedRound) {
+            if (prevHoveredRound) {
+                svg.select(`#roundNumber-${prevHoveredRound}`)
+                    .attr('fill', circleFill)
+                    .attr('r', circleRadius)
+            }
+            
+            if (prevSelectedRound) {
+                svg.select(`#roundNumber-${prevSelectedRound}`)
+                    .attr('fill', circleFill)
+                    .attr('r', circleRadius)
+            }
+
             if (hoveredRound) {
                 svg.select(`#roundNumber-${hoveredRound}`)
+                    .attr('fill', '#ff6666')
+                    .attr('r', circleRadiusLarge)
+            }
+            
+            if (selectedRound) {
+                svg.select(`#roundNumber-${selectedRound}`)
                     .attr('fill', 'red')
-            } else {
-                svg.selectAll('circle')
-                    .attr('fill', 'white')
+                    .attr('r', circleRadiusLarge)
             }
         }
-    }, [season, hoveredRound])
+    }, [season, hoveredRound, selectedRound])
 
   return (
     <svg ref={ref} height={svgHeight} width={svgWidth}>

@@ -74,15 +74,17 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
-		  		<WorldMapViz
-					season={selectedSeason}
-					raceList={raceList}
-				/>
+		  		<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+					<RaceSelector />
+					<WorldMapViz
+						season={selectedSeason}
+						raceList={raceList}
+					/>
+				</div>
 				<TrackDetails
 					raceList={raceList}
 					scrapedRaceList={scrapedTrackData}
 				/>
-		  		<RaceSelector />
 				<RacePositionViz
 					raceId={raceId}
 					data={racePositionData}

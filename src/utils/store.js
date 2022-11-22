@@ -9,6 +9,8 @@ const globalStore = (set) => ({
   setSelectedRaceId: (raceId) => set(() => ({ selectedRaceId: raceId })),
   selectedDrivers: [],
   setSelectedDrivers: (driverSet) => set(() => ({ selectedDrivers: Array.from(driverSet) })),
+  selectedRound: null,
+  setSelectedRound: (round) => set(() => ({ selectedRound: round })),
   hoveredDriverId: null,
   setHoveredDriverId: (driverId) => set(() => ({ hoveredDriverId: driverId })),
   hoveredLap: null,
