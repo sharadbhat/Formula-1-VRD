@@ -21,8 +21,10 @@ const SeasonSelector = () => {
     const setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
+    const setSelectedRound = useGlobalStore((state) => state.setSelectedRound)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
+    const setHoveredRound = useGlobalStore((state) => state.setHoveredRound)
 
     const data = []
     for (let i = 2022; i >= 1996; i--) {
@@ -36,8 +38,10 @@ const SeasonSelector = () => {
         setSelectedYear(year)
         setSelectedRaceId(null)
         setSelectedDrivers([])
+        setSelectedRound(null)
         setHoveredDriverId(null)
         setHoveredLap(null)
+        setHoveredRound(null)
     }
 
     return (

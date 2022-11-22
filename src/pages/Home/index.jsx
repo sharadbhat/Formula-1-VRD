@@ -66,11 +66,13 @@ const Home = () => {
 		{loading
 		  ? <LoadingOverlay visible overlayBlur={2} />
 		  : <>
-		  		<WorldMapViz
-					season={selectedSeason}
-					raceList={raceList}
-				/>
-		  		<RaceSelector />
+		  		<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+					<RaceSelector />
+					<WorldMapViz
+						season={selectedSeason}
+						raceList={raceList}
+					/>
+				</div>
 				<RacePositionViz
 					raceId={raceId}
 					data={racePositionData}
