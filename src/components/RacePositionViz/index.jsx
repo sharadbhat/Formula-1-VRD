@@ -75,8 +75,6 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
 
         setColorScaleRef(() => colorScale)
 
-        const bisect = d3.bisector(d => +d.lap).left;
-
         svg.select('#content')
             .selectAll('path')
             .data(groupedData)
@@ -98,8 +96,7 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
 
                 const currentDriverId = +e.target.getAttribute('driverId')
                 const closestLap = Math.round(xScale.invert(xPosition - margin + padding))
-                const index = bisect(groupedData.get(currentDriverId), closestLap)
-                const datapoint = groupedData.get(currentDriverId)[index]
+                const datapoint = groupedData.get(currentDriverId)[closestLap - 1]
 
                 setCurrentPosition(datapoint['position'])
                 setDriverName(driverIdMapper[e.target.getAttribute('driverId')].name)
@@ -126,8 +123,7 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
 
                 const currentDriverId = +e.target.getAttribute('driverId')
                 const closestLap = Math.round(xScale.invert(xPosition - margin + padding))
-                const index = bisect(groupedData.get(currentDriverId), closestLap)
-                const datapoint = groupedData.get(currentDriverId)[index]
+                const datapoint = groupedData.get(currentDriverId)[closestLap - 1]
 
                 setCurrentPosition(datapoint['position'])
 

@@ -36,7 +36,6 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
     const prevHoveredRound = usePrevious(hoveredRound)
 
     const [name, setName] = useState(null)
-    const [currentRound, setCurrentRound] = useState(null)
     const [currentPoints, setCurrentPoints] = useState(null)
     const [roundToNameMap, setRoundToNameMap] = useState({})
 
@@ -106,8 +105,6 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                 .domain(Array.from(groupedData.keys()))
                 .range(constants.categoricalColors)
 
-            const bisect = d3.bisector(d => +d.round).left
-
             svg.select('#content')
                 .selectAll('path')
                 .data(groupedData)
@@ -116,7 +113,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                 .attr(key, d => +d[0])
                 .attr('fill', 'none')
                 .attr('stroke', d => colorScale(+d[0]))
-                .attr('stroke-width', 5)
+                .attr('stroke-width', d => hoveredParticipant === +d[0] ? 10 : 5)
                 .attr('opacity', d => selectedParticipantsSet.size ? (selectedParticipantsSet.has(+d[0]) ? 1 : 0.2) : 1)
                 .attr('d', d => {
                     return d3.line()
@@ -131,12 +128,11 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
 
                     const currentId = +e.target.getAttribute(key)
                     const closestRound = Math.round(xScaleLinear.invert(xPosition - margin))
-                    const index = bisect(groupedData.get(currentId), closestRound)
-                    const datapoint = groupedData.get(currentId)[index]
+                    const datapoint = groupedData.get(currentId)[closestRound + 1]
 
                     setName(mapper[e.target.getAttribute(key)].name)
                     setCurrentPoints(datapoint['cumulativePoints'])
-                    setCurrentRound(datapoint['round'])
+                    setHoveredRound(closestRound)
 
                     if (xPosition > svgWidth / 2) {
                         xPosition -= (cardWidth + 10)
@@ -159,11 +155,10 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
 
                     const currentId = +e.target.getAttribute(key)
                     const closestRound = Math.round(xScaleLinear.invert(xPosition - margin))
-                    const index = bisect(groupedData.get(currentId), closestRound)
-                    const datapoint = groupedData.get(currentId)[index]
+                    const datapoint = groupedData.get(currentId)[closestRound + 1]
 
                     setCurrentPoints(datapoint['cumulativePoints'])
-                    setCurrentRound(datapoint['round'])
+                    setHoveredRound(closestRound)
 
                     if (xPosition > svgWidth / 2) {
                         xPosition -= (cardWidth + 10)
@@ -198,7 +193,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
 
                     let [xScaleStart, xScaleEnd] = xScaleLinear.domain()
 
-                    let closestRound = Math.round(xScaleLinear.invert(xPosition - margin + padding))
+                    let closestRound = Math.round(xScaleLinear.invert(xPosition - margin))
 
                     if (closestRound > xScaleEnd) {
                         closestRound = null
@@ -211,7 +206,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
         
                     let [xScaleStart, xScaleEnd] = xScaleLinear.domain()
         
-                    let closestRound = Math.round(xScaleLinear.invert(xPosition - margin + padding))
+                    let closestRound = Math.round(xScaleLinear.invert(xPosition - margin))
 
                     if (closestRound > xScaleEnd) {
                         closestRound = null
@@ -316,7 +311,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                         x={cardWidth / 2}
                         y={cardHeight / 2 - 5}
                     >
-                        Round: {currentRound}
+                        Round: {hoveredRound}
                     </text>
                     <text
                         id='hover-card-current-lap'
@@ -325,7 +320,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                         x={cardWidth / 2}
                         y={cardHeight / 2 + 20}
                     >
-                        {roundToNameMap[currentRound]}
+                        {roundToNameMap[hoveredRound]}
                     </text>
                     <text
                         id='hover-card-current-position'
