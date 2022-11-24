@@ -6,13 +6,13 @@ import { useD3 } from '../../utils/useD3'
 import useGlobalStore from '../../utils/store'
 import constants from '../../utils/constants'
 
-const OvertakeDensityViz = ({ raceId, data }) => {
+const OvertakeDensityViz = ({ data }) => {
     const hoveredLap = useGlobalStore((state) => state.hoveredLap)
     const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
 
     const [positionsChanged, setPositionsChanged] = useState(null)
 
-    const svgWidth = 1000
+    const svgWidth = 700
     const svgHeight = 50
 
     const margin = 30

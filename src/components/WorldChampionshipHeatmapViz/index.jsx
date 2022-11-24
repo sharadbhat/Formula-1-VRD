@@ -13,8 +13,14 @@ import useGlobalStore from '../../utils/store'
 import gradientImage from '../../assets/inferno.png'
 
 const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
-    const hoveredRound = useGlobalStore(state => state.hoveredRound)
+    const selectedParticipants = useGlobalStore(state => state.selectedParticipants)
+    const setSelectedParticipants = useGlobalStore(state => state.setSelectedParticipants)
+    const selectedRound = useGlobalStore(state => state.selectedRound)
     const setHoveredRound = useGlobalStore(state => state.setHoveredRound)
+    const setSelectedRound = useGlobalStore(state => state.setSelectedRound)
+    const setSelectedRaceId = useGlobalStore(state => state.setSelectedRaceId)
+    const setHoveredParticipant = useGlobalStore(state => state.setHoveredParticipant)
+
     let key = 'driverId'
     let id = 'WDCHeatmapViz'
     let mapper = driverIdMap
@@ -32,8 +38,8 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
 
     const [legendMax, setLegendMax] = useState(null)
 
-    const svgWidth = 1000
-    const svgHeight = isWCC ? 500 : 750
+    const svgWidth = 750
+    const svgHeight = isWCC ? 500 : 700
 
     const legendHeight = 30
     const legendWidth = 125
@@ -47,10 +53,14 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
     const cardColor = constants.cardColor
 
     const prevSeason = usePrevious(season)
-    const prevHoveredRound = usePrevious(hoveredRound)
+    const prevIsWCC = usePrevious(isWCC)
+    const prevSelectedRound = usePrevious(selectedRound)
+    const prevSelectedParticipants = usePrevious(selectedParticipants)
+
+    const selectedParticipantsSet = new Set(selectedParticipants)
 
     const ref = useD3(svg => {
-        if (season !== prevSeason) {
+        if (season !== prevSeason || isWCC !== prevIsWCC) {
             setRoundToNameMap({})
             const roundMap = {}
             for (const race of raceList) {
@@ -59,12 +69,15 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             setRoundToNameMap(roundMap)
     
             const roundsList = []
-            for (let i = 1; i <= d3.max(raceList.map(d => +d.round)); i++) {
-                roundsList.push(i)
+            for (const race of raceList) {
+                roundsList.push({
+                    round: +race.round,
+                    raceId: +race.raceId
+                })
             }
     
             const xScale = d3.scaleBand()
-                        .domain(roundsList)
+                        .domain(roundsList.map(d => d.round))
                         .range([offsetX, svgWidth])
                         .padding(0.05)
             
@@ -75,6 +88,10 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 }
             }
     
+            const participantColorScale = d3.scaleOrdinal()
+                .domain(Array.from(groupedData.keys()))
+                .range(constants.categoricalColors)
+
             const sortedIds = d3.groupSort(data, (a, b) => d3.descending(d3.max(a, d => d.cumulativePoints), d3.max(b, d => d.cumulativePoints)), d => +d[key])
     
             const yScale = d3.scaleBand()
@@ -163,12 +180,28 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 .selectAll('text')
                 .data(groupedData)
                 .join('text')
-                .attr('fill', 'white')
+                .attr('id', d => `${id}-participant-header-${d[0]}`)
+                .attr('fill', d => participantColorScale(d[0]))
                 .attr('text-anchor', 'end')
                 .attr('x', offsetX - 10)
                 .attr('y', d => yScale(d[0]) + yScale.bandwidth() / 2 + 4)
                 .attr('opacity', 0)
                 .text(d => mapper[d[0]].name)
+                .style('cursor', 'pointer')
+                .on('mouseenter', (_, data) => {
+                    setHoveredParticipant(data[0])
+                })
+                .on('mouseleave', () => {
+                    setHoveredParticipant(null)
+                })
+                .on('click', (_, data) => {
+                    if (selectedParticipantsSet.has(data[0])) {
+                        selectedParticipantsSet.delete(data[0])
+                    } else {
+                        selectedParticipantsSet.add(data[0])
+                    }
+                    setSelectedParticipants(selectedParticipantsSet)
+                })
                 .transition()
                 .delay(d => yScale(d[0]))
                 .attr('opacity', 1)
@@ -177,18 +210,22 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 .selectAll('text')
                 .data(roundsList)
                 .join('text')
-                .attr('id', d => `${id}-round-header-${d}`)
+                .attr('id', d => `${id}-round-header-${d.round}`)
                 .attr('fill', 'white')
                 .attr('text-anchor', 'start')
                 .attr('x', -offsetY + 10)
-                .attr('y', d => xScale(d))
+                .attr('y', d => xScale(d.round))
                 .attr('transform', () => `translate(${xScale.bandwidth() / 2 + 5}, 0), rotate(-90)`)
                 .attr('opacity', 0)
-                .text(d => `Round ${d}`)
+                .text(d => `Round ${d.round}`)
+                .style('cursor', 'pointer')
                 .on('mouseenter', (_, data) => {
-                    setHoveredRound(data)
+                    setHoveredRound(data.round)
                 }).on('mouseleave', () => {
                     setHoveredRound(null)
+                }).on('click', (_, data) => {
+                    setSelectedRound(data.round)
+                    setSelectedRaceId(data.raceId)
                 })
                 .transition()
                 .delay((_, i) => i * 20)
@@ -198,27 +235,47 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 .attr('transform', `translate(${offsetX / 2 - legendWidth / 2}, ${(offsetY / 2 - legendHeight / 2) + 30})`)
         }
 
-        if (hoveredRound !== prevHoveredRound) {
-            if (hoveredRound) {
-                svg.select('#rounds')
-                    .selectAll('text')
-                    .filter(d => d !== hoveredRound)
-                    .attr('opacity', 0.2)
+        if (selectedRound !== prevSelectedRound) {
+            if (prevSelectedRound) {
+                svg.select(`#${id}-round-header-${prevSelectedRound}`)
+                    .attr('font-weight', 500)
+            }
 
-                svg.select('#content')
-                    .selectAll('rect')
-                    .filter(d => d.round !== hoveredRound)
-                    .style('opacity', 0.2)
-            } else {
-                svg.select('#rounds')
-                    .selectAll('text')
-                    .attr('opacity', 1)
-                
-                svg.selectAll('rect')
-                    .style('opacity', 1)
+            if (selectedRound) {
+                svg.select(`#${id}-round-header-${selectedRound}`)
+                    .attr('font-weight', 700)
             }
         }
-    }, [season, hoveredRound])
+
+        if (selectedParticipants !== prevSelectedParticipants) {
+            svg.select('#participants')
+                .selectAll('text')
+                .on('click', (_, data) => {
+                    if (selectedParticipantsSet.has(data[0])) {
+                        selectedParticipantsSet.delete(data[0])
+                    } else {
+                        selectedParticipantsSet.add(data[0])
+                    }
+                    setSelectedParticipants(selectedParticipantsSet)
+                })
+
+            if (selectedParticipants.length) {
+                svg.select('#participants')
+                    .selectAll('text')
+                    .attr('opacity', 0.2)
+
+                for (const participant of selectedParticipants) {
+                    svg.select('#participants')
+                        .select(`#${id}-participant-header-${participant}`)
+                        .attr('opacity', 1)
+                }
+            } else {
+                svg.select('#participants')
+                    .selectAll('text')
+                    .attr('opacity', 1)
+            }
+        }
+    }, [season, isWCC, selectedRound, selectedParticipants])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
@@ -227,8 +284,9 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             <g id='participants' />
             <g id='legend' visibility={season ? 'visible' : 'hidden'}>
                 <image width={125} href={gradientImage} />
-                <text id='legend-min' fill='white' y={-10}>0</text>
-                <text id='legend-max' fill='white' x={125 - 8} y={-10}>{legendMax}</text>
+                <text id='legend-min' fill='white' textAnchor='middle' y={-10}>0</text>
+                <text id='legend-points' fill='white' textAnchor='middle' x={125/2} y = {-10}>Points</text>
+                <text id='legend-max' fill='white' textAnchor='middle' x={125} y={-10}>{legendMax}</text>
             </g>
             <g id='hover-card-group' visibility={'hidden'}>
                 <rect

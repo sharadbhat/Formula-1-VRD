@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import * as d3 from 'd3'
 
 // Components
+import LapTimeScatterPlotViz from '../LapTimeScatterPlotViz'
 import RacePositionListViz from '../RacePositionListViz'
 
 // Utils
@@ -10,7 +11,7 @@ import useGlobalStore from '../../utils/store'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
 
-const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
+const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
     const selectedDrivers = useGlobalStore((state) => state.selectedDrivers)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const hoveredDriverId = useGlobalStore((state) => state.hoveredDriverId)
@@ -22,7 +23,7 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentPosition, setCurrentPosition] = useState(null)
 
-    const svgWidth = 1000
+    const svgWidth = 700
     const svgHeight = 500
 
     const cardHeight = 100
@@ -207,7 +208,10 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div style={{ marginTop: 30 }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ height: 30, paddingLeft: margin }}>
+                    <b>Lapwise Position Changes</b>
+                </div>
                 <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
                     <g id='xAxis' />
                     <g id='yAxis' />
@@ -264,6 +268,12 @@ const RacePositionViz = ({ data, raceId, driverFinishPositions }) => {
                         </g>
                     </g>
                 </svg>
+            </div>
+            <div>
+                <div style={{ height: 30 }}>
+                    <b>Lap Times</b>
+                </div>
+                <LapTimeScatterPlotViz data={lapTimeData} />
             </div>
             {(yScaleRef && yScaleRef.domain().length && colorScaleRef && colorScaleRef.domain().length && driverFinishPositions.length)
                 ?   <RacePositionListViz

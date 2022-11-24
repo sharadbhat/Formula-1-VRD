@@ -2,17 +2,12 @@ import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
 
 // Components
-import OvertakeDensityViz from '../../components/OvertakeDensityViz'
-import RacePositionViz from '../../components/RacePositionViz'
-import WorldChampionshipViz from '../../components/WorldChampionshipViz'
-import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
-import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
-import WorldMapViz from '../../components/WorldMapViz'
-import RaceSelector from '../../components/RaceSelector'
+import SeasonComponents from '../../components/SeasonComponents'
+import RaceComponents from '../../components/RaceComponents'
 
 // Utils
 import useGlobalStore from '../../utils/store';
-import { getLapTimes, getRacePositions, getRacePositionsByLap } from '../../utils/lapTimesFileReader'
+import { getLapTimes, getRacePositions } from '../../utils/lapTimesFileReader'
 import getDriverRaceResults from '../../utils/getDriverRaceResults'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
@@ -63,29 +58,22 @@ const Home = () => {
 
 	return (
 		<>
-		{loading
-		  ? <LoadingOverlay visible overlayBlur={2} />
-		  : <>
-		  		<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-					<RaceSelector />
-					<WorldMapViz
+			{loading
+				? <LoadingOverlay visible overlayBlur={2} />
+				: <>
+					<SeasonComponents
 						season={selectedSeason}
 						raceList={raceList}
+						WCCData={WCCData}
+						WDCData={WDCData}
 					/>
-				</div>
-				<RacePositionViz
-					raceId={raceId}
-					data={racePositionData}
-					driverFinishPositions={driverFinishPositions}
-				/>
-				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
-				<OvertakeDensityViz raceId={raceId} data={racePositionData} />
-				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
-				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WDCData} />
-				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
-				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
-		   	</>
-		}
+					<RaceComponents
+						racePositionData={racePositionData}
+						driverFinishPositions={driverFinishPositions}
+						lapTimeData={lapTimeData}
+					/>
+				</>
+			}
 		</>
 	)
 }

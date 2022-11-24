@@ -12,7 +12,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const hoveredLap = useGlobalStore((state) => state.hoveredLap)
 
-    const svgWidth = 250
+    const svgWidth = 225
     const svgHeight = 500
 
     const selectedDriversSet = new Set(selectedDrivers)
@@ -37,7 +37,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
-                        .attr('x', 50)
+                        .attr('x', 40)
                         .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .text(d => `${+d.position ? 'P' + +d.position : 'Ret'}`)
@@ -88,7 +88,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
-                        .attr('x', 65)
+                        .attr('x', 55)
                         .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .text(d => driverIdMapper[+d.driverId].name)

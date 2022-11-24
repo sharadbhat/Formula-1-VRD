@@ -15,6 +15,8 @@ const RaceSelector = () => {
     const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
     const setHoveredRound = useGlobalStore((state) => state.setHoveredRound)
     const hoveredRound = useGlobalStore((state) => state.hoveredRound)
+    const setSelectedParticipants = useGlobalStore((state) => state.setSelectedParticipants)
+    const setHoveredParticipant = useGlobalStore((state) => state.setHoveredParticipant)
 
     const [raceList, setRaceList] = useState([])
     const [loading, setLoading] = useState(true)
@@ -35,6 +37,8 @@ const RaceSelector = () => {
         setSelectedRound(round)
         setHoveredDriverId(null)
         setHoveredLap(null)
+        setSelectedParticipants([])
+        setHoveredParticipant(null)
     }
 
     return (
@@ -52,7 +56,7 @@ const RaceSelector = () => {
                         ?   <div>
                                 <Loader />
                             </div>
-                        :   <Stack>
+                        :   <Stack spacing='xs' align={'center'}>
                                 {raceList.map(race => {
                                     return (
                                         <Button
@@ -61,6 +65,7 @@ const RaceSelector = () => {
                                             onMouseEnter={() => setHoveredRound(race.round)}
                                             onMouseLeave={() => setHoveredRound(null)}
                                             onClick={() => onChangeHandler(race.raceId, race.round)}
+                                            style={{ width: 325 }}
                                         >
                                             Round: {race.round} - {race.name}
                                         </Button>

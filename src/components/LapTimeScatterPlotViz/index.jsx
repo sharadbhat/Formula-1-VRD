@@ -5,18 +5,18 @@ import { useD3 } from '../../utils/useD3'
 import constants from '../../utils/constants'
 import useGlobalStore from '../../utils/store'
 
-const LapTimeScatterPlotViz = ({ raceId, data }) => {
+const LapTimeScatterPlotViz = ({ data }) => {
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
     const hoveredDriverId = useGlobalStore(state => state.hoveredDriverId)
     const hoveredLap = useGlobalStore(state => state.hoveredLap)
     const setHoveredLap = useGlobalStore(state => state.setHoveredLap)
 
-    const svgWidth = 1000
+    const svgWidth = 550
     const svgHeight = 500
 
     const margin = 30
+    const padding = 15
 
-    const circleRadius = 6
     const whiteCircleOpacityNormal = 0.25
     const whiteCircleOpacitySelected = 0.1
     const whiteCircleFill = 'white'
@@ -27,10 +27,11 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
             .range([0, svgWidth - 3 * margin])
 
         const rectWidth = (svgWidth - margin) / d3.max(data.map(d => +d.lap))
+        const circleRadius = rectWidth / 2
 
         const yScale = d3.scaleLinear()
             .domain([d3.min(data.map(d => +d.milliseconds)) / 1.1, d3.max(data.map(d => +d.milliseconds)) * 1.1])
-            .range([svgHeight - margin, margin])
+            .range([svgHeight - margin, padding])
 
         svg.select('#xAxis')
             .attr('transform', `translate(${2 * margin}, ${svgHeight - margin})`)
@@ -130,7 +131,7 @@ const LapTimeScatterPlotViz = ({ raceId, data }) => {
             <g id='xAxis' />
             <g id='yAxis' />
             <g id='content' />
-            <rect id='hoverRect' visibility={'hidden'} height={svgHeight - 2 * margin} y={margin} />
+            <rect id='hoverRect' visibility={'hidden'} height={svgHeight - margin - padding} y={padding} />
             <g id='selectedContent' />
         </svg>
     )

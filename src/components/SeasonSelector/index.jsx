@@ -18,6 +18,7 @@ const SelectItem = forwardRef(
   )
 
 const SeasonSelector = () => {
+    const selectedYear = useGlobalStore((state) => state.selectedYear)
     const setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
@@ -25,6 +26,8 @@ const SeasonSelector = () => {
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
     const setHoveredRound = useGlobalStore((state) => state.setHoveredRound)
+    const setSelectedParticipants = useGlobalStore((state) => state.setSelectedParticipants)
+    const setHoveredParticipant = useGlobalStore((state) => state.setHoveredParticipant)
 
     const data = []
     for (let i = 2022; i >= 1996; i--) {
@@ -42,11 +45,14 @@ const SeasonSelector = () => {
         setHoveredDriverId(null)
         setHoveredLap(null)
         setHoveredRound(null)
+        setSelectedParticipants([])
+        setHoveredParticipant(null)
     }
 
     return (
         <Select
             placeholder='Select a season'
+            value={selectedYear}
             data={data}
             itemComponent={SelectItem}
             transition='pop-top-left'
