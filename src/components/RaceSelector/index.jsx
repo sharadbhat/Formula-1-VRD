@@ -9,6 +9,7 @@ const RaceSelector = () => {
     const selectedYear = useGlobalStore((state) => state.selectedYear)
     const selectedRaceId = useGlobalStore((state) => state.selectedRaceId)
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
+    const setSelectedCircuitId = useGlobalStore((state) => state.setSelectedCircuitId)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const setSelectedRound = useGlobalStore((state) => state.setSelectedRound)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
@@ -31,10 +32,11 @@ const RaceSelector = () => {
 		fetchData()
 	}, [selectedYear])
 
-    const onChangeHandler = (raceId, round) => {
+    const onChangeHandler = (raceId, round, circuitId) => {
         setSelectedRaceId(raceId)
-        setSelectedDrivers([])
         setSelectedRound(round)
+        setSelectedCircuitId(circuitId)
+        setSelectedDrivers([])
         setHoveredDriverId(null)
         setHoveredLap(null)
         setSelectedParticipants([])
@@ -64,7 +66,7 @@ const RaceSelector = () => {
                                             variant={race.raceId === selectedRaceId ? 'filled' : (race.round === hoveredRound ? 'light' : 'outline')}
                                             onMouseEnter={() => setHoveredRound(race.round)}
                                             onMouseLeave={() => setHoveredRound(null)}
-                                            onClick={() => onChangeHandler(race.raceId, race.round)}
+                                            onClick={() => onChangeHandler(race.raceId, race.round, race.circuitId)}
                                             style={{ width: 325 }}
                                         >
                                             Round: {race.round} - {race.name}

@@ -7,6 +7,8 @@ const globalStore = (set) => ({
   setSelectedYear: (year) => set(() => ({ selectedYear: year })),
   selectedRaceId: null,
   setSelectedRaceId: (raceId) => set(() => ({ selectedRaceId: raceId })),
+  selectedCircuitId: null,
+  setSelectedCircuitId: (circuitId) => set(() => ({ selectedCircuitId: circuitId })),
   selectedDrivers: [],
   setSelectedDrivers: (driverSet) => set(() => ({ selectedDrivers: Array.from(driverSet) })),
   selectedRound: null,

@@ -67,11 +67,13 @@ const Home = () => {
 						WCCData={WCCData}
 						WDCData={WDCData}
 					/>
+					<TrackDetails />
 					<RaceComponents
 						racePositionData={racePositionData}
 						driverFinishPositions={driverFinishPositions}
 						lapTimeData={lapTimeData}
 					/>
+					<DriverDetails />
 				</>
 			}
 		</>
