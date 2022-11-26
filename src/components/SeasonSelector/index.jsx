@@ -20,6 +20,7 @@ const SelectItem = forwardRef(
 const SeasonSelector = () => {
     const setSelectedYear = useGlobalStore((state) => state.setSelectedYear)
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
+    const setSelectedCircuitId = useGlobalStore((state) => state.setSelectedCircuitId)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const setSelectedRound = useGlobalStore((state) => state.setSelectedRound)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
@@ -37,6 +38,7 @@ const SeasonSelector = () => {
     const onChangeHandler = year => {
         setSelectedYear(year)
         setSelectedRaceId(null)
+        setSelectedCircuitId(null)
         setSelectedDrivers([])
         setSelectedRound(null)
         setHoveredDriverId(null)

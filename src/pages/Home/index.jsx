@@ -9,10 +9,12 @@ import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatm
 import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
 import WorldMapViz from '../../components/WorldMapViz'
 import RaceSelector from '../../components/RaceSelector'
+import TrackDetails from '../../components/TrackDetails'
+import DriverDetails from '../../components/DriverDetails'
 
 // Utils
 import useGlobalStore from '../../utils/store';
-import { getLapTimes, getRacePositions, getRacePositionsByLap } from '../../utils/lapTimesFileReader'
+import { getLapTimes, getRacePositions } from '../../utils/lapTimesFileReader'
 import getDriverRaceResults from '../../utils/getDriverRaceResults'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
@@ -73,11 +75,13 @@ const Home = () => {
 						raceList={raceList}
 					/>
 				</div>
+				<TrackDetails />
 				<RacePositionViz
 					raceId={raceId}
 					data={racePositionData}
 					driverFinishPositions={driverFinishPositions}
 				/>
+				<DriverDetails />
 				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
 				<OvertakeDensityViz raceId={raceId} data={racePositionData} />
 				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />

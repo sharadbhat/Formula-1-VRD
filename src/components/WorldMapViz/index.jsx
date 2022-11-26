@@ -17,6 +17,7 @@ const WorldMapViz = ({ season, raceList }) => {
     const selectedRound = useGlobalStore(state => state.selectedRound)
     const setSelectedRound = useGlobalStore(state => state.setSelectedRound)
     const setSelectedRaceId = useGlobalStore(state => state.setSelectedRaceId)
+    const setSelectedCircuitId = useGlobalStore((state) => state.setSelectedCircuitId)
 
     const [hoveredRaceName, setHoveredRaceName] = useState(null)
 
@@ -143,6 +144,7 @@ const WorldMapViz = ({ season, raceList }) => {
                 .on('click', (_, data) => {
                     setSelectedRound(data.round)
                     setSelectedRaceId(data.raceId)
+                    setSelectedCircuitId(data.circuitId)
                 })
                 .transition()
                 .delay((_, i) => i * 20)

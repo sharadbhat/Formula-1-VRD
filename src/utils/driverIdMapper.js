@@ -9,7 +9,11 @@ d3.csv(getDataFilePath('drivers.csv')).then(d => {
   for (const driver of d) {
     driverIdMap[parseInt(driver.driverId)] = {
       name: `${driver.forename} ${driver.surname}`,
-      nationality: driver.nationality
+      number: +driver.number || 'N/A',
+      code: driver.code === '\\N' ? 'N/A' : driver.code,
+      nationality: driver.nationality,
+      age: new Date().getFullYear() - new Date(driver.dob).getFullYear(),
+      url: driver.url
     }
   }
 })

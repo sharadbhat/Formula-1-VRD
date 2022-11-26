@@ -12,7 +12,8 @@ d3.csv(getDataFilePath('circuits.csv')).then(d => {
       country: circuit.country,
       lat: parseFloat(circuit.lat),
       lng: parseFloat(circuit.lng),
-      location: circuit.location
+      location: circuit.location,
+      url: circuit.url
     }
   }
 })
