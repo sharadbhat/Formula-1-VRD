@@ -4,6 +4,8 @@ import { LoadingOverlay } from '@mantine/core'
 // Components
 import SeasonComponents from '../../components/SeasonComponents'
 import RaceComponents from '../../components/RaceComponents'
+import TrackDetails from '../../components/TrackDetails'
+import DriverDetails from '../../components/DriverDetails'
 
 // Utils
 import useGlobalStore from '../../utils/store';
