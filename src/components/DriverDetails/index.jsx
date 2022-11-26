@@ -1,46 +1,103 @@
-import { forwardRef } from 'react'
-import { Select, Text, Card, Group, Badge, Button, Image, Grid} from '@mantine/core'
-import * as d3 from 'd3'
+import { useState, useEffect } from 'react'
+import { Text, Card, Image, Grid, Loader, Table, ScrollArea } from '@mantine/core'
 
 // Utils
 import useGlobalStore from '../../utils/store'
-import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
+import getScrapedDriverData from '../../utils/getScrapedDriverData'
 
-const DriverDetails = ({data, scrapedDriverList}) => {
-    const selectedRace = useGlobalStore((state) => state.selectedRace);
-    const hoveredDriverId = useGlobalStore(state => state.hoveredDriverId);
-    const selectedDrivers = useGlobalStore(state => state.selectedDrivers);
+const DriverDetails = () => {
+    const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
 
-    console.log(data);
-    if (selectedDrivers){
-        return(
-            <div>
-                <Grid>
-                    {selectedDrivers.map(function(driver, i){
-                        return (
-                            <Grid.Col span={3}>
-                                <Card shadow="sm" p="md" radius="md" withBorder>
+    const [loading, setLoading] = useState(true)
+    const [scrapedDriverData, setScrapedDriverData] = useState(null)
+
+    useEffect(() => {
+        async function loadCSV() {
+            setLoading(true)
+            setScrapedDriverData(await getScrapedDriverData())
+            setLoading(false)
+        }
+        loadCSV()
+    }, [])
+
+    return (
+        loading
+            ? <Loader />
+            : (
+                <ScrollArea style={{ maxWidth: '95%' }} scrollbarSize={16}>
+                    <div style={{ display: 'flex' }}>
+                        {selectedDrivers.map((driver, i) => {
+                            return (
+                                <Card
+                                    id={i}
+                                    shadow='sm'
+                                    radius='md'
+                                    style={{ width: 250, marginRight: 15 }}
+                                    withBorder
+                                >
                                     <Card.Section>
                                         <Image
-                                        src={scrapedDriverList[driver].img_url}
-                                        alt={driverIdMapper[driver].name}
+                                            src={scrapedDriverData[driver]?.img_url}
+                                            alt={driverIdMapper[driver]?.name}
+                                            height={200}
+                                            fit={'contain'}
+                                            withPlaceholder
                                         />
                                     </Card.Section>
-                                    <Group position="apart" mt="md" mb="xs">
-                                        <Text weight={500}>{driverIdMapper[driver].name}</Text>
-                                    </Group>
-                                    <Text size="sm" color="dimmed">
-                                        {scrapedDriverList[driver].description}
-                                    </Text>
+                                    <Card.Section>
+                                        <div style={{ textAlign: 'center', paddingTop: 5, paddingBottom: 10 }}>
+                                            <Text
+                                                weight={700}
+                                                component='a'
+                                                href={driverIdMapper[driver].url}
+                                                target='_blank'
+                                                style={{ color: '#1c7ed6' }}
+                                            >
+                                                {driverIdMapper[driver].name}
+                                            </Text>
+                                        </div>
+                                    </Card.Section>
+                                    <Card.Section>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'center',
+                                            paddingBottom: 20
+                                        }}
+                                        >
+                                            <Table style={{ width: '100%' }} striped withBorder withColumnBorders>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Nationality</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].nationality}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Age</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].age}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Driver Number</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].number}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Driver Code</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].code}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                    </Card.Section>
+                                    {/* <Text size='sm' color='dimmed'>
+                                        {scrapedDriverData[driver]?.description}
+                                    </Text> */}
                                 </Card>
-                            </Grid.Col>
-                        );
-                    })}
-                </Grid>
-            </div>
-        )
-    }
+                            )
+                        })}
+                    </div>
+                </ScrollArea>
+            )
+    )
 }
 
 export default DriverDetails

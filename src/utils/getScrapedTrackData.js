@@ -7,16 +7,19 @@ let scrapedTrackData = []
 
 const getScrapedTrackData = async () => {
     if (scrapedTrackData.length === 0) {
-        const data = await d3.csv(getDataFilePath('track_descr_img.csv'));
-        scrapedTrackData = data;
+        const data = await d3.csv(getDataFilePath('track_descr_img.csv'))
+        scrapedTrackData = data
     }
     
     var result = scrapedTrackData.reduce(function(map, obj) {
-        map[obj.trackId] = {description : obj.description, img_url : obj.img_url};
-        return map;
-    }, {});
+        map[obj.trackId] = {
+            description: obj.description,
+            img_url: obj.img_url
+        }
+        return map
+    }, {})
 
-    return result;
+    return result
 }
 
 export default getScrapedTrackData

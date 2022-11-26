@@ -14,13 +14,11 @@ import DriverDetails from '../../components/DriverDetails'
 
 // Utils
 import useGlobalStore from '../../utils/store';
-import { getLapTimes, getRacePositions, getRacePositionsByLap } from '../../utils/lapTimesFileReader'
+import { getLapTimes, getRacePositions } from '../../utils/lapTimesFileReader'
 import getDriverRaceResults from '../../utils/getDriverRaceResults'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 import getDriverStandings from '../../utils/getDriverStandings'
 import getConstructorStandings from '../../utils/getConstructorStandings'
-import getScrapedTrackData from '../../utils/getScrapedTrackData'
-import getScrapedDriverData from '../../utils/getScrapedDriverData'
 
 const Home = () => {
 	const [loading, setLoading] = useState(true)
@@ -31,8 +29,6 @@ const Home = () => {
 	const [WCCData, setWCCData] = useState([])
 	const [raceList, setRaceList] = useState([])
 	const [selectedSeason, setSelectedSeason] = useState(null)
-	const [scrapedTrackData, setScrapedTrackData] = useState(null)
-	const [scrapedDriverData, setScrapedDriverData] = useState(null)
 
 	const raceId = useGlobalStore(state => state.selectedRaceId)
 	const year = useGlobalStore(state => state.selectedYear)
@@ -45,8 +41,6 @@ const Home = () => {
 			setLapTimeData([])
 			setRacePositionData(await getRacePositions(raceId))
 			setDriverFinishPositions(await getDriverRaceResults(raceId))
-			setScrapedTrackData(await getScrapedTrackData())
-			setScrapedDriverData(await getScrapedDriverData())
 			setLapTimeData(await getLapTimes(raceId))
 			setLoading(false)
 		}
@@ -81,19 +75,13 @@ const Home = () => {
 						raceList={raceList}
 					/>
 				</div>
-				<TrackDetails
-					raceList={raceList}
-					scrapedRaceList={scrapedTrackData}
-				/>
+				<TrackDetails />
 				<RacePositionViz
 					raceId={raceId}
 					data={racePositionData}
 					driverFinishPositions={driverFinishPositions}
 				/>
-				<DriverDetails
-					data={driverFinishPositions}
-					scrapedDriverList={scrapedDriverData}
-				/>
+				<DriverDetails />
 				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
 				<OvertakeDensityViz raceId={raceId} data={racePositionData} />
 				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
