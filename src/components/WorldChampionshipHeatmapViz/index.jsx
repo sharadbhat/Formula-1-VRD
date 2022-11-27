@@ -109,7 +109,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 .selectAll('rect')
                 .data(data)
                 .join('rect')
-                .attr('driverId', d => +d[key])
+                .attr('participantId', d => +d[key])
                 .attr('id', d => `${id}-${d[key]}-${d.round}`)
                 .style('fill', colorScale(0))
                 .attr('x', d => xScale(d.round))
@@ -121,7 +121,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 .style('stroke-width', 4)
                 .style('stroke', 'none')
                 .style('opacity', 1)
-                .attr('class', d => `round-${d.round}`)
+                .attr('class', d => `round-${d.round} participant-${d[key]}`)
                 .on('mouseenter', (e, d) => {
                     svg.select(`#${e.target.id}`)
                         .style('stroke', 'black')
@@ -264,15 +264,27 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                     .selectAll('text')
                     .attr('opacity', 0.2)
 
+                svg.select('#content')
+                    .selectAll('rect')
+                    .style('opacity', 0.2)
+
                 for (const participant of selectedParticipants) {
                     svg.select('#participants')
                         .select(`#${id}-participant-header-${participant}`)
                         .attr('opacity', 1)
+
+                    svg.select('#content')
+                        .selectAll(`.participant-${participant}`)
+                        .style('opacity', 1)
                 }
             } else {
                 svg.select('#participants')
                     .selectAll('text')
                     .attr('opacity', 1)
+
+                svg.select('#content')
+                    .selectAll('rect')
+                    .style('opacity', 1)
             }
         }
     }, [season, isWCC, selectedRound, selectedParticipants])
