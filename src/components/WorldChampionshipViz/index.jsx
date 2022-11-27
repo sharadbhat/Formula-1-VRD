@@ -269,7 +269,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
     }, [season, isWCC, selectedParticipants, hoveredParticipant, hoveredRound])
 
     return (
-        <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
+        <svg ref={ref} style={{ width: svgWidth, height: svgHeight, marginTop: 25 }}>
             <g id='xAxis' />
             <g id='yAxis' />
             <line

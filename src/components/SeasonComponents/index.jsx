@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SegmentedControl } from '@mantine/core'
+import { SegmentedControl, Text } from '@mantine/core'
 
 // Components
 import WorldChampionshipViz from '../WorldChampionshipViz'
@@ -35,13 +35,25 @@ const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
                 />
             </div>
             {value === 'wdc'
-                ? <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <WorldChampionshipViz season={season} raceList={raceList} data={WDCData} />
-                    <WorldChampionshipHeatmapViz season={season} raceList={raceList} data={WDCData} />
+                ? <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
+                    <div>
+                        <Text style={{ fontWeight: 700 }}>World Championship</Text>
+                        <WorldChampionshipViz season={season} raceList={raceList} data={WDCData} />
+                    </div>
+                    <div>
+                        <Text style={{ fontWeight: 700 }}>Points Heatmap</Text>
+                        <WorldChampionshipHeatmapViz season={season} raceList={raceList} data={WDCData} />
+                    </div>
                 </div>
-                : <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <WorldChampionshipViz season={season} raceList={raceList} data={WCCData} isWCC />
-                    <WorldChampionshipHeatmapViz season={season} raceList={raceList} data={WCCData} isWCC />
+                : <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
+                    <div>
+                        <Text style={{ fontWeight: 700 }}>World Championship</Text>
+                        <WorldChampionshipViz season={season} raceList={raceList} data={WCCData} isWCC />
+                    </div>
+                    <div>
+                        <Text style={{ fontWeight: 700 }}>Points Heatmap</Text>
+                        <WorldChampionshipHeatmapViz season={season} raceList={raceList} data={WCCData} isWCC />
+                    </div>
                 </div>
             }
             <div style={{ position: 'relative', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>

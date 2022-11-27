@@ -46,7 +46,6 @@ const TrackDetails = () => {
                                 alt={circuitIdMapper[selectedCircuitId]?.name}
                                 width={200}
                                 fit={'contain'}
-                                withPlaceholder
                             />
                         </Card.Section>
                         <Card.Section>

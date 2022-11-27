@@ -13,7 +13,7 @@ const OvertakeDensityViz = ({ data }) => {
     const [positionsChanged, setPositionsChanged] = useState(null)
 
     const svgWidth = 700
-    const svgHeight = 50
+    const svgHeight = 75
 
     const margin = 30
     const padding = 15
