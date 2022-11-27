@@ -4,7 +4,6 @@ import { LoadingOverlay } from '@mantine/core'
 // Components
 import SeasonComponents from '../../components/SeasonComponents'
 import RaceComponents from '../../components/RaceComponents'
-import TrackDetails from '../../components/TrackDetails'
 import DriverDetails from '../../components/DriverDetails'
 
 // Utils
@@ -63,19 +62,28 @@ const Home = () => {
 			{loading
 				? <LoadingOverlay visible overlayBlur={2} />
 				: <>
-					<SeasonComponents
-						season={selectedSeason}
-						raceList={raceList}
-						WCCData={WCCData}
-						WDCData={WDCData}
-					/>
-					<TrackDetails />
-					<RaceComponents
-						racePositionData={racePositionData}
-						driverFinishPositions={driverFinishPositions}
-						lapTimeData={lapTimeData}
-					/>
-					<DriverDetails />
+					{year
+						? <>
+							<SeasonComponents
+								season={selectedSeason}
+								raceList={raceList}
+								WCCData={WCCData}
+								WDCData={WDCData}
+							/>
+							{raceId
+								? <div style={{ marginTop: 20 }}>
+									<RaceComponents
+										racePositionData={racePositionData}
+										driverFinishPositions={driverFinishPositions}
+										lapTimeData={lapTimeData}
+									/>
+									<DriverDetails />
+								</div>
+								: null
+							}
+						</>
+						: null
+					}
 				</>
 			}
 		</>

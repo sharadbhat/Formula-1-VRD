@@ -6,6 +6,7 @@ import WorldChampionshipViz from '../WorldChampionshipViz'
 import WorldChampionshipHeatmapViz from '../WorldChampionshipHeatmapViz'
 import RaceSelector from '../RaceSelector'
 import WorldMapViz from '../WorldMapViz'
+import TrackDetails from '../TrackDetails'
 
 // Utils
 import useGlobalStore from '../../utils/store'
@@ -43,7 +44,10 @@ const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
                     <WorldChampionshipHeatmapViz season={season} raceList={raceList} data={WCCData} isWCC />
                 </div>
             }
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+            <div style={{ position: 'relative', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                <div style={{ position: 'absolute', zIndex: 1, left: 430, bottom: 0 }}>
+                    <TrackDetails />
+                </div>
                 <div>
                     <div style={{ height: 45 }}>
                         <b>Select a race</b>

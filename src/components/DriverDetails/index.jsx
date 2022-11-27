@@ -27,7 +27,7 @@ const DriverDetails = () => {
             : (
                 <ScrollArea style={{ maxWidth: '95%' }} scrollbarSize={16}>
                     <div style={{ display: 'flex' }}>
-                        {selectedDrivers.map((driver, i) => {
+                        {selectedDrivers?.map((driver, i) => {
                             return (
                                 <Card
                                     id={i}
@@ -54,7 +54,7 @@ const DriverDetails = () => {
                                                 target='_blank'
                                                 style={{ color: '#1c7ed6' }}
                                             >
-                                                {driverIdMapper[driver].name}
+                                                {driverIdMapper[driver]?.name}
                                             </Text>
                                         </div>
                                     </Card.Section>
@@ -70,19 +70,19 @@ const DriverDetails = () => {
                                                 <tbody>
                                                     <tr>
                                                         <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Nationality</td>
-                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].nationality}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Age</td>
-                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].age}</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver]?.nationality}</td>
                                                     </tr>
                                                     <tr>
                                                         <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Driver Number</td>
-                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].number}</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver]?.number}</td>
                                                     </tr>
                                                     <tr>
                                                         <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Driver Code</td>
-                                                        <td style={{ width: 150 }}>{driverIdMapper[driver].code}</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver]?.code}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>DOB</td>
+                                                        <td style={{ width: 150 }}>{driverIdMapper[driver]?.dob}</td>
                                                     </tr>
                                                 </tbody>
                                             </Table>

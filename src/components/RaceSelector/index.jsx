@@ -16,8 +16,6 @@ const RaceSelector = () => {
     const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
     const setHoveredRound = useGlobalStore((state) => state.setHoveredRound)
     const hoveredRound = useGlobalStore((state) => state.hoveredRound)
-    const setSelectedParticipants = useGlobalStore((state) => state.setSelectedParticipants)
-    const setHoveredParticipant = useGlobalStore((state) => state.setHoveredParticipant)
 
     const [raceList, setRaceList] = useState([])
     const [loading, setLoading] = useState(true)
@@ -39,8 +37,6 @@ const RaceSelector = () => {
         setSelectedDrivers([])
         setHoveredDriverId(null)
         setHoveredLap(null)
-        setSelectedParticipants([])
-        setHoveredParticipant(null)
     }
 
     return (
