@@ -4,6 +4,7 @@ import * as d3 from 'd3'
 import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import useGlobalStore from '../../utils/store'
+import resultMapper from '../../utils/resultMapper'
 
 const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, yScale, colorScale }) => {
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
@@ -37,10 +38,10 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
-                        .attr('x', 40)
+                        .attr('x', 45)
                         .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
-                        .text(d => `${+d.position ? 'P' + +d.position : 'Ret'}`)
+                        .text(d => `${+d.position ? 'P' + +d.position : resultMapper[d.positionText]?.shortText}`)
                 },
                 update => {
                     return update
@@ -49,7 +50,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('cursor', 'pointer')
                         .attr('text-anchor', 'end')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
-                        .text(d => `${+d.position ? 'P' + +d.position : 'Ret'}`)
+                        .text(d => `${+d.position ? 'P' + +d.position : resultMapper[d.positionText]?.shortText}`)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .transition()
                         .duration(100)

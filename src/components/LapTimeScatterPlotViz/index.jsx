@@ -37,8 +37,8 @@ const LapTimeScatterPlotViz = ({ data }) => {
             .domain(d3.extent(data.map(d => +d.lap)))
             .range([0, svgWidth - 3 * margin])
 
-        const rectWidth = (svgWidth - margin) / d3.max(data.map(d => +d.lap))
-        const circleRadius = rectWidth / 2
+        const rectWidth = Math.min((svgWidth - margin) / d3.max(data.map(d => +d.lap)), 20)
+        const circleRadius = Math.min(rectWidth / 2, 10)
 
         const yScale = d3.scaleLinear()
             .domain([d3.min(data.map(d => +d.milliseconds)) / 1.1, d3.max(data.map(d => +d.milliseconds)) * 1.1])
