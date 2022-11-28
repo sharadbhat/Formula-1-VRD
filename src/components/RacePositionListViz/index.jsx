@@ -1,4 +1,4 @@
-import { HoverCard, Text } from '@mantine/core'
+import { HoverCard, Table, Text } from '@mantine/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Utils
@@ -147,6 +147,36 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         <Text size='sm'>
                             This visualization shows the names of which drivers changed positions as the race progressed.
                         </Text>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Abbreviation</th>
+                                    <th>Explanation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>DNF</td>
+                                    <td>Did Not Finish</td>
+                                </tr>
+                                <tr>
+                                    <td>DSQ</td>
+                                    <td>Disqualified</td>
+                                </tr>
+                                <tr>
+                                    <td>DNS</td>
+                                    <td>Did Not Start</td>
+                                </tr>
+                                <tr>
+                                    <td>Exc</td>
+                                    <td>Excluded</td>
+                                </tr>
+                                <tr>
+                                    <td>NC</td>
+                                    <td>Not Classified</td>
+                                </tr>
+                            </tbody>
+                        </Table>
                     </HoverCard.Dropdown>
                 </HoverCard>
             </div>

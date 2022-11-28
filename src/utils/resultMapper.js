@@ -1,7 +1,7 @@
 const resultMap = {
     R: {
-        shortText: 'Ret',
-        longText: 'Retired'
+        shortText: 'DNF',
+        longText: 'Did Not Finish'
     },
     D: {
         shortText: 'DSQ',
