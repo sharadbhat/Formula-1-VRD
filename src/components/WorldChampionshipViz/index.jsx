@@ -40,7 +40,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
     const [roundToNameMap, setRoundToNameMap] = useState({})
 
     const svgWidth = 700
-    const svgHeight = 500
+    const svgHeight = isWCC ? 500 : 700
 
     const cardHeight = 120
     const cardWidth = 250
