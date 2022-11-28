@@ -191,32 +191,32 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
             svg.on('mouseenter', e => {
                 let [xPosition] = d3.pointer(e)
 
-                    let [xScaleStart, xScaleEnd] = xScaleLinear.domain()
+                let [xScaleStart, xScaleEnd] = xScaleLinear.domain()
 
-                    let closestRound = Math.round(xScaleLinear.invert(xPosition - margin))
+                let closestRound = Math.round(xScaleLinear.invert(xPosition - margin + padding))
 
-                    if (closestRound > xScaleEnd) {
-                        closestRound = null
-                    } else if (closestRound < xScaleStart) {
-                        closestRound = null
-                    }
-                    setHoveredRound(closestRound)
-                }).on('mousemove', e => {
-                    let [xPosition] = d3.pointer(e)
-        
-                    let [xScaleStart, xScaleEnd] = xScaleLinear.domain()
-        
-                    let closestRound = Math.round(xScaleLinear.invert(xPosition - margin))
+                if (closestRound > xScaleEnd) {
+                    closestRound = xScaleEnd
+                } else if (closestRound < xScaleStart) {
+                    closestRound = xScaleStart
+                }
+                setHoveredRound(closestRound)
+            }).on('mousemove', e => {
+                let [xPosition] = d3.pointer(e)
 
-                    if (closestRound > xScaleEnd) {
-                        closestRound = null
-                    } else if (closestRound < xScaleStart) {
-                        closestRound = null
-                    }
-                    setHoveredRound(closestRound)
-                }).on('mouseleave', () => {
-                    setHoveredRound(null)
-                })
+                let [xScaleStart, xScaleEnd] = xScaleLinear.domain()
+
+                let closestRound = Math.round(xScaleLinear.invert(xPosition - margin + padding))
+
+                if (closestRound > xScaleEnd) {
+                    closestRound = xScaleEnd
+                } else if (closestRound < xScaleStart) {
+                    closestRound = xScaleStart
+                }
+                setHoveredRound(closestRound)
+            }).on('mouseleave', () => {
+                setHoveredRound(null)
+            })
 
             let hoverLinePosition = xScale(hoveredRound) + margin - padding
 
@@ -294,7 +294,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
                     ry={cardCornerRadius}
                 />
                 <g id='hover-card-content-group'>
-                <text
+                    <text
                         id='hover-card-name'
                         textAnchor='middle'
                         fill='white'

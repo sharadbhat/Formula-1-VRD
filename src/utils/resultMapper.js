@@ -20,7 +20,7 @@ const resultMap = {
         longText: 'Did Not Qualify'
     },
     E: {
-        shortText: 'EX',
+        shortText: 'Exc',
         longText: 'Excluded'
     },
 }

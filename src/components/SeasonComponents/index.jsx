@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { SegmentedControl, Text } from '@mantine/core'
+import { HoverCard, SegmentedControl, Text } from '@mantine/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Components
 import WorldChampionshipViz from '../WorldChampionshipViz'
@@ -10,6 +11,9 @@ import TrackDetails from '../TrackDetails'
 
 // Utils
 import useGlobalStore from '../../utils/store'
+
+// Icons
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
     const setSelectedParticipants = useGlobalStore(state => state.setSelectedParticipants)
@@ -37,21 +41,69 @@ const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
             {value === 'wdc'
                 ? <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                     <div>
-                        <Text style={{ fontWeight: 700 }}>World Championship</Text>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ fontWeight: 700, marginRight: 20 }}>World Championship</Text>
+                            <HoverCard width={280}>
+                                <HoverCard.Target>
+                                    <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown>
+                                    <Text size='sm'>
+                                        This visualization shows the points race between different drivers as the season progressed.
+                                    </Text>
+                                </HoverCard.Dropdown>
+                            </HoverCard>
+                        </div>
                         <WorldChampionshipViz season={season} raceList={raceList} data={WDCData} />
                     </div>
                     <div>
-                        <Text style={{ fontWeight: 700 }}>Points Heatmap</Text>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ fontWeight: 700, marginRight: 20 }}>Points Heatmap</Text>
+                            <HoverCard width={280}>
+                                <HoverCard.Target>
+                                    <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown>
+                                    <Text size='sm'>
+                                        This visualization shows which drivers scored the majority of the points as the season progressed.
+                                    </Text>
+                                </HoverCard.Dropdown>
+                            </HoverCard>
+                        </div>
                         <WorldChampionshipHeatmapViz season={season} raceList={raceList} data={WDCData} />
                     </div>
                 </div>
                 : <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                     <div>
-                        <Text style={{ fontWeight: 700 }}>World Championship</Text>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ fontWeight: 700, marginRight: 20 }}>World Championship</Text>
+                            <HoverCard width={280}>
+                                <HoverCard.Target>
+                                    <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown>
+                                    <Text size='sm'>
+                                        This visualization shows the points race between different teams as the season progressed.
+                                    </Text>
+                                </HoverCard.Dropdown>
+                            </HoverCard>
+                        </div>
                         <WorldChampionshipViz season={season} raceList={raceList} data={WCCData} isWCC />
                     </div>
                     <div>
-                        <Text style={{ fontWeight: 700 }}>Points Heatmap</Text>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ fontWeight: 700, marginRight: 20 }}>Points Heatmap</Text>
+                            <HoverCard width={280}>
+                                <HoverCard.Target>
+                                    <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown>
+                                    <Text size='sm'>
+                                        This visualization shows which teams scored the majority of the points as the season progressed.
+                                    </Text>
+                                </HoverCard.Dropdown>
+                            </HoverCard>
+                        </div>
                         <WorldChampionshipHeatmapViz season={season} raceList={raceList} data={WCCData} isWCC />
                     </div>
                 </div>
@@ -61,8 +113,18 @@ const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
                     <TrackDetails />
                 </div>
                 <div>
-                    <div style={{ height: 45 }}>
-                        <b>Select a race</b>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 45 }}>
+                        <Text style={{ fontWeight: 700, marginRight: 20 }}>Select a race</Text>
+                        <HoverCard width={280}>
+                            <HoverCard.Target>
+                                <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                            </HoverCard.Target>
+                            <HoverCard.Dropdown>
+                                <Text size='sm'>
+                                    Select a race from the menu or the world map to see race details.
+                                </Text>
+                            </HoverCard.Dropdown>
+                        </HoverCard>
                     </div>
                     <RaceSelector />
                 </div>

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import * as d3 from 'd3'
+import { HoverCard, Text } from '@mantine/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Components
 import LapTimeScatterPlotViz from '../LapTimeScatterPlotViz'
@@ -10,6 +12,9 @@ import { useD3 } from '../../utils/useD3'
 import useGlobalStore from '../../utils/store'
 import driverIdMapper from '../../utils/driverIdMapper'
 import constants from '../../utils/constants'
+
+// Icons
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
     const selectedDrivers = useGlobalStore((state) => state.selectedDrivers)
@@ -205,8 +210,18 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ height: 30, paddingLeft: margin }}>
-                    <b>Lapwise Position Changes</b>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30, paddingLeft: margin }}>
+                    <Text style={{ fontWeight: 700, marginRight: 20 }}>Lapwise Position Changes</Text>
+                    <HoverCard width={280}>
+                        <HoverCard.Target>
+                            <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown>
+                            <Text size='sm'>
+                                This visualization shows the changes in positions between drivers as the race progressed.
+                            </Text>
+                        </HoverCard.Dropdown>
+                    </HoverCard>
                 </div>
                 <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
                     <g id='xAxis' />
@@ -266,8 +281,18 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
                 </svg>
             </div>
             <div>
-                <div style={{ height: 30 }}>
-                    <b>Lap Times</b>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30 }}>
+                    <Text style={{ fontWeight: 700, marginRight: 20 }}>Lap Times</Text>
+                    <HoverCard width={280}>
+                        <HoverCard.Target>
+                            <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown>
+                            <Text size='sm'>
+                                This visualization shows the lap times of all drivers as the race progressed.
+                            </Text>
+                        </HoverCard.Dropdown>
+                    </HoverCard>
                 </div>
                 <LapTimeScatterPlotViz data={lapTimeData} />
             </div>

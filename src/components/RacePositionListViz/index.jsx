@@ -1,10 +1,14 @@
-import * as d3 from 'd3'
+import { HoverCard, Text } from '@mantine/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import useGlobalStore from '../../utils/store'
 import resultMapper from '../../utils/resultMapper'
+
+// Icons
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, yScale, colorScale }) => {
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
@@ -133,8 +137,18 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
 
     return (
         <div style={{ display: 'inline-flex', flexDirection: 'column' }}>
-            <div style={{ height: 30 }}>
-                <b>{hoveredLap ? `Lap ${hoveredLap}` : 'Final Results'}</b>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: 30 }}>
+                <Text style={{ fontWeight: 700 }}>{hoveredLap ? `Lap ${hoveredLap}` : 'Final Results'}</Text>
+                <HoverCard width={280}>
+                    <HoverCard.Target>
+                        <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                        <Text size='sm'>
+                            This visualization shows the names of which drivers changed positions as the race progressed.
+                        </Text>
+                    </HoverCard.Dropdown>
+                </HoverCard>
             </div>
             <svg ref={ref} height={svgHeight} width={svgWidth}>
                 <rect fill='white' height={svgHeight} width={svgWidth} rx={5} opacity={0.05} />

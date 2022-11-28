@@ -211,7 +211,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 .data(roundsList)
                 .join('text')
                 .attr('id', d => `${id}-round-header-${d.round}`)
-                .attr('fill', 'white')
+                .attr('fill', d => d.round === selectedRound ? 'white' : '#C1C2C5')
                 .attr('text-anchor', 'start')
                 .attr('x', -offsetY + 10)
                 .attr('y', d => xScale(d.round))
@@ -239,11 +239,13 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             if (prevSelectedRound) {
                 svg.select(`#${id}-round-header-${prevSelectedRound}`)
                     .attr('font-weight', 500)
+                    .attr('fill', '#C1C2C5')
             }
 
             if (selectedRound) {
                 svg.select(`#${id}-round-header-${selectedRound}`)
                     .attr('font-weight', 700)
+                    .attr('fill', 'white')
             }
         }
 
