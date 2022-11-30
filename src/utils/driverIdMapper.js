@@ -12,7 +12,7 @@ d3.csv(getDataFilePath('drivers.csv')).then(d => {
       number: +driver.number || 'N/A',
       code: driver.code === '\\N' ? 'N/A' : driver.code,
       nationality: driver.nationality,
-      age: new Date().getFullYear() - new Date(driver.dob).getFullYear(),
+      dob: new Date(driver.dob).toLocaleDateString('en-us', { year:'numeric', month:'long'}),
       url: driver.url
     }
   }

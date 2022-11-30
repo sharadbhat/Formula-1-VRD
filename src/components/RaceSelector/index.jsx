@@ -54,7 +54,7 @@ const RaceSelector = () => {
                         ?   <div>
                                 <Loader />
                             </div>
-                        :   <Stack>
+                        :   <Stack spacing='xs' align={'center'}>
                                 {raceList.map(race => {
                                     return (
                                         <Button
@@ -63,6 +63,7 @@ const RaceSelector = () => {
                                             onMouseEnter={() => setHoveredRound(race.round)}
                                             onMouseLeave={() => setHoveredRound(null)}
                                             onClick={() => onChangeHandler(race.raceId, race.round, race.circuitId)}
+                                            style={{ width: 325 }}
                                         >
                                             Round: {race.round} - {race.name}
                                         </Button>

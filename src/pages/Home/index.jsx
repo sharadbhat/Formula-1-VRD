@@ -2,15 +2,9 @@ import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
 
 // Components
-import OvertakeDensityViz from '../../components/OvertakeDensityViz'
-import RacePositionViz from '../../components/RacePositionViz'
-import WorldChampionshipViz from '../../components/WorldChampionshipViz'
-import WorldChampionshipHeatmapViz from '../../components/WorldChampionshipHeatmapViz'
-import LapTimeScatterPlotViz from '../../components/LapTimeScatterPlotViz'
-import WorldMapViz from '../../components/WorldMapViz'
-import RaceSelector from '../../components/RaceSelector'
-import TrackDetails from '../../components/TrackDetails'
-import DriverDetails from '../../components/DriverDetails'
+import LandingView from '../../components/LandingView'
+import SeasonComponents from '../../components/SeasonComponents'
+import RaceComponents from '../../components/RaceComponents'
 
 // Utils
 import useGlobalStore from '../../utils/store';
@@ -65,31 +59,32 @@ const Home = () => {
 
 	return (
 		<>
-		{loading
-		  ? <LoadingOverlay visible overlayBlur={2} />
-		  : <>
-		  		<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-					<RaceSelector />
-					<WorldMapViz
-						season={selectedSeason}
-						raceList={raceList}
-					/>
-				</div>
-				<TrackDetails />
-				<RacePositionViz
-					raceId={raceId}
-					data={racePositionData}
-					driverFinishPositions={driverFinishPositions}
-				/>
-				<DriverDetails />
-				<LapTimeScatterPlotViz raceId={raceId} data={lapTimeData} />
-				<OvertakeDensityViz raceId={raceId} data={racePositionData} />
-				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
-				<WorldChampionshipViz season={selectedSeason} raceList={raceList} data={WDCData} />
-				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WDCData} />
-				<WorldChampionshipHeatmapViz season={selectedSeason} raceList={raceList} data={WCCData} isWCC />
-		   	</>
-		}
+			{loading
+				? <LoadingOverlay visible overlayBlur={2} />
+				: <>
+					{year
+						? <>
+							<SeasonComponents
+								season={selectedSeason}
+								raceList={raceList}
+								WCCData={WCCData}
+								WDCData={WDCData}
+							/>
+							{raceId
+								? <div style={{ marginTop: 20 }}>
+									<RaceComponents
+										racePositionData={racePositionData}
+										driverFinishPositions={driverFinishPositions}
+										lapTimeData={lapTimeData}
+									/>
+								</div>
+								: null
+							}
+						</>
+						: <LandingView />
+					}
+				</>
+			}
 		</>
 	)
 }

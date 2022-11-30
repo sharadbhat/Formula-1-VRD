@@ -18,7 +18,11 @@ const globalStore = (set) => ({
   hoveredLap: null,
   setHoveredLap: (lap) => set(() => ({ hoveredLap: lap })),
   hoveredRound: null,
-  setHoveredRound: (round) => set(() => ({ hoveredRound: round }))
+  setHoveredRound: (round) => set(() => ({ hoveredRound: round })),
+  hoveredParticipant: null,
+  setHoveredParticipant: (participant) => set(() => ({ hoveredParticipant: participant })),
+  selectedParticipants: [],
+  setSelectedParticipants: (participantSet) => set(() => ({ selectedParticipants: Array.from(participantSet) }))
 })
 
 const useGlobalStore = create(

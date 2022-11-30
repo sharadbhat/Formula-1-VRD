@@ -34,13 +34,18 @@ const TrackDetails = () => {
                         style={{ width: 250 }}
                         withBorder
                     >
-                        <Card.Section style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, backgroundColor: 'white' }}>
+                        <Card.Section style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            backgroundColor: 'white'
+                        }}>
                             <Image
                                 src={scrapedTrackData[selectedCircuitId]?.img_url}
                                 alt={circuitIdMapper[selectedCircuitId]?.name}
                                 width={200}
                                 fit={'contain'}
-                                withPlaceholder
                             />
                         </Card.Section>
                         <Card.Section>
@@ -48,11 +53,11 @@ const TrackDetails = () => {
                                 <Text
                                     weight={700}
                                     component='a'
-                                    href={circuitIdMapper[selectedCircuitId].url}
+                                    href={circuitIdMapper[selectedCircuitId]?.url}
                                     target='_blank'
                                     style={{ color: '#1c7ed6' }}
                                 >
-                                    {circuitIdMapper[selectedCircuitId].name}
+                                    {circuitIdMapper[selectedCircuitId]?.name}
                                 </Text>
                             </div>
                         </Card.Section>
@@ -62,17 +67,16 @@ const TrackDetails = () => {
                                 flexDirection: 'row',
                                 justifyContent: 'center',
                                 paddingBottom: 20
-                            }}
-                            >
+                            }}>
                                 <Table style={{ width: '100%' }} striped withBorder withColumnBorders>
                                     <tbody>
                                         <tr>
                                             <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Location</td>
-                                            <td style={{ width: 150 }}>{circuitIdMapper[selectedCircuitId].location}</td>
+                                            <td style={{ width: 150 }}>{circuitIdMapper[selectedCircuitId]?.location}</td>
                                         </tr>
                                         <tr>
                                             <td style={{ fontWeight: 650, textAlign: 'end', width: 120 }}>Country</td>
-                                            <td style={{ width: 150 }}>{circuitIdMapper[selectedCircuitId].country}</td>
+                                            <td style={{ width: 150 }}>{circuitIdMapper[selectedCircuitId]?.country}</td>
                                         </tr>
                                     </tbody>
                                 </Table>

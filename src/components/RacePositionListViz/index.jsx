@@ -1,9 +1,14 @@
-import * as d3 from 'd3'
+import { HoverCard, Table, Text } from '@mantine/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Utils
 import { useD3 } from '../../utils/useD3'
 import driverIdMapper from '../../utils/driverIdMapper'
 import useGlobalStore from '../../utils/store'
+import resultMapper from '../../utils/resultMapper'
+
+// Icons
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, yScale, colorScale }) => {
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
@@ -12,7 +17,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const hoveredLap = useGlobalStore((state) => state.hoveredLap)
 
-    const svgWidth = 250
+    const svgWidth = 225
     const svgHeight = 500
 
     const selectedDriversSet = new Set(selectedDrivers)
@@ -37,10 +42,10 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
-                        .attr('x', 50)
+                        .attr('x', 45)
                         .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
-                        .text(d => `${+d.position ? 'P' + +d.position : 'Ret'}`)
+                        .text(d => `${+d.position ? 'P' + +d.position : resultMapper[d.positionText]?.shortText}`)
                 },
                 update => {
                     return update
@@ -49,7 +54,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('cursor', 'pointer')
                         .attr('text-anchor', 'end')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
-                        .text(d => `${+d.position ? 'P' + +d.position : 'Ret'}`)
+                        .text(d => `${+d.position ? 'P' + +d.position : resultMapper[d.positionText]?.shortText}`)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .transition()
                         .duration(100)
@@ -88,7 +93,7 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                         .attr('fill', d => colorScale(+d.driverId))
                         .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
-                        .attr('x', 65)
+                        .attr('x', 55)
                         .attr('y', d => yScale(hoveredLap ? +d.position : +d.positionOrder) + 10)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
                         .text(d => driverIdMapper[+d.driverId].name)
@@ -97,7 +102,6 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                     return update
                         .attr('driverId', d => +d.driverId)
                         .attr('fill', d => colorScale(+d.driverId))
-                        .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
                         .text(d => driverIdMapper[+d.driverId].name)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
@@ -132,8 +136,48 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
 
     return (
         <div style={{ display: 'inline-flex', flexDirection: 'column' }}>
-            <div style={{ height: 30 }}>
-                <b>{hoveredLap ? `Lap ${hoveredLap}` : 'Final Results'}</b>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: 30 }}>
+                <Text style={{ fontWeight: 700 }}>{hoveredLap ? `Lap ${hoveredLap}` : 'Final Results'}</Text>
+                <HoverCard width={280}>
+                    <HoverCard.Target>
+                        <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                        <Text size='sm'>
+                            This visualization shows the names of which drivers changed positions as the race progressed.
+                        </Text>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Abbreviation</th>
+                                    <th>Explanation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>DNF</td>
+                                    <td>Did Not Finish</td>
+                                </tr>
+                                <tr>
+                                    <td>DSQ</td>
+                                    <td>Disqualified</td>
+                                </tr>
+                                <tr>
+                                    <td>DNS</td>
+                                    <td>Did Not Start</td>
+                                </tr>
+                                <tr>
+                                    <td>Exc</td>
+                                    <td>Excluded</td>
+                                </tr>
+                                <tr>
+                                    <td>NC</td>
+                                    <td>Not Classified</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </HoverCard.Dropdown>
+                </HoverCard>
             </div>
             <svg ref={ref} height={svgHeight} width={svgWidth}>
                 <rect fill='white' height={svgHeight} width={svgWidth} rx={5} opacity={0.05} />

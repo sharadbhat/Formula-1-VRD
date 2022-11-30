@@ -18,6 +18,9 @@ const WorldMapViz = ({ season, raceList }) => {
     const setSelectedRound = useGlobalStore(state => state.setSelectedRound)
     const setSelectedRaceId = useGlobalStore(state => state.setSelectedRaceId)
     const setSelectedCircuitId = useGlobalStore((state) => state.setSelectedCircuitId)
+    const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
+    const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
+    const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
 
     const [hoveredRaceName, setHoveredRaceName] = useState(null)
 
@@ -142,9 +145,14 @@ const WorldMapViz = ({ season, raceList }) => {
                         .attr('visibility', 'hidden')
                 })
                 .on('click', (_, data) => {
-                    setSelectedRound(data.round)
-                    setSelectedRaceId(data.raceId)
-                    setSelectedCircuitId(data.circuitId)
+                    if (selectedRound !== data.round) {
+                        setSelectedRound(data.round)
+                        setSelectedRaceId(data.raceId)
+                        setSelectedCircuitId(data.circuitId)
+                        setSelectedDrivers([])
+                        setHoveredDriverId(null)
+                        setHoveredLap(null)
+                    }
                 })
                 .transition()
                 .delay((_, i) => i * 20)
@@ -179,6 +187,18 @@ const WorldMapViz = ({ season, raceList }) => {
                     .attr('fill', 'red')
                     .attr('r', circleRadiusLarge)
             }
+
+            svg.selectAll('circle')
+                .on('click', (_, data) => {
+                    if (selectedRound !== data.round) {
+                        setSelectedRound(data.round)
+                        setSelectedRaceId(data.raceId)
+                        setSelectedCircuitId(data.circuitId)
+                        setSelectedDrivers([])
+                        setHoveredDriverId(null)
+                        setHoveredLap(null)
+                    }
+                })
         }
     }, [season, hoveredRound, selectedRound])
 
