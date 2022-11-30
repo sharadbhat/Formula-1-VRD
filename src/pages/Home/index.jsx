@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
 
 // Components
+import LandingView from '../../components/LandingView'
 import SeasonComponents from '../../components/SeasonComponents'
 import RaceComponents from '../../components/RaceComponents'
 
@@ -80,7 +81,7 @@ const Home = () => {
 								: null
 							}
 						</>
-						: null
+						: <LandingView />
 					}
 				</>
 			}

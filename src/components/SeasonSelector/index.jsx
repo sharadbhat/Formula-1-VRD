@@ -31,7 +31,7 @@ const SeasonSelector = () => {
     const setHoveredParticipant = useGlobalStore((state) => state.setHoveredParticipant)
 
     const data = []
-    for (let i = 2022; i >= 1996; i--) {
+    for (let i = 2021; i >= 1996; i--) {
         data.push({
             value: i,
             label: `${i} Formula 1 Season`

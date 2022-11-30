@@ -5,6 +5,9 @@ import { Link, useLocation } from 'react-router-dom'
 import SeasonSelector from '../SeasonSelector'
 import HeaderLinks from '../HeaderLinks'
 
+// Utils
+import useGlobalStore from '../../utils/store'
+
 // CSS
 import './styles.css'
 
@@ -21,7 +24,7 @@ const NavHeader = () => {
                   <img src={Logo} height={35} className='logo' />
                   <Title
                     order={2}
-                    title='Formula 1 Visualized Race Data'
+                    title='Formula 1 Visualized Racing Data'
                   >
                     Formula 1 VRD
                   </Title>
@@ -39,7 +42,8 @@ const NavHeader = () => {
 
 const renderDropdown = () => {
   const pathname = useLocation().pathname
-  if (pathname === '/') {
+  const selectedYear = useGlobalStore(state => state.selectedYear)
+  if (pathname === '/' && selectedYear !== null) {
     return <SeasonSelector />
   }
   return null
