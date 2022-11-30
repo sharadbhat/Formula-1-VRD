@@ -16,6 +16,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
     const selectedParticipants = useGlobalStore(state => state.selectedParticipants)
     const setSelectedParticipants = useGlobalStore(state => state.setSelectedParticipants)
     const selectedRound = useGlobalStore(state => state.selectedRound)
+    const hoveredRound = useGlobalStore(state => state.hoveredRound)
     const setHoveredRound = useGlobalStore(state => state.setHoveredRound)
     const setSelectedRound = useGlobalStore(state => state.setSelectedRound)
     const setSelectedRaceId = useGlobalStore(state => state.setSelectedRaceId)
@@ -56,6 +57,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
     const prevIsWCC = usePrevious(isWCC)
     const prevSelectedRound = usePrevious(selectedRound)
     const prevSelectedParticipants = usePrevious(selectedParticipants)
+    const prevHoveredRound = usePrevious(hoveredRound)
 
     const selectedParticipantsSet = new Set(selectedParticipants)
 
@@ -251,6 +253,18 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             }
         }
 
+        if (hoveredRound !== prevHoveredRound) {
+            if (prevHoveredRound && prevHoveredRound !== selectedRound) {
+                svg.select(`#${id}-round-header-${prevHoveredRound}`)
+                    .attr('font-weight', 500)
+            }
+
+            if (hoveredRound) {
+                svg.select(`#${id}-round-header-${hoveredRound}`)
+                    .attr('font-weight', 700)
+            }
+        }
+
         if (selectedParticipants !== prevSelectedParticipants) {
             svg.select('#participants')
                 .selectAll('text')
@@ -291,7 +305,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                     .style('opacity', 1)
             }
         }
-    }, [season, isWCC, selectedRound, selectedParticipants])
+    }, [season, isWCC, selectedRound, selectedParticipants, hoveredRound])
 
     return (
         <svg ref={ref} style={{ width: svgWidth, height: svgHeight }}>
