@@ -146,6 +146,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                     setName(mapper[d[key]].name)
                     setCurrentPoints(d['points'])
                     setCurrentRound(d['round'])
+                    setHoveredRound(d['round'])
                 })
                 .on('mousemove', e => {
                     let [xPosition, yPosition] = d3.pointer(e)
@@ -164,6 +165,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                         .attr('transform', `translate(${xPosition}, ${yPosition})`)
                 })
                 .on('mouseleave', e => {
+                    setHoveredRound(null)
                     svg.select(`#${e.target.id}`)
                         .style('stroke', '')
     
