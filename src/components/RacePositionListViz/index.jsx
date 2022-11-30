@@ -102,7 +102,6 @@ const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, ySca
                     return update
                         .attr('driverId', d => +d.driverId)
                         .attr('fill', d => colorScale(+d.driverId))
-                        .attr('cursor', 'pointer')
                         .attr('opacity', d => selectedDriversSet.size > 0 ? (selectedDriversSet.has(+d.driverId) ? 1 : 0.2) : 1)
                         .text(d => driverIdMapper[+d.driverId].name)
                         .attr('font-weight', d => hoveredDriverId === +d.driverId ? 700 : 500)
