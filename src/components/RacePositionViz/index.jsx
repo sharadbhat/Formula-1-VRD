@@ -17,6 +17,8 @@ import constants from '../../utils/constants'
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
+    const width = window.innerWidth
+
     const selectedDrivers = useGlobalStore((state) => state.selectedDrivers)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const hoveredDriverId = useGlobalStore((state) => state.hoveredDriverId)
@@ -28,7 +30,7 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentPosition, setCurrentPosition] = useState(null)
 
-    const svgWidth = 700
+    const svgWidth = 0.45 * width
     const svgHeight = 500
 
     const cardHeight = 100

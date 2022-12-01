@@ -10,6 +10,7 @@ import constants from '../../utils/constants'
 import useGlobalStore from '../../utils/store'
 
 const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
+    const width = window.innerWidth;
     const selectedParticipants = useGlobalStore(state => state.selectedParticipants)
     const setSelectedParticipants = useGlobalStore(state => state.setSelectedParticipants)
     const hoveredRound = useGlobalStore(state => state.hoveredRound)
@@ -39,7 +40,7 @@ const WorldChampionshipViz = ({ raceList, data, season, isWCC }) => {
     const [currentPoints, setCurrentPoints] = useState(null)
     const [roundToNameMap, setRoundToNameMap] = useState({})
 
-    const svgWidth = 700
+    const svgWidth = 0.45 * width
     const svgHeight = isWCC ? 500 : 700
 
     const cardHeight = 120

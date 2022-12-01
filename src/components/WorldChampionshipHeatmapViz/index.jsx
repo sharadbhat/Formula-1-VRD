@@ -13,6 +13,8 @@ import useGlobalStore from '../../utils/store'
 import gradientImage from '../../assets/inferno.png'
 
 const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
+    const width = window.innerWidth
+
     const selectedParticipants = useGlobalStore(state => state.selectedParticipants)
     const setSelectedParticipants = useGlobalStore(state => state.setSelectedParticipants)
     const selectedRound = useGlobalStore(state => state.selectedRound)
@@ -39,7 +41,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
 
     const [legendMax, setLegendMax] = useState(null)
 
-    const svgWidth = 750
+    const svgWidth = 0.49 * width
     const svgHeight = isWCC ? 500 : 700
 
     const legendHeight = 30

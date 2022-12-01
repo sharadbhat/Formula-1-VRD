@@ -6,6 +6,8 @@ import useGlobalStore from '../../utils/store'
 import getRacesBySeason from '../../utils/getRacesBySeason'
 
 const RaceSelector = () => {
+    const width = window.innerWidth
+
     const selectedYear = useGlobalStore((state) => state.selectedYear)
     const selectedRaceId = useGlobalStore((state) => state.selectedRaceId)
     const setSelectedRaceId = useGlobalStore((state) => state.setSelectedRaceId)
@@ -45,11 +47,11 @@ const RaceSelector = () => {
                 sx={(theme) => ({
                     backgroundColor: theme.colors.dark[6],
                     borderRadius: theme.radius.md,
-                    width: 400,
+                    width: 0.26 * width,
                     padding: 25
                 })}
             >
-                <ScrollArea style={{ width: 350, height: 475 }}>
+                <ScrollArea style={{ width: '100%', height: 475 }}>
                     {loading
                         ?   <div>
                                 <Loader />
@@ -63,9 +65,9 @@ const RaceSelector = () => {
                                             onMouseEnter={() => setHoveredRound(race.round)}
                                             onMouseLeave={() => setHoveredRound(null)}
                                             onClick={() => onChangeHandler(race.raceId, race.round, race.circuitId)}
-                                            style={{ width: 325 }}
+                                            style={{ width: '90%' }}
                                         >
-                                            Round: {race.round} - {race.name}
+                                            Round {race.round}: {race.name}
                                         </Button>
                                     )
                                 })}
