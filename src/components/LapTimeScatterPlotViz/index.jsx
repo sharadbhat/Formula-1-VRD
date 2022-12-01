@@ -8,8 +8,9 @@ import useGlobalStore from '../../utils/store'
 import driverIdMapper from '../../utils/driverIdMapper'
 
 const LapTimeScatterPlotViz = ({ data }) => {
+    const width= window.innerWidth
+
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
-    const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const hoveredDriverId = useGlobalStore(state => state.hoveredDriverId)
     const setHoveredLap = useGlobalStore(state => state.setHoveredLap)
     const hoveredLap = useGlobalStore(state => state.hoveredLap)
@@ -17,7 +18,7 @@ const LapTimeScatterPlotViz = ({ data }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentLaptime, setCurrentLaptime] = useState(null)
 
-    const svgWidth = 550
+    const svgWidth = 0.36 * width
     const svgHeight = 500
 
     const cardHeight = 100
@@ -78,7 +79,6 @@ const LapTimeScatterPlotViz = ({ data }) => {
 
                 setCurrentLaptime(data['time'])
                 setDriverName(driverIdMapper[+data.driverId].name)
-                setHoveredDriverId(+data.driverId)
 
                 if (xPosition > svgWidth / 2) {
                     xPosition -= (cardWidth + 10)
@@ -116,7 +116,6 @@ const LapTimeScatterPlotViz = ({ data }) => {
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
             .on('mouseleave', () => {
-                setHoveredDriverId(null)
                 // Hide card group
                 svg.select('#hover-card-group')
                     .attr('visibility', 'hidden')
@@ -179,7 +178,6 @@ const LapTimeScatterPlotViz = ({ data }) => {
 
                 setCurrentLaptime(data['time'])
                 setDriverName(driverIdMapper[+data.driverId].name)
-                setHoveredDriverId(+data.driverId)
 
                 if (xPosition > svgWidth / 2) {
                     xPosition -= (cardWidth + 10)
@@ -217,7 +215,6 @@ const LapTimeScatterPlotViz = ({ data }) => {
                     .attr('transform', `translate(${xPosition}, ${yPosition})`)
             })
             .on('mouseleave', () => {
-                setHoveredDriverId(null)
                 // Hide card group
                 svg.select('#hover-card-group')
                     .attr('visibility', 'hidden')

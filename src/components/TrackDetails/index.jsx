@@ -8,6 +8,7 @@ import circuitIdMapper from '../../utils/circuitIdMapper'
 
 
 const TrackDetails = () => {
+    const width = window.innerWidth
     const selectedCircuitId = useGlobalStore((state) => state.selectedCircuitId)
 
     const [loading, setLoading] = useState(true)
@@ -31,7 +32,7 @@ const TrackDetails = () => {
                     <Card
                         shadow='sm'
                         radius='md'
-                        style={{ width: 250 }}
+                        style={{ width: 0.16 * width }}
                         withBorder
                     >
                         <Card.Section style={{
@@ -44,7 +45,7 @@ const TrackDetails = () => {
                             <Image
                                 src={scrapedTrackData[selectedCircuitId]?.img_url}
                                 alt={circuitIdMapper[selectedCircuitId]?.name}
-                                width={200}
+                                width={0.13 * width}
                                 fit={'contain'}
                             />
                         </Card.Section>

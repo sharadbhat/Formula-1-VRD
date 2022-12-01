@@ -16,6 +16,8 @@ import useGlobalStore from '../../utils/store'
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
+    const width = window.innerWidth
+
     const setSelectedParticipants = useGlobalStore(state => state.setSelectedParticipants)
     const setHoveredParticipant = useGlobalStore(state => state.setHoveredParticipant)
     const [value, setValue] = useState('wcc')
@@ -108,11 +110,11 @@ const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
                     </div>
                 </div>
             }
-            <div style={{ position: 'relative', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                <div style={{ position: 'absolute', zIndex: 1, left: 430, bottom: 0 }}>
+            <div style={{ position: 'relative', display: 'flex', flexDirection: 'row-reverse', marginTop: 10 }}>
+                <div style={{ position: 'absolute', zIndex: 1, left: 0.27 * width, bottom: 0 }}>
                     <TrackDetails />
                 </div>
-                <div>
+                <div style={{ position: 'absolute', zIndex: 1, left: 0, bottom: 0 }}>
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: 45 }}>
                         <Text style={{ fontWeight: 700, marginRight: 20 }}>Select a race</Text>
                         <HoverCard width={280}>
