@@ -44,7 +44,7 @@ const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
                 ? <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                     <div>
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontWeight: 700, marginRight: 20 }}>World Championship</Text>
+                            <Text style={{ fontWeight: 700, marginRight: 20 }}>World Championship Points</Text>
                             <HoverCard width={280}>
                                 <HoverCard.Target>
                                     <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
@@ -78,7 +78,7 @@ const SeasonComponents = ({ season, raceList, WCCData, WDCData }) => {
                 : <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                     <div>
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontWeight: 700, marginRight: 20 }}>World Championship</Text>
+                            <Text style={{ fontWeight: 700, marginRight: 20 }}>World Championship Points</Text>
                             <HoverCard width={280}>
                                 <HoverCard.Target>
                                     <FontAwesomeIcon color='white' style={{ paddingTop: 5 }} icon={faQuestionCircle} size='sm' />
