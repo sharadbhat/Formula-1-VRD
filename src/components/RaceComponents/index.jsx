@@ -14,6 +14,7 @@ import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 import { faCircleChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 const RaceComponents = ({ racePositionData, driverFinishPositions, lapTimeData }) => {
+    const width = window.innerWidth
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
     return (
         <>
@@ -39,7 +40,7 @@ const RaceComponents = ({ racePositionData, driverFinishPositions, lapTimeData }
                     </div>
                     <OvertakeDensityViz data={racePositionData} />
                 </div>
-                <div style={{ width: 750, marginRight: 10 }}>
+                <div style={{ width: 0.49 * width, marginRight: 10 }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ fontWeight: 700, marginRight: 20 }}>Driver Profile(s)</Text>

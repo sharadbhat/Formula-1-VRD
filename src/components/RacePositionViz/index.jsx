@@ -17,6 +17,8 @@ import constants from '../../utils/constants'
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
+    const width = window.innerWidth
+
     const selectedDrivers = useGlobalStore((state) => state.selectedDrivers)
     const setSelectedDrivers = useGlobalStore((state) => state.setSelectedDrivers)
     const hoveredDriverId = useGlobalStore((state) => state.hoveredDriverId)
@@ -28,7 +30,7 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentPosition, setCurrentPosition] = useState(null)
 
-    const svgWidth = 700
+    const svgWidth = 0.45 * width
     const svgHeight = 500
 
     const cardHeight = 100
@@ -63,14 +65,14 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisBottom(xScale))
+            .call(d3.axisBottom(xScale).ticks(8).tickFormat(d => `Lap ${d}`))
 
         svg.select('#yAxis')
             .attr('transform', `translate(${margin}, 0)`)
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisLeft(yScale))
+            .call(d3.axisLeft(yScale).tickFormat(d => `P${d}`))
 
         const groupedData = d3.group(data, d => +d.driverId)
 

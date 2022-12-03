@@ -7,12 +7,14 @@ import useGlobalStore from '../../utils/store'
 import constants from '../../utils/constants'
 
 const OvertakeDensityViz = ({ data }) => {
+    const width = window.innerWidth
+
     const hoveredLap = useGlobalStore((state) => state.hoveredLap)
     const setHoveredLap = useGlobalStore((state) => state.setHoveredLap)
 
     const [positionsChanged, setPositionsChanged] = useState(null)
 
-    const svgWidth = 700
+    const svgWidth = 0.45 * width
     const svgHeight = 75
 
     const margin = 30

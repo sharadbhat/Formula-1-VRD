@@ -8,6 +8,8 @@ import useGlobalStore from '../../utils/store'
 import driverIdMapper from '../../utils/driverIdMapper'
 
 const LapTimeScatterPlotViz = ({ data }) => {
+    const width= window.innerWidth
+
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const hoveredDriverId = useGlobalStore(state => state.hoveredDriverId)
@@ -17,7 +19,7 @@ const LapTimeScatterPlotViz = ({ data }) => {
     const [driverName, setDriverName] = useState(null)
     const [currentLaptime, setCurrentLaptime] = useState(null)
 
-    const svgWidth = 550
+    const svgWidth = 0.36 * width
     const svgHeight = 500
 
     const cardHeight = 100
@@ -49,14 +51,14 @@ const LapTimeScatterPlotViz = ({ data }) => {
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisBottom(xScale))
+            .call(d3.axisBottom(xScale).ticks(8).tickFormat(d => `Lap ${d}`))
 
         svg.select('#yAxis')
             .attr('transform', `translate(${2 * margin}, 0)`)
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisLeft(yScale).tickFormat(d => d3.timeFormat('%M:%S.%L')(d)))
+            .call(d3.axisLeft(yScale).tickFormat(d3.timeFormat('%M:%S.%L')))
 
         const groupedData = d3.group(data, d => +d.driverId)
 

@@ -11,13 +11,15 @@ import resultMapper from '../../utils/resultMapper'
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 const RacePositionListViz = ({ driverFinishPositions, driverPositionsByLap, yScale, colorScale }) => {
+    const width = window.innerWidth
+
     const selectedDrivers = useGlobalStore(state => state.selectedDrivers)
     const setSelectedDrivers = useGlobalStore(state => state.setSelectedDrivers)
     const hoveredDriverId = useGlobalStore((state) => state.hoveredDriverId)
     const setHoveredDriverId = useGlobalStore((state) => state.setHoveredDriverId)
     const hoveredLap = useGlobalStore((state) => state.hoveredLap)
 
-    const svgWidth = 225
+    const svgWidth = 0.15 * width
     const svgHeight = 500
 
     const selectedDriversSet = new Set(selectedDrivers)
