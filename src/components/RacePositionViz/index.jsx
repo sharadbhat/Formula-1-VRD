@@ -65,14 +65,14 @@ const RacePositionViz = ({ data, driverFinishPositions, lapTimeData }) => {
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisBottom(xScale))
+            .call(d3.axisBottom(xScale).ticks(8).tickFormat(d => `Lap ${d}`))
 
         svg.select('#yAxis')
             .attr('transform', `translate(${margin}, 0)`)
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisLeft(yScale))
+            .call(d3.axisLeft(yScale).tickFormat(d => `P${d}`))
 
         const groupedData = d3.group(data, d => +d.driverId)
 

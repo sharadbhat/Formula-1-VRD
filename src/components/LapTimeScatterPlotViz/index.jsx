@@ -51,14 +51,14 @@ const LapTimeScatterPlotViz = ({ data }) => {
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisBottom(xScale))
+            .call(d3.axisBottom(xScale).ticks(8).tickFormat(d => `Lap ${d}`))
 
         svg.select('#yAxis')
             .attr('transform', `translate(${2 * margin}, 0)`)
             .attr('stroke-width', 2)
             .transition()
             .duration(500)
-            .call(d3.axisLeft(yScale).tickFormat(d => d3.timeFormat('%M:%S.%L')(d)))
+            .call(d3.axisLeft(yScale).tickFormat(d3.timeFormat('%M:%S.%L')))
 
         const groupedData = d3.group(data, d => +d.driverId)
 
