@@ -15,6 +15,24 @@ Head over to https://sharadbhat.github.io/Formula-1-VRD/ to check it out.
 6. Run `npm run dev`
 7. Head to http://localhost:5173
 
+## Libraries and Packages Used
+
+1. ReactJS - Library for building user interfaces.
+2. Mantine - Component library for ReactJS.
+3. D3 - Library to generate visualizations.
+4. React Router DOM - To handle page navigation.
+5. Zustand - Hooks-based state management.
+
+## Developed Code
+
+All the code inside [dataScraping](dataScraping/), [classes](src/classes/), [components](src/components/), [pages](src/pages/) and [utils](src/utils/) was written by the two of us.
+
+## Process Book
+You can find the process book [here](docs/Formula%201%20VRD%20Process%20Book.pdf).
+
+## Demonstration Video
+The demonstration video can be found [here](https://youtu.be/HZR8Wibx924).
+
 ## Team Members
 |Name|UID|Email|
 |-|-|-|
