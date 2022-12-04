@@ -23,7 +23,7 @@ const HeaderLinks = () => {
             >
                 Process Book
             </Button>
-            <Tooltip label='YouTube Video'>
+            <Tooltip label='Demonstration Video'>
                 <Button
                     variant='outline'
                     color='gray'
@@ -32,7 +32,7 @@ const HeaderLinks = () => {
                     component='a'
                     target='_blank'
                     rel='noopener noreferrer'
-                    href='http://google.com'
+                    href='https://youtu.be/HZR8Wibx924'
                 >
                     <FontAwesomeIcon color='white' icon={faYoutube} size='xl' />
                 </Button>
