@@ -48,10 +48,10 @@ const LandingView = () => {
                     component='a'
                     target='_blank'
                     rel='noopener noreferrer'
-                    href='https://google.com'
+                    href='https://youtu.be/HZR8Wibx924'
                     style={{ height: 60, fontSize: 18, color: '#ededf0' }}
                 >
-                    Watch Video
+                    Watch Demonstration Video
                 </Button>
                 <Button
                     variant='filled'
