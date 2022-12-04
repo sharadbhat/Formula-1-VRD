@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Icons
 import { faExpand, faDownLeftAndUpRightToCenter } from '@fortawesome/free-solid-svg-icons'
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faGithub, faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 // CSS
 import './styles.css'
@@ -23,6 +23,20 @@ const HeaderLinks = () => {
             >
                 Process Book
             </Button>
+            <Tooltip label='YouTube Video'>
+                <Button
+                    variant='outline'
+                    color='gray'
+                    compact
+                    className='actionButton item'
+                    component='a'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    href='http://google.com'
+                >
+                    <FontAwesomeIcon color='white' icon={faYoutube} size='xl' />
+                </Button>
+            </Tooltip>
             <Tooltip label='Github Repository'>
                 <Button
                     variant='outline'

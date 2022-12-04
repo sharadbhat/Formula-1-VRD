@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Text, Card, Image, Loader, Table } from '@mantine/core'
+import { Text, Card, Image, Loader, Table, Collapse, ScrollArea, Box } from '@mantine/core'
 
 // Utils
 import useGlobalStore from '../../utils/store'
@@ -13,6 +13,7 @@ const TrackDetails = () => {
 
     const [loading, setLoading] = useState(true)
     const [scrapedTrackData, setScrapedTrackData] = useState(null)
+    const [opened, setOpened] = useState(false)
 
     useEffect(() => {
         async function loadCSV() {
@@ -23,6 +24,11 @@ const TrackDetails = () => {
         loadCSV()
     }, [])
 
+    useEffect(() => {
+        if (scrapedTrackData?.[selectedCircuitId]?.description === '') {
+            setOpened(false)
+        }
+    }, [selectedCircuitId])
 
     if (selectedCircuitId) {
         return (
@@ -32,7 +38,7 @@ const TrackDetails = () => {
                     <Card
                         shadow='sm'
                         radius='md'
-                        style={{ width: 0.16 * width }}
+                        style={{ width: 0.16 * width, maxHeight: 525 }}
                         withBorder
                     >
                         <Card.Section style={{
@@ -63,12 +69,7 @@ const TrackDetails = () => {
                             </div>
                         </Card.Section>
                         <Card.Section>
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                paddingBottom: 20
-                            }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: 20 }}>
                                 <Table style={{ width: '100%' }} striped withBorder withColumnBorders>
                                     <tbody>
                                         <tr>
@@ -81,6 +82,21 @@ const TrackDetails = () => {
                                         </tr>
                                     </tbody>
                                 </Table>
+                                <Text style={{ marginTop: 5, cursor: 'pointer', color: '#1c7ed6' }} onClick={() => setOpened((e) => !e)}>{opened ? 'Hide Description' : 'View Description'}</Text>
+                                <Collapse in={opened}>
+                                    <Box sx={(theme) => ({
+                                        backgroundColor: theme.colors.dark[4],
+                                        padding: 10,
+                                        margin: 5,
+                                        borderRadius: 5
+                                    })}>
+                                        <ScrollArea style={{ height: 150 }}>
+                                            <Text style={{ textAlign: 'center' }}>
+                                                {scrapedTrackData[selectedCircuitId]?.description}
+                                            </Text>
+                                        </ScrollArea>
+                                    </Box>
+                                </Collapse>
                             </div>
                         </Card.Section>
                     </Card>

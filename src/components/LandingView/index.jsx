@@ -38,7 +38,7 @@ const LandingView = () => {
                     color='gray'
                     component={Link}
                     to='/processBook'
-                    style={{ height: 60, fontSize: 18 }}
+                    style={{ height: 60, fontSize: 18, color: '#ededf0' }}
                 >
                     View Process Book
                 </Button>
@@ -48,8 +48,19 @@ const LandingView = () => {
                     component='a'
                     target='_blank'
                     rel='noopener noreferrer'
+                    href='https://google.com'
+                    style={{ height: 60, fontSize: 18, color: '#ededf0' }}
+                >
+                    Watch Video
+                </Button>
+                <Button
+                    variant='filled'
+                    color='gray'
+                    component='a'
+                    target='_blank'
+                    rel='noopener noreferrer'
                     href='https://github.com/sharadbhat/Formula-1-VRD'
-                    style={{ height: 60, fontSize: 18 }}
+                    style={{ height: 60, fontSize: 18, color: '#ededf0' }}
                 >
                     View Github Repository
                 </Button>
