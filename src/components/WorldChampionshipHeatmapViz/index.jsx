@@ -23,6 +23,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
     const setSelectedRound = useGlobalStore(state => state.setSelectedRound)
     const setSelectedRaceId = useGlobalStore(state => state.setSelectedRaceId)
     const setHoveredParticipant = useGlobalStore(state => state.setHoveredParticipant)
+    const setSelectedCircuitId = useGlobalStore(state => state.setSelectedCircuitId)
 
     let key = 'driverId'
     let id = 'WDCHeatmapViz'
@@ -76,7 +77,8 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
             for (const race of raceList) {
                 roundsList.push({
                     round: +race.round,
-                    raceId: +race.raceId
+                    raceId: +race.raceId,
+                    circuitId: +race.circuitId
                 })
             }
     
@@ -232,6 +234,7 @@ const WorldChampionshipHeatmapViz = ({ raceList, data, season, isWCC }) => {
                 }).on('click', (_, data) => {
                     setSelectedRound(data.round)
                     setSelectedRaceId(data.raceId)
+                    setSelectedCircuitId(data.circuitId)
                 })
                 .transition()
                 .delay((_, i) => i * 20)
