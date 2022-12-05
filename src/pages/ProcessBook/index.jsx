@@ -9,6 +9,20 @@ import './styles.css'
 
 const ProcessBook = () => {
     const [selectedBox, setselectedBox] = useState('processBook')
+
+    const renderText = () => {
+        switch (selectedBox) {
+            case 'proposal':
+                return renderProposalText()
+            case 'processBook':
+                return renderProcessBookText()
+            case 'feedback':
+                return renderFeedbackText()
+            default:
+                return renderProcessBookText()
+        }
+    }
+
     return (
         <Center>
             <div className='process-book-container'>
@@ -29,14 +43,50 @@ const ProcessBook = () => {
                             value: 'processBook',
                             label: 'Process Book'
                         },
+                        {
+                            value: 'feedback',
+                            label: 'Design Feedback'
+                        }
                     ]} />
                 </Center>
-                {selectedBox === 'processBook'
-                    ? renderProcessBookText()
-                    : renderProposalText()
-                }
+                {renderText()}
             </div>
         </Center>
+    )
+}
+
+const renderFeedbackText = () => {
+    return (
+        <>
+            <div className='process-book-proposal-header'>
+                <div style={{ width: 110 }} />
+                <div>
+                    <h1>Design Feedback</h1>
+                </div>
+                <Button
+                    style={{ width: 110 }}
+                    variant={'filled'}
+                    color='gray'
+                    component='a'
+                    target={'_blank'}
+                    href='https://raw.githubusercontent.com/sharadbhat/Formula-1-VRD/main/docs/Design Feedback.pdf'
+                >
+                    Download
+                </Button>
+            </div>
+            <h3>Feedback</h3>
+            <div className='process-book-pl-50'>
+                <List>
+                    <List.Item>Change location grid to a list of scrollable locations next to the map.</List.Item>
+                    <List.Item>Highlight the ending result of a driver in a race.</List.Item>
+                    <List.Item>Indicate pitstop laps to better understand overtakes.</List.Item>
+                    <List.Item>Show driver names next to starting or finishing positions on the line chart.</List.Item>
+                    <List.Item>On the map, show track layout and details on hover.</List.Item>
+                    <List.Item>Synchronize interactions between track list and map.</List.Item>
+                    <List.Item>Include icons on the map instead of circles (country flag, track logo, etc.)</List.Item>
+                </List>
+            </div>
+        </>
     )
 }
 
