@@ -120,14 +120,17 @@ const renderProcessBookText = () => {
                 <div className='process-book-mt-30'>
                     <b>Sketch 1</b>
                     <img style={{ marginTop: 10 }} width={700} src={getSketchFilePath('draft1.jpg')} />
+                    <p>In this initial brainstorming session, we sketched out how the user can interact with the website. What should the user see when they initially land on the website and how they can advance through the website.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Sketch 2</b>
                     <img style={{ marginTop: 10 }} width={700} src={getSketchFilePath('draft2.jpg')} />
+                    <p>In this sketch, we planned out how to place the different elements of our visualization. We agreed on showing season-level visualizations at the top. And as the user scrolls down, we show the race-level visualizations.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Sketch 3</b>
                     <img style={{ marginTop: 10 }} width={700} src={getSketchFilePath('draft3.jpg')} />
+                    <p>In this sketch, we looked at how we can arrange the different charts on the page. Our initial plan was to have the world map at the top, with line segments connecting the different locations on map. However, with so many races taking place in Europe, we decided against it.</p>
                 </div>
                 <p>Once we had a general idea of our layout, we began sketching out our visualizations using <a href='https://draw.io' target={'_blank'}>draw.io</a>.</p>
                 <div className='process-book-mt-30'>
@@ -139,6 +142,7 @@ const renderProcessBookText = () => {
                     <div className='process-book-center'>
                         <p>World Championship Points Line Chart</p>
                     </div>
+                    <p>This chart shows the points race between teams and drivers as the season progresses. At each point, we show the cumulative points tally until that race.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Visualization Sketch 2</b>
@@ -149,6 +153,7 @@ const renderProcessBookText = () => {
                     <div className='process-book-center'>
                         <p>Points Heatmap</p>
                     </div>
+                    <p>In this chart, we show the points scored by teams and drivers at each round in the season. Each row is a driver or team and each column is a particular round in the season.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Visualization Sketch 3</b>
@@ -157,6 +162,7 @@ const renderProcessBookText = () => {
                     <div className='process-book-center'>
                         <p>Layout 1</p>
                     </div>
+                    <p>The world championship line chart and the points heatmap are placed next to each other since they display related data. While the line chart shows the cumulative points at each round, the heatmap displays the exact points each team or driver scored at each round.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Visualization Sketch 4</b>
@@ -165,6 +171,7 @@ const renderProcessBookText = () => {
                     <div className='process-book-center'>
                         <p>World Map with Track Selector</p>
                     </div>
+                    <p>The world map is placed next to the track selector to help the user to understand where each race takes place.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Visualization Sketch 5</b>
@@ -173,6 +180,7 @@ const renderProcessBookText = () => {
                     <div className='process-book-center'>
                         <p>Race Position Line Chart</p>
                     </div>
+                    <p>This line chart shows the change in positions between drivers in a given race. Each line corresponds to a particular driver.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Visualization Sketch 6</b>
@@ -183,6 +191,7 @@ const renderProcessBookText = () => {
                     <div className='process-book-center'>
                         <p>Cumulative Lap Time Line Chart and Lap Time Scatterplot</p>
                     </div>
+                    <p>This contains two charts. The top line chart shows the cumulative time taken by a driver to finish a race. The bottom scatterplot shows the individual lap times of every driver in every lap.</p>
                 </div>
                 <div className='process-book-mt-30'>
                     <b>Visualization Sketch 7</b>
@@ -191,6 +200,7 @@ const renderProcessBookText = () => {
                     <div className='process-book-center'>
                         <p>Layout 2</p>
                     </div>
+                    <p>In this layout, we decided to place the Race Position Line Chart next to the Cumulative Lap Time Chart and the Lap Time Scatter Plot since all of these display related data.</p>
                 </div>
                 <b>Experiments</b>
                 <p>One thing we thought might have been a good idea at the time was to use a graph that displays the lap times cumulatively. However, after implementing it this is what it looked like.</p>
