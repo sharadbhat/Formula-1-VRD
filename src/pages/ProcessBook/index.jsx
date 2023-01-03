@@ -31,7 +31,7 @@ const ProcessBook = () => {
                     <h1 style={{ marginLeft: 20 }} title='Formula 1 Visualized Racing Data'>Formula 1 VRD</h1>
                 </Center>
                 <Center style={{ marginBottom: 10 }}>
-                    <h3>Alex Liebig and Sharad Bhat</h3>
+                    <h3><a href='https://github.com/alexliebig' target={'_blank'}>Alex Liebig</a> and <a href='https://github.com/sharadbhat' target={'_blank'}>Sharad Bhat</a></h3>
                 </Center>
                 <Center>
                     <SegmentedControl value={selectedBox} onChange={setselectedBox} data={[

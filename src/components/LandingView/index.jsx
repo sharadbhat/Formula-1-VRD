@@ -22,7 +22,7 @@ const LandingView = () => {
                 </div>
             </Link>
             <div style={{ maxWidth: 500, textAlign: 'center' }}>
-                <Text>A visualization project by Alex Liebig and Sharad Bhat</Text>
+                <Text>A visualization project by <a href='https://github.com/alexliebig' target={'_blank'}>Alex Liebig</a> and <a href='https://github.com/sharadbhat' target={'_blank'}>Sharad Bhat</a></Text>
                 <Text style={{ marginTop: 10 }}>CS 6630 Fall 2022</Text>
             </div>
             <Stack style={{ width: 500, marginTop: 50 }}>
