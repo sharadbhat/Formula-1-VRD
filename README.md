@@ -1,6 +1,6 @@
 # Formula 1 VRD [Visualized Race Data]
 
-[![Deployment](https://img.shields.io/github/workflow/status/sharadbhat/Formula-1-VRD/Deployment?label=Deployment&logo=Github)](https://github.com/sharadbhat/Formula-1-VRD/actions/workflows/deploy.yml)
+[![Deployment](https://img.shields.io/github/actions/workflow/status/sharadbhat/Formula-1-VRD/deploy.yml?label=Deployment&logo=Github)](https://github.com/sharadbhat/Formula-1-VRD/actions/workflows/deploy.yml)
 [![License - MIT](https://img.shields.io/github/license/sharadbhat/Formula-1-VRD?color=brightgreen)](./LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/sharadbhat/Formula-1-VRD)](https://github.com/sharadbhat/Formula-1-VRD/commits/main)
 
